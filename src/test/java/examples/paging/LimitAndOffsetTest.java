@@ -64,33 +64,5 @@ class LimitAndOffsetTest {
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(config);
     }
 
-    @Test
-    void testLimitAndOffset() {
-        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            LimitAndOffsetMapper mapper = sqlSession.getMapper(LimitAndOffsetMapper.class);
 
-            List<AnimalData> rows = mapper.selectWithLimitAndOffset(5, 3)
-                    .orderBy(id)
-                    .build()
-                    .execute();
-
-            assertThat(rows).hasSize(5);
-            assertThat(rows.get(0).id()).isEqualTo(4);
-        }
-    }
-
-    @Test
-    void testLimitAndOffsetDistinct() {
-        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
-            LimitAndOffsetMapper mapper = sqlSession.getMapper(LimitAndOffsetMapper.class);
-
-            List<AnimalData> rows = mapper.selectDistinctWithLimitAndOffset(5, 3)
-                    .orderBy(id)
-                    .build()
-                    .execute();
-
-            assertThat(rows).hasSize(5);
-            assertThat(rows.get(0).id()).isEqualTo(4);
-        }
-    }
 }

@@ -32,7 +32,7 @@ A calculated column can be used anywhere in a SELECT statement.  If you don't ne
 is easier to implement the `org.mybatis.dynamic.sql.BasicColumn` interface.  An example follows:
 
 ```java
-import org.mybatis.dynamic.sql.BasicColumn;
+
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
@@ -101,41 +101,39 @@ the function changes the data type from `byte[]` to `String`.
 import java.sql.JDBCType;
 import java.util.Optional;
 
-import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.function.AbstractTypeConvertingFunction;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public class ToBase64 extends AbstractTypeConvertingFunction<byte[], String, ToBase64> {
 
-   private ToBase64(BasicColumn column) {
-      super(column);
-   }
+    private ToBase64(BasicColumn column) {
+        super(column);
+    }
 
-   @Override
-   public Optional<JDBCType> jdbcType() {
-      return Optional.of(JDBCType.VARCHAR);
-   }
+    @Override
+    public Optional<JDBCType> jdbcType() {
+        return Optional.of(JDBCType.VARCHAR);
+    }
 
-   @Override
-   public FragmentAndParameters render(RenderingContext renderingContext) {
-      FragmentAndParameters renderedColumn = column.render(renderingContext);
+    @Override
+    public FragmentAndParameters render(RenderingContext renderingContext) {
+        FragmentAndParameters renderedColumn = column.render(renderingContext);
 
-      return FragmentAndParameters
-              .withFragment("TO_BASE64(" + renderedColumn.fragment() + ")") //$NON-NLS-1$ //$NON-NLS-2$
-              .withParameters(renderedColumn.parameters())
-              .build();
-   }
+        return FragmentAndParameters
+                .withFragment("TO_BASE64(" + renderedColumn.fragment() + ")") //$NON-NLS-1$ //$NON-NLS-2$
+                .withParameters(renderedColumn.parameters())
+                .build();
+    }
 
-   @Override
-   protected ToBase64 copy() {
-      return new ToBase64(column);
-   }
+    @Override
+    protected ToBase64 copy() {
+        return new ToBase64(column);
+    }
 
-   public static ToBase64 toBase64(BindableColumn<byte[]> column) {
-      return new ToBase64(column);
-   }
+    public static ToBase64 toBase64(BindableColumn<byte[]> column) {
+        return new ToBase64(column);
+    }
 }
 ```
 
@@ -144,36 +142,35 @@ public class ToBase64 extends AbstractTypeConvertingFunction<byte[], String, ToB
 The following function implements the common database `UPPER()` function.
 
 ```java
-import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.BindableColumn;
+
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.function.AbstractUniTypeFunction;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public class Upper extends AbstractUniTypeFunction<String, Upper> {
 
-   private Upper(BasicColumn column) {
-      super(column);
-   }
+    private Upper(BasicColumn column) {
+        super(column);
+    }
 
-   @Override
-   public FragmentAndParameters render(RenderingContext renderingContext) {
-      FragmentAndParameters renderedColumn = column.render(renderingContext);
+    @Override
+    public FragmentAndParameters render(RenderingContext renderingContext) {
+        FragmentAndParameters renderedColumn = column.render(renderingContext);
 
-      return FragmentAndParameters
-              .withFragment("upper(" + renderedColumn.fragment() + ")") //$NON-NLS-1$ //$NON-NLS-2$
-              .withParameters(renderedColumn.parameters())
-              .build();
-   }
+        return FragmentAndParameters
+                .withFragment("upper(" + renderedColumn.fragment() + ")") //$NON-NLS-1$ //$NON-NLS-2$
+                .withParameters(renderedColumn.parameters())
+                .build();
+    }
 
-   @Override
-   protected Upper copy() {
-      return new Upper(column);
-   }
+    @Override
+    protected Upper copy() {
+        return new Upper(column);
+    }
 
-   public static Upper of(BindableColumn<String> column) {
-      return new Upper(column);
-   }
+    public static Upper of(BindableColumn<String> column) {
+        return new Upper(column);
+    }
 }
 ```
 
@@ -181,31 +178,30 @@ Note that `FragmentAndParameters` has a utility method that can simplify the imp
 add any new parameters to the resulting fragment. For example, the UPPER function can be simplified as follows:
 
 ```java
-import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.BindableColumn;
+
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.function.AbstractUniTypeFunction;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public class Upper extends AbstractUniTypeFunction<String, Upper> {
 
-   private Upper(BasicColumn column) {
-      super(column);
-   }
+    private Upper(BasicColumn column) {
+        super(column);
+    }
 
-   @Override
-   public FragmentAndParameters render(RenderingContext renderingContext) {
-      return column.render(renderingContext).mapFragment(f -> "upper(" + f + ")"); //$NON-NLS-1$ //$NON-NLS-2$
-   }
+    @Override
+    public FragmentAndParameters render(RenderingContext renderingContext) {
+        return column.render(renderingContext).mapFragment(f -> "upper(" + f + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+    }
 
-   @Override
-   protected Upper copy() {
-      return new Upper(column);
-   }
+    @Override
+    protected Upper copy() {
+        return new Upper(column);
+    }
 
-   public static Upper of(BindableColumn<String> column) {
-      return new Upper(column);
-   }
+    public static Upper of(BindableColumn<String> column) {
+        return new Upper(column);
+    }
 }
 ```
 
@@ -219,14 +215,12 @@ arbitrary length:
 import java.util.Arrays;
 import java.util.List;
 
-import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.select.function.OperatorFunction;
 
 public class Concatenate<T> extends OperatorFunction<T> {
 
     protected Concatenate(BasicColumn firstColumn, BasicColumn secondColumn,
-            List<BasicColumn> subsequentColumns) {
+                          List<BasicColumn> subsequentColumns) {
         super("||", firstColumn, secondColumn, subsequentColumns); //$NON-NLS-1$
     }
 
@@ -236,7 +230,7 @@ public class Concatenate<T> extends OperatorFunction<T> {
     }
 
     public static <T> Concatenate<T> concatenate(BindableColumn<T> firstColumn, BasicColumn secondColumn,
-            BasicColumn... subsequentColumns) {
+                                                 BasicColumn... subsequentColumns) {
         return new Concatenate<>(firstColumn, secondColumn, Arrays.asList(subsequentColumns));
     }
 }
@@ -257,7 +251,7 @@ wanted to use the library to generate SQL that could be prepared directly by JDB
 that simply uses the question mark (`?`) for all parameters.
 
 ```java
-import org.mybatis.dynamic.sql.BindableColumn;
+
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
 
 public class PlainJDBCRenderingStrategy extends RenderingStrategy {

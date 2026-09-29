@@ -35,13 +35,11 @@ import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.type.EnumOrdinalTypeHandler;
 import org.apache.ibatis.type.JdbcType;
-import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.SqlBuilder;
-import org.mybatis.dynamic.sql.select.CountDSL;
-import org.mybatis.dynamic.sql.select.CountDSLCompleter;
-import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
-import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
-import org.mybatis.dynamic.sql.select.SelectModel;
+import org.mybatis.dynamic.sql.dsl.CountDSL;
+import org.mybatis.dynamic.sql.dsl.CountDSLCompleter;
+import org.mybatis.dynamic.sql.dsl.SelectDSL;
+import org.mybatis.dynamic.sql.dsl.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonCountMapper;
@@ -79,13 +77,13 @@ public interface PersonWithAddressMapper extends CommonCountMapper {
                     address.streetAddress, address.city, address.state, address.addressType);
 
     default Optional<PersonWithAddress> selectOne(SelectDSLCompleter completer) {
-        QueryExpressionDSL<SelectModel> start = SqlBuilder.select(selectList).from(person)
+        SelectDSL start = SqlBuilder.select(selectList).from(person)
                 .join(address, on(person.addressId, isEqualTo(address.id))).endJoin();
         return MyBatis3Utils.selectOne(this::selectOne, start, completer);
     }
 
     default List<PersonWithAddress> select(SelectDSLCompleter completer) {
-        QueryExpressionDSL<SelectModel> start = SqlBuilder.select(selectList).from(person)
+        SelectDSL start = SqlBuilder.select(selectList).from(person)
                 .join(address, on(person.addressId, isEqualTo(address.id))).endJoin();
         return MyBatis3Utils.selectList(this::selectMany, start, completer);
     }
@@ -97,7 +95,7 @@ public interface PersonWithAddressMapper extends CommonCountMapper {
     }
 
     default long count(CountDSLCompleter completer) {
-        CountDSL<SelectModel> start = countFrom(person)
+        CountDSL start = countFrom(person)
                 .join(address, on(person.addressId, isEqualTo(address.id))).endJoin();
         return MyBatis3Utils.countFrom(this::count, start, completer);
     }

@@ -15,18 +15,10 @@
  */
 package org.mybatis.dynamic.sql.dsl;
 
+import org.mybatis.dynamic.sql.*;
+
 import java.util.Arrays;
 import java.util.List;
-
-import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
-import org.mybatis.dynamic.sql.BindableColumn;
-import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
-import org.mybatis.dynamic.sql.CriteriaGroup;
-import org.mybatis.dynamic.sql.ExistsCriterion;
-import org.mybatis.dynamic.sql.ExistsPredicate;
-import org.mybatis.dynamic.sql.NullCriterion;
-import org.mybatis.dynamic.sql.RenderableCondition;
-import org.mybatis.dynamic.sql.SqlCriterion;
 
 public interface BooleanOperations<T extends BooleanOperations<T>> {
     default <S> T and(BindableColumn<S> column, RenderableCondition<S> condition,

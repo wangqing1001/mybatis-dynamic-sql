@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2026 the original author or authors.
+ *    Copyright 2016-2025 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -25,9 +25,9 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.jdbc.datasource.DataSourceTransactionManager
 
 @Configuration
-class SpringConfiguration {
+open class SpringConfiguration {
     @Bean
-    fun datasource(): DataSource =
+    open fun datasource(): DataSource =
         EmbeddedDatabaseBuilder().run {
             setType(EmbeddedDatabaseType.HSQL)
             generateUniqueName(true)
@@ -37,8 +37,8 @@ class SpringConfiguration {
         }
 
     @Bean
-    fun template(dataSource: DataSource) = NamedParameterJdbcTemplate(dataSource)
+    open fun template(dataSource: DataSource) = NamedParameterJdbcTemplate(dataSource)
 
     @Bean
-    fun transactionManager(dataSource: DataSource) = DataSourceTransactionManager(dataSource)
+    open fun transactionManager(dataSource: DataSource) = DataSourceTransactionManager(dataSource)
 }

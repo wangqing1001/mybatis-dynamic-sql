@@ -15,12 +15,12 @@
  */
 package org.mybatis.dynamic.sql.dsl;
 
+import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
+import org.mybatis.dynamic.sql.SqlCriterion;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-
-import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
-import org.mybatis.dynamic.sql.SqlCriterion;
 
 public abstract class WhereOrHavingApplier<T extends WhereOrHavingApplier<T>> {
     private final SqlCriterion initialCriterion;

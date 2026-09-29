@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2026 the original author or authors.
+ *    Copyright 2016-2025 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 package org.mybatis.dynamic.sql.render;
 
 import org.mybatis.dynamic.sql.BindableColumn;
+
+import java.sql.JDBCType;
 
 public class MyBatis3RenderingStrategy extends RenderingStrategy {
     @Override
@@ -50,20 +52,26 @@ public class MyBatis3RenderingStrategy extends RenderingStrategy {
     }
 
     private String renderTypeHandler(BindableColumn<?> column) {
-        return column.typeHandler()
-                .map(th -> ",typeHandler=" + th) //$NON-NLS-1$
-                .orElse(""); //$NON-NLS-1$
+        String typeHandler = column.typeHandler();
+        if(typeHandler==null){
+            return "";
+        }
+        return ",typeHandler=" + typeHandler;
     }
 
     private String renderJdbcType(BindableColumn<?> column) {
-        return column.jdbcType()
-                .map(jt -> ",jdbcType=" + jt.getName()) //$NON-NLS-1$
-                .orElse(""); //$NON-NLS-1$
+        JDBCType jdbcType = column.jdbcType();
+        if(jdbcType==null){
+            return "";
+        }
+        return ",jdbcType=" + jdbcType.getName();
     }
 
     private String renderJavaType(BindableColumn<?> column) {
-        return column.javaType()
-                .map(jt -> ",javaType=" + jt.getName()) //$NON-NLS-1$
-                .orElse(""); //$NON-NLS-1$
+        Class<?> javaType = column.javaType();
+        if(javaType==null){
+            return "";
+        }
+        return ",javaType=" + javaType.getName();
     }
 }

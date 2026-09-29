@@ -53,8 +53,11 @@ public class RenderingContext {
     }
 
     private <T> String renderedPlaceHolder(String mapKey, BindableColumn<T> column) {
-        return  column.renderingStrategy().orElse(renderingStrategy)
-                .getFormattedJdbcPlaceholder(column, PARAMETER_NAME, mapKey);
+        RenderingStrategy renderingStrategy = column.renderingStrategy();
+        if(renderingStrategy==null){
+            renderingStrategy = this.renderingStrategy;
+        }
+        return renderingStrategy.getFormattedJdbcPlaceholder(column, PARAMETER_NAME, mapKey);
     }
 
     public RenderedParameterInfo calculateFetchFirstRowsParameterInfo() {

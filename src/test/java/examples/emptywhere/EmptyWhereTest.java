@@ -26,15 +26,13 @@ import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mybatis.dynamic.sql.delete.DeleteDSL;
+import org.mybatis.dynamic.sql.dsl.DeleteDSL;
 import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
+import org.mybatis.dynamic.sql.dsl.SelectDSL;
+import org.mybatis.dynamic.sql.dsl.UpdateDSL;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
-import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
-import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-import org.mybatis.dynamic.sql.update.UpdateDSL;
-import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
 
 class EmptyWhereTest {
@@ -88,7 +86,7 @@ class EmptyWhereTest {
 
     @Test
     void testDeleteThreeConditions() {
-        DeleteDSL<DeleteModel>.DeleteWhereBuilder builder = deleteFrom(person)
+        DeleteDSL.DeleteWhereBuilder builder = deleteFrom(person)
                 .where(id, isEqualTo(3));
 
         builder.and(firstName, isEqualTo(FIRST_NAME));
@@ -107,7 +105,7 @@ class EmptyWhereTest {
     @ParameterizedTest
     @MethodSource("whereVariations")
     void testDeleteVariations(Variation variation) {
-        DeleteDSL<DeleteModel>.DeleteWhereBuilder builder = deleteFrom(person)
+        DeleteDSL.DeleteWhereBuilder builder = deleteFrom(person)
                 .where();
 
         builder.and(firstName, isEqualToWhenPresent(variation.firstName));
@@ -123,7 +121,7 @@ class EmptyWhereTest {
 
     @Test
     void testSelectThreeConditions() {
-        QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder = select(id, firstName, PersonDynamicSqlSupport.lastName)
+        SelectDSL.QueryExpressionWhereBuilder builder = select(id, firstName, PersonDynamicSqlSupport.lastName)
                 .from(person)
                 .where(id, isEqualTo(3));
 
@@ -144,7 +142,7 @@ class EmptyWhereTest {
     @ParameterizedTest
     @MethodSource("whereVariations")
     void testSelectVariations(Variation variation) {
-        QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder = select(person.allColumns())
+        SelectDSL.QueryExpressionWhereBuilder builder = select(person.allColumns())
                 .from(person)
                 .where();
 
@@ -161,7 +159,7 @@ class EmptyWhereTest {
 
     @Test
     void testJoinThreeConditions() {
-        QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder = select(id, firstName, PersonDynamicSqlSupport.lastName, orderDate)
+        SelectDSL.QueryExpressionWhereBuilder builder = select(id, firstName, PersonDynamicSqlSupport.lastName, orderDate)
                 .from(person).join(order).on(person.id, isEqualTo(order.personId))
                 .where(id, isEqualTo(3));
 
@@ -183,7 +181,7 @@ class EmptyWhereTest {
     @ParameterizedTest
     @MethodSource("joinWhereVariations")
     void testJoinVariations(Variation variation) {
-        QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder = select(id, firstName, PersonDynamicSqlSupport.lastName, orderDate)
+        SelectDSL.QueryExpressionWhereBuilder builder = select(id, firstName, PersonDynamicSqlSupport.lastName, orderDate)
                 .from(person).join(order).on(person.id, isEqualTo(order.personId))
                 .where();
 
@@ -203,7 +201,7 @@ class EmptyWhereTest {
 
     @Test
     void testUpdateThreeConditions() {
-        UpdateDSL<UpdateModel>.UpdateWhereBuilder builder = update(person)
+        UpdateDSL.UpdateWhereBuilder builder = update(person)
                 .set(id).equalTo(3)
                 .where(id, isEqualTo(3));
 
@@ -224,7 +222,7 @@ class EmptyWhereTest {
     @ParameterizedTest
     @MethodSource("updateWhereVariations")
     void testUpdateVariations(Variation variation) {
-        UpdateDSL<UpdateModel>.UpdateWhereBuilder builder = update(person)
+        UpdateDSL.UpdateWhereBuilder builder = update(person)
                 .set(id).equalTo(3)
                 .where();
 

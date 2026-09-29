@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2026 the original author or authors.
+ *    Copyright 2016-2025 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -31,14 +31,9 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.apache.ibatis.type.JdbcType;
 import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.delete.DeleteDSLCompleter;
+import org.mybatis.dynamic.sql.dsl.*;
 import org.mybatis.dynamic.sql.insert.GeneralInsertDSL;
-import org.mybatis.dynamic.sql.select.CountDSLCompleter;
-import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-import org.mybatis.dynamic.sql.update.UpdateDSL;
-import org.mybatis.dynamic.sql.update.UpdateDSLCompleter;
-import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonCountMapper;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonDeleteMapper;
@@ -166,8 +161,8 @@ public interface PersonMapper extends CommonCountMapper, CommonDeleteMapper, Com
         return MyBatis3Utils.update(this::update, person, completer);
     }
 
-    static UpdateDSL<UpdateModel> updateAllColumns(PersonRecord row,
-            UpdateDSL<UpdateModel> dsl) {
+    static UpdateDSL updateAllColumns(PersonRecord row,
+            UpdateDSL dsl) {
         return dsl.set(id).equalToOrNull(row::id)
                 .set(firstName).equalToOrNull(row::firstName)
                 .set(lastName).equalToOrNull(row::lastName)
@@ -177,8 +172,8 @@ public interface PersonMapper extends CommonCountMapper, CommonDeleteMapper, Com
                 .set(addressId).equalToOrNull(row::addressId);
     }
 
-    static UpdateDSL<UpdateModel> updateSelectiveColumns(PersonRecord row,
-            UpdateDSL<UpdateModel> dsl) {
+    static UpdateDSL updateSelectiveColumns(PersonRecord row,
+            UpdateDSL dsl) {
         return dsl.set(id).equalToWhenPresent(row::id)
                 .set(firstName).equalToWhenPresent(row::firstName)
                 .set(lastName).equalToWhenPresent(row::lastName)

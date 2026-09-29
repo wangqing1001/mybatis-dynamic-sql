@@ -39,25 +39,9 @@ Here is the migration plan:
    package name.
 4. In the next major release of this library, I will delete the old DSLs.
 
-I expect these next releases to be a relatively fast follow after the 2.0.0 release.
 
-This table shows the old and new versions of the DSLs:
 
-| New DSL                                 | Old DSL (Will Be Removed Eventually)                                                               |
-|-----------------------------------------|----------------------------------------------------------------------------------------------------|
-| `org.mybatis.dynamic.sql.dsl.CountDSL`  | `org.mybatis.dynamic.sql.select.CountDSL`                                                          |
-| `org.mybatis.dynamic.sql.dsl.DeleteDSL` | `org.mybatis.dynamic.sql.delete.DeleteDSL`                                                         |
-| `org.mybatis.dynamic.sql.dsl.SelectDSL` | `org.mybatis.dynamic.sql.select.SelectDSL` and `org.mybatis.dynamic.sql.select.QueryExpressionDSL` |
-| `org.mybatis.dynamic.sql.dsl.UpdateDSL` | `org.mybatis.dynamic.sql.update.UpdateDSL`                                                         |
 
-The "completer" classes are also impacted and will need to change. This table shows the old and new versions:
-
-| New Completer                                    | Old Completer (Will Be Removed Eventually)          |
-|--------------------------------------------------|-----------------------------------------------------|
-| `org.mybatis.dynamic.sql.dsl.CountDSLCompleter`  | `org.mybatis.dynamic.sql.select.CountDSLCompleter`  |
-| `org.mybatis.dynamic.sql.dsl.DeleteDSLCompleter` | `org.mybatis.dynamic.sql.delete.DeleteDSLCompleter` |
-| `org.mybatis.dynamic.sql.dsl.SelectDSLCompleter` | `org.mybatis.dynamic.sql.select.SelectDSLCompleter` |
-| `org.mybatis.dynamic.sql.dsl.UpdateDSLCompleter` | `org.mybatis.dynamic.sql.update.UpdateDSLCompleter` |
 
 If you are actually using the generic function in the old DSLs to alter the model class produced by a DSL, then you can
 replace it with the new `map` method on all affected model classes to achieve the same result.

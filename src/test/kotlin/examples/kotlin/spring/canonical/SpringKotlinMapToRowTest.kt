@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2026 the original author or authors.
+ *    Copyright 2016-2025 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @SpringJUnitConfig(classes = [SpringConfiguration::class])
 @Transactional
-class SpringKotlinMapToRowTest {
+open class SpringKotlinMapToRowTest {
     @Autowired
     private lateinit var template: NamedParameterJdbcTemplate
 
@@ -62,7 +62,7 @@ class SpringKotlinMapToRowTest {
     }
 
     @Test
-    fun testInsertMultiple() {
+    open fun testInsertMultiple() {
         val integers = listOf(1, 2, 3)
 
         val insertStatement = insertMultiple(integers) {
@@ -88,7 +88,7 @@ class SpringKotlinMapToRowTest {
     }
 
     @Test
-    fun testInsertBatch() {
+    open fun testInsertBatch() {
         val integers = listOf(1, 2, 3)
 
         val insertStatement = insertBatch(integers) {

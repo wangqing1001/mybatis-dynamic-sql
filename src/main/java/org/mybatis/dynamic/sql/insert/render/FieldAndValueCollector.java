@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2026 the original author or authors.
+ *    Copyright 2016-2025 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -64,7 +64,7 @@ public class FieldAndValueCollector {
     private String toSingleRowOfValues(int row) {
         return fieldsAndValues.stream()
                 .map(FieldAndValueAndParameters::valuePhrase)
-                .map(s -> s.formatted(row))
+                .map(s -> String.format(s, row))
                 .collect(Collectors.joining(", ", "(", ")")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
     }
 

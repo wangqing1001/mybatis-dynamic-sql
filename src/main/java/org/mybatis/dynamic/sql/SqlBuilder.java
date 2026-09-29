@@ -22,22 +22,17 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 import org.jspecify.annotations.Nullable;
-import org.mybatis.dynamic.sql.delete.DeleteDSL;
+import org.mybatis.dynamic.sql.dsl.CountDSL;
+import org.mybatis.dynamic.sql.dsl.DeleteDSL;
 import org.mybatis.dynamic.sql.delete.DeleteModel;
-import org.mybatis.dynamic.sql.dsl.HavingDSL;
-import org.mybatis.dynamic.sql.dsl.WhereDSL;
+import org.mybatis.dynamic.sql.dsl.*;
+import org.mybatis.dynamic.sql.dsl.SelectDSL;
 import org.mybatis.dynamic.sql.insert.BatchInsertDSL;
 import org.mybatis.dynamic.sql.insert.GeneralInsertDSL;
 import org.mybatis.dynamic.sql.insert.InsertDSL;
 import org.mybatis.dynamic.sql.insert.InsertSelectDSL;
 import org.mybatis.dynamic.sql.insert.MultiRowInsertDSL;
-import org.mybatis.dynamic.sql.select.ColumnSortSpecification;
-import org.mybatis.dynamic.sql.select.CountDSL;
-import org.mybatis.dynamic.sql.select.MultiSelectDSL;
-import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
-import org.mybatis.dynamic.sql.select.SelectDSL;
-import org.mybatis.dynamic.sql.select.SelectModel;
-import org.mybatis.dynamic.sql.select.SimpleSortSpecification;
+import org.mybatis.dynamic.sql.select.*;
 import org.mybatis.dynamic.sql.select.aggregate.Avg;
 import org.mybatis.dynamic.sql.select.aggregate.Count;
 import org.mybatis.dynamic.sql.select.aggregate.CountAll;
@@ -58,7 +53,6 @@ import org.mybatis.dynamic.sql.select.function.OperatorFunction;
 import org.mybatis.dynamic.sql.select.function.Substring;
 import org.mybatis.dynamic.sql.select.function.Subtract;
 import org.mybatis.dynamic.sql.select.function.Upper;
-import org.mybatis.dynamic.sql.update.UpdateDSL;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.where.condition.IsBetween;
@@ -122,7 +116,7 @@ public interface SqlBuilder {
      *
      * @return the next step in the DSL
      */
-    static CountDSL<SelectModel> countDistinctColumn(BasicColumn column) {
+    static CountDSL countDistinctColumn(BasicColumn column) {
         return CountDSL.countDistinct(column);
     }
 
@@ -134,7 +128,7 @@ public interface SqlBuilder {
      *
      * @return the next step in the DSL
      */
-    static CountDSL<SelectModel> countColumn(BasicColumn column) {
+    static CountDSL countColumn(BasicColumn column) {
         return CountDSL.count(column);
     }
 
@@ -146,19 +140,19 @@ public interface SqlBuilder {
      *
      * @return the next step in the DSL
      */
-    static CountDSL<SelectModel> countFrom(SqlTable table) {
+    static CountDSL countFrom(SqlTable table) {
         return CountDSL.countFrom(table);
     }
 
-    static CountDSL<SelectModel> countFrom(SqlTable table, String tableAlias) {
+    static CountDSL countFrom(SqlTable table, String tableAlias) {
         return CountDSL.countFrom(table, tableAlias);
     }
 
-    static DeleteDSL<DeleteModel> deleteFrom(SqlTable table) {
+    static DeleteDSL deleteFrom(SqlTable table) {
         return DeleteDSL.deleteFrom(table);
     }
 
-    static DeleteDSL<DeleteModel> deleteFrom(SqlTable table, String tableAlias) {
+    static DeleteDSL deleteFrom(SqlTable table, String tableAlias) {
         return DeleteDSL.deleteFrom(table, tableAlias);
     }
 
@@ -234,19 +228,19 @@ public interface SqlBuilder {
         return new InsertIntoNextStep(table);
     }
 
-    static QueryExpressionDSL<SelectModel> select(BasicColumn... selectList) {
+    static SelectDSL select(BasicColumn... selectList) {
         return select(Arrays.asList(selectList));
     }
 
-    static QueryExpressionDSL<SelectModel> select(Collection<? extends BasicColumn> selectList) {
+    static SelectDSL select(Collection<? extends BasicColumn> selectList) {
         return SelectDSL.select(selectList);
     }
 
-    static QueryExpressionDSL<SelectModel> selectDistinct(BasicColumn... selectList) {
+    static SelectDSL selectDistinct(BasicColumn... selectList) {
         return selectDistinct(Arrays.asList(selectList));
     }
 
-    static QueryExpressionDSL<SelectModel> selectDistinct(Collection<? extends BasicColumn> selectList) {
+    static SelectDSL selectDistinct(Collection<? extends BasicColumn> selectList) {
         return SelectDSL.selectDistinct(selectList);
     }
 
@@ -254,11 +248,11 @@ public interface SqlBuilder {
         return new MultiSelectDSL(selectModelBuilder);
     }
 
-    static UpdateDSL<UpdateModel> update(SqlTable table) {
+    static UpdateDSL update(SqlTable table) {
         return UpdateDSL.update(table);
     }
 
-    static UpdateDSL<UpdateModel> update(SqlTable table, String tableAlias) {
+    static UpdateDSL update(SqlTable table, String tableAlias) {
         return UpdateDSL.update(table, tableAlias);
     }
 
@@ -461,32 +455,6 @@ public interface SqlBuilder {
         return ColumnAndConditionCriterion.withColumn(joinColumn)
                 .withCondition(joinCondition)
                 .build();
-    }
-
-    /**
-     * Starting in version 2.0.0, this function is a synonym for {@link SqlBuilder#isEqualTo(BasicColumn)}.
-     *
-     * @param column the column
-     * @param <T> the column type
-     * @return an IsEqualToColumn condition
-     * @deprecated since 2.0.0. Please replace with isEqualTo(column)
-     */
-    @Deprecated(since = "2.0.0", forRemoval = true)
-    static <T> IsEqualToColumn<T> equalTo(BindableColumn<T> column) {
-        return isEqualTo(column);
-    }
-
-    /**
-     * Starting in version 2.0.0, this function is a synonym for {@link SqlBuilder#isEqualTo(Object)}.
-     *
-     * @param value the value
-     * @param <T> the column type
-     * @return an IsEqualTo condition
-     * @deprecated since 2.0.0. Please replace with isEqualTo(value)
-     */
-    @Deprecated(since = "2.0.0", forRemoval = true)
-    static <T> IsEqualTo<T> equalTo(T value) {
-        return isEqualTo(value);
     }
 
     // case expressions

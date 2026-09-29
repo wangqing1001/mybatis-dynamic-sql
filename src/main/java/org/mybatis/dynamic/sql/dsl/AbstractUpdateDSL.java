@@ -24,13 +24,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.jspecify.annotations.Nullable;
-import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
-import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.NullCriterion;
-import org.mybatis.dynamic.sql.SortSpecification;
-import org.mybatis.dynamic.sql.SqlColumn;
-import org.mybatis.dynamic.sql.SqlCriterion;
-import org.mybatis.dynamic.sql.SqlTable;
+import org.mybatis.dynamic.sql.*;
 import org.mybatis.dynamic.sql.common.OrderByModel;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.select.SelectModel;

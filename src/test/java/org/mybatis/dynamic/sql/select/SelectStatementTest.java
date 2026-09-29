@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2026 the original author or authors.
+ *    Copyright 2016-2025 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -22,14 +22,12 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.sql.JDBCType;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
-import org.mybatis.dynamic.sql.SortSpecification;
-import org.mybatis.dynamic.sql.SqlColumn;
-import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.exception.NonRenderingWhereClauseException;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
@@ -283,7 +281,7 @@ class SelectStatementTest {
 
     @Test
     void testNotInEmptyList() {
-        List<String> emptyList = List.of();
+        List<String> emptyList = Collections.emptyList();
         SelectModel selectModel = select(column1, column3)
                 .from(table, "a")
                 .where(column3, isNotInWhenPresent(emptyList))
@@ -296,7 +294,7 @@ class SelectStatementTest {
 
     @Test
     void testInWhenPresentEmptyList() {
-        List<String> emptyList = List.of();
+        List<String> emptyList = Collections.emptyList();
         SelectModel selectModel = select(column1, column3)
                 .from(table, "a")
                 .where(column3, isInWhenPresent(emptyList))
@@ -311,7 +309,7 @@ class SelectStatementTest {
     void testInCaseInsensitiveEmptyList() {
         SelectModel selectModel = select(column1, column3)
                 .from(table, "a")
-                .where(column3, isInCaseInsensitiveWhenPresent(List.of()))
+                .where(column3, isInCaseInsensitiveWhenPresent(Collections.emptyList()))
                 .build();
 
         assertThatExceptionOfType(RuntimeException.class).isThrownBy(() ->
@@ -323,7 +321,7 @@ class SelectStatementTest {
     void testInCaseInsensitiveWhenPresentEmptyList() {
         SelectModel selectModel = select(column1, column3)
                 .from(table, "a")
-                .where(column3, isInCaseInsensitiveWhenPresent(List.of()))
+                .where(column3, isInCaseInsensitiveWhenPresent(Collections.emptyList()))
                 .build();
 
         assertThatExceptionOfType(NonRenderingWhereClauseException.class).isThrownBy(() ->
@@ -333,7 +331,7 @@ class SelectStatementTest {
 
     @Test
     void testNotInWhenPresentEmptyList() {
-        List<String> emptyList = List.of();
+        List<String> emptyList = Collections.emptyList();
         SelectModel selectModel = select(column1, column3)
                 .from(table, "a")
                 .where(column3, isNotInWhenPresent(emptyList))
@@ -348,7 +346,7 @@ class SelectStatementTest {
     void testNotInCaseInsensitiveWhenPresentEmptyList() {
         SelectModel selectModel = select(column1, column3)
                 .from(table, "a")
-                .where(column3, isNotInCaseInsensitiveWhenPresent(List.of()))
+                .where(column3, isNotInCaseInsensitiveWhenPresent(Collections.emptyList()))
                 .build();
 
         assertThatExceptionOfType(NonRenderingWhereClauseException.class).isThrownBy(() ->

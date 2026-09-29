@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2026 the original author or authors.
+ *    Copyright 2016-2025 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -19,9 +19,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import org.junit.jupiter.api.Test;
+import org.mybatis.dynamic.sql.dsl.SelectDSL;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
-import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
-import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
 class Issue100Test {
@@ -56,7 +55,7 @@ class Issue100Test {
 
     @Test
     void testSuccessiveBuild01() {
-        QueryExpressionDSL<SelectModel> builder = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
+        SelectDSL builder = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
         builder.join(StudentRegDynamicSqlSupport.studentReg)
@@ -72,7 +71,7 @@ class Issue100Test {
 
     @Test
     void testSuccessiveBuild02() {
-        QueryExpressionDSL<SelectModel> builder = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
+        SelectDSL builder = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
         builder.join(StudentRegDynamicSqlSupport.studentReg)
@@ -90,7 +89,7 @@ class Issue100Test {
 
     @Test
     void testSuccessiveBuild03() {
-        QueryExpressionDSL<SelectModel> builder = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
+        SelectDSL builder = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
         builder.join(StudentRegDynamicSqlSupport.studentReg)
@@ -110,7 +109,7 @@ class Issue100Test {
 
     @Test
     void testSuccessiveBuild04() {
-        QueryExpressionDSL<SelectModel> builder = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
+        SelectDSL builder = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
         builder.join(StudentRegDynamicSqlSupport.studentReg)
@@ -132,7 +131,7 @@ class Issue100Test {
 
     @Test
     void testSuccessiveBuild05() {
-        QueryExpressionDSL<SelectModel> builder = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
+        SelectDSL builder = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
         builder.join(StudentRegDynamicSqlSupport.studentReg)
@@ -156,11 +155,11 @@ class Issue100Test {
 
     @Test
     void testSuccessiveBuild06() {
-        QueryExpressionDSL<SelectModel> builder = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
+        SelectDSL builder = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
         builder.join(StudentRegDynamicSqlSupport.studentReg)
-        .on(StudentDynamicSqlSupport.id, equalTo(StudentRegDynamicSqlSupport.studentid))
+        .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid))
         .where(StudentDynamicSqlSupport.idcard, isEqualTo("fred"))
         .orderBy(StudentDynamicSqlSupport.id)
         .offset(2);
@@ -178,12 +177,12 @@ class Issue100Test {
 
     @Test
     void testSuccessiveBuild07() {
-        QueryExpressionDSL<SelectModel> builder = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
+        SelectDSL builder = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
         builder.join(StudentRegDynamicSqlSupport.studentReg)
         .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid))
-        .where(StudentDynamicSqlSupport.idcard, equalTo("fred"))
+        .where(StudentDynamicSqlSupport.idcard, isEqualTo("fred"))
         .orderBy(StudentDynamicSqlSupport.id)
         .offset(2)
         .fetchFirst(3).rowsOnly();
@@ -202,7 +201,7 @@ class Issue100Test {
 
     @Test
     void testSuccessiveBuild08() {
-        QueryExpressionDSL<SelectModel> builder = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
+        SelectDSL builder = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student);
 
         builder.join(StudentRegDynamicSqlSupport.studentReg)
@@ -224,7 +223,7 @@ class Issue100Test {
 
     @Test
     void test3() {
-        QueryExpressionDSL<SelectModel>.JoinSpecificationFinisher on = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
+        SelectDSL.JoinSpecificationFinisher on = select(StudentDynamicSqlSupport.id, StudentDynamicSqlSupport.name, StudentDynamicSqlSupport.idcard)
                 .from(StudentDynamicSqlSupport.student)
                 .join(StudentRegDynamicSqlSupport.studentReg)
                 .on(StudentDynamicSqlSupport.id, isEqualTo(StudentRegDynamicSqlSupport.studentid));

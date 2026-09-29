@@ -40,7 +40,7 @@ public class WhereModel extends AbstractBooleanExpressionModel {
         }
 
         @Override
-        protected Builder getThis() {
+        protected Builder self() {
             return this;
         }
     }

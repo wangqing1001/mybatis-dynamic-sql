@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2026 the original author or authors.
+ *    Copyright 2016-2025 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -30,12 +30,22 @@ sealed class KIsLikeEscape<T : Any>(
 
     override fun operator(): String = "like"
 
+
+
+
     override fun renderCondition(
         renderingContext: RenderingContext,
         leftColumn: BindableColumn<T>
     ): FragmentAndParameters = with(super.renderCondition(renderingContext, leftColumn)) {
+        val a = escapeCharacter?.let { mapFragment { "$it ESCAPE '$escapeCharacter'" } }
+
+
         escapeCharacter?.let { mapFragment { "$it ESCAPE '$escapeCharacter'" } } ?: this
     }
+
+
+
+
 
     override fun filter(predicate: Predicate<in T>): KIsLikeEscape<T> =
         filterSupport(predicate, EmptyIsLikeEscape::empty, this)
@@ -55,10 +65,13 @@ private class ConcreteIsLikeEscape<T: Any>(
 ) : KIsLikeEscape<T>(value, escapeCharacter)
 
 private class EmptyIsLikeEscape : KIsLikeEscape<Any>(-1) {
-    override fun isEmpty(): Boolean = true
 
     override fun value(): Any {
         throw NoSuchElementException("No value present")
+    }
+
+    override fun isEmpty(): Boolean {
+        return true
     }
 
     companion object {

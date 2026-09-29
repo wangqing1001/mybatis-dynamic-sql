@@ -15,14 +15,11 @@
  */
 package examples.paging;
 
-import static examples.animal.data.AnimalDataDynamicSqlSupport.*;
 
 import java.util.List;
 
 import org.apache.ibatis.annotations.Arg;
 import org.apache.ibatis.annotations.SelectProvider;
-import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
-import org.mybatis.dynamic.sql.select.SelectDSL;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 
@@ -37,15 +34,5 @@ public interface LimitAndOffsetMapper {
     @Arg(column = "body_weight", javaType = double.class)
     List<AnimalData> selectMany(SelectStatementProvider selectStatement);
 
-    default QueryExpressionDSL<LimitAndOffsetAdapter<List<AnimalData>>> selectWithLimitAndOffset(int limit, int offset) {
-        return SelectDSL.select(selectModel -> LimitAndOffsetAdapter.of(selectModel, this::selectMany, limit, offset),
-                id, animalName, brainWeight, bodyWeight)
-                .from(animalData);
-    }
 
-    default QueryExpressionDSL<LimitAndOffsetAdapter<List<AnimalData>>> selectDistinctWithLimitAndOffset(int limit, int offset) {
-        return SelectDSL.selectDistinct(selectModel -> LimitAndOffsetAdapter.of(selectModel, this::selectMany, limit, offset),
-                        id, animalName, brainWeight, bodyWeight)
-                .from(animalData);
-    }
 }

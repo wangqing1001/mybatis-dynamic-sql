@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2026 the original author or authors.
+ *    Copyright 2016-2025 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package org.mybatis.dynamic.sql.where.condition;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -29,7 +29,7 @@ import org.mybatis.dynamic.sql.util.Validator;
 public class IsNotInCaseInsensitive<T> extends AbstractListValueCondition<T>
         implements CaseInsensitiveRenderableCondition<T>, AbstractListValueCondition.Filterable<T>,
         AbstractListValueCondition.Mappable<T> {
-    private static final IsNotInCaseInsensitive<?> EMPTY = new IsNotInCaseInsensitive<>(List.of());
+    private static final IsNotInCaseInsensitive<?> EMPTY = new IsNotInCaseInsensitive<>(Collections.emptyList());
 
     public static <T> IsNotInCaseInsensitive<T> empty() {
         @SuppressWarnings("unchecked")
@@ -43,7 +43,8 @@ public class IsNotInCaseInsensitive<T> extends AbstractListValueCondition<T>
 
     @Override
     public boolean shouldRender(RenderingContext renderingContext) {
-        Validator.assertNotEmpty(values, "ERROR.44", "IsNotInCaseInsensitive"); //$NON-NLS-1$ //$NON-NLS-2$
+
+        Validator.assertNotEmpty(getValues(), "ERROR.44", "IsNotInCaseInsensitive"); //$NON-NLS-1$ //$NON-NLS-2$
         return true;
     }
 

@@ -15,10 +15,10 @@
  */
 package org.mybatis.dynamic.sql.dsl;
 
+import org.mybatis.dynamic.sql.SortSpecification;
+
 import java.util.Arrays;
 import java.util.Collection;
-
-import org.mybatis.dynamic.sql.SortSpecification;
 
 public interface OrderByOperations<T> {
     default T orderBy(SortSpecification... columns) {

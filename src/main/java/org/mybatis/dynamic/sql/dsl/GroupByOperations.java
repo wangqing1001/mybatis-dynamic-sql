@@ -15,10 +15,10 @@
  */
 package org.mybatis.dynamic.sql.dsl;
 
+import org.mybatis.dynamic.sql.BasicColumn;
+
 import java.util.Arrays;
 import java.util.Collection;
-
-import org.mybatis.dynamic.sql.BasicColumn;
 
 public interface GroupByOperations<T> {
     default T groupBy(BasicColumn... columns) {

@@ -30,6 +30,7 @@ import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -46,8 +47,6 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.exception.NonRenderingWhereClauseException;
 import org.mybatis.dynamic.sql.insert.render.BatchInsert;
@@ -55,7 +54,7 @@ import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
-import org.mybatis.dynamic.sql.select.SelectDSLCompleter;
+import org.mybatis.dynamic.sql.dsl.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
@@ -677,7 +676,7 @@ class AnimalDataTest {
     void testInConditionWithEmptyList() {
         SelectModel selectModel = select(id, animalName, bodyWeight, brainWeight)
                 .from(animalData)
-                .where(id, isInWhenPresent(List.of()))
+                .where(id, isInWhenPresent(Collections.emptyList()))
                 .build();
 
         assertThatExceptionOfType(NonRenderingWhereClauseException.class).isThrownBy(() ->

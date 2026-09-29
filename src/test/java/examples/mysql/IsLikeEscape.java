@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2026 the original author or authors.
+ *    Copyright 2016-2025 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -20,13 +20,12 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.jspecify.annotations.Nullable;
-import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
-import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
 public class IsLikeEscape<T> extends AbstractSingleValueCondition<T>
         implements AbstractSingleValueCondition.Filterable<T>, AbstractSingleValueCondition.Mappable<T> {
+
     private static final IsLikeEscape<?> EMPTY = new IsLikeEscape<Object>(-1, null) {
         @Override
         public Object value() {
@@ -34,12 +33,12 @@ public class IsLikeEscape<T> extends AbstractSingleValueCondition<T>
         }
 
         @Override
-        public boolean isEmpty() {
+        public boolean empty() {
             return true;
         }
     };
 
-    public static <T> IsLikeEscape<T> empty() {
+    public static <T> IsLikeEscape<T> empty1() {
         @SuppressWarnings("unchecked")
         IsLikeEscape<T> t = (IsLikeEscape<T>) EMPTY;
         return t;
@@ -73,12 +72,12 @@ public class IsLikeEscape<T> extends AbstractSingleValueCondition<T>
 
     @Override
     public IsLikeEscape<T> filter(Predicate<? super T> predicate) {
-        return filterSupport(predicate, IsLikeEscape::empty, this);
+        return filterSupport(predicate, IsLikeEscape::empty1, this);
     }
 
     @Override
     public <R> IsLikeEscape<R> map(Function<? super T, ? extends R> mapper) {
-        return mapSupport(mapper, v -> new IsLikeEscape<>(v, escapeCharacter), IsLikeEscape::empty);
+        return mapSupport(mapper, v -> new IsLikeEscape<>(v, escapeCharacter), IsLikeEscape::empty1);
     }
 
     public static <T> IsLikeEscape<T> isLike(T value) {

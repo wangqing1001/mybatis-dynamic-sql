@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2026 the original author or authors.
+ *    Copyright 2016-2025 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,15 +15,16 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
+import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
+
 import java.util.NoSuchElementException;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import org.mybatis.dynamic.sql.AbstractTwoValueCondition;
-
 public class IsBetween<T> extends AbstractTwoValueCondition<T>
         implements AbstractTwoValueCondition.Filterable<T>, AbstractTwoValueCondition.Mappable<T> {
+
     private static final IsBetween<?> EMPTY = new IsBetween<Object>(-1, -1) {
         @Override
         public Object value1() {

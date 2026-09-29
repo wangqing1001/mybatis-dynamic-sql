@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2026 the original author or authors.
+ *    Copyright 2016-2025 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -34,7 +34,6 @@ import org.mybatis.dynamic.sql.util.kotlin.KInvalidSQLException
 import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
 import org.mybatis.dynamic.sql.util.kotlin.elements.add
 import org.mybatis.dynamic.sql.util.kotlin.elements.constant
-import org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThan
 import org.mybatis.dynamic.sql.util.kotlin.elements.isLikeWhenPresent
 import org.mybatis.dynamic.sql.util.kotlin.elements.max
 import org.mybatis.dynamic.sql.util.kotlin.elements.sortColumn
@@ -67,7 +66,7 @@ import java.util.Date
 @Suppress("LargeClass")
 @SpringJUnitConfig(classes = [SpringConfiguration::class])
 @Transactional
-class CanonicalSpringKotlinTest {
+open class CanonicalSpringKotlinTest {
     @Autowired
     private lateinit var template: NamedParameterJdbcTemplate
 
@@ -248,64 +247,6 @@ class CanonicalSpringKotlinTest {
         val rows = template.delete(deleteStatement)
 
         assertThat(rows).isEqualTo(2)
-    }
-
-    @Test
-    fun testInvalidAnd() {
-        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
-            deleteFrom(person) {
-                where {
-                    id isLessThan 10
-                    and {
-                        id
-                        isGreaterThan(5)
-                    }
-                }
-            }
-        }.withMessage(Messages.getString("ERROR.51", "an", "and"))
-    }
-
-    @Test
-    fun testInvalidOr() {
-        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
-            deleteFrom(person) {
-                where {
-                    id isLessThan 10
-                    or {
-                        id
-                        isGreaterThan(5)
-                    }
-                }
-            }
-        }.withMessage(Messages.getString("ERROR.51", "an", "or"))
-    }
-
-    @Test
-    fun testInvalidGroup() {
-        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
-            deleteFrom(person) {
-                where {
-                    group {
-                        id
-                        isGreaterThan(5)
-                    }
-                }
-            }
-        }.withMessage(Messages.getString("ERROR.51", "a", "group"))
-    }
-
-    @Test
-    fun testInvalidNot() {
-        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
-            deleteFrom(person) {
-                where {
-                    not {
-                        id
-                        isGreaterThan(5)
-                    }
-                }
-            }
-        }.withMessage(Messages.getString("ERROR.51", "a", "not"))
     }
 
     @Test

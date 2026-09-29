@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2026 the original author or authors.
+ *    Copyright 2016-2025 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -15,11 +15,11 @@
  */
 package org.mybatis.dynamic.sql.where.condition;
 
+import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
+
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.function.Predicate;
-
-import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 
 public class IsNotEqualTo<T> extends AbstractSingleValueCondition<T>
         implements AbstractSingleValueCondition.Filterable<T>, AbstractSingleValueCondition.Mappable<T> {

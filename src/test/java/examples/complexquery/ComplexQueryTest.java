@@ -24,9 +24,8 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
+import org.mybatis.dynamic.sql.dsl.SelectDSL;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
-import org.mybatis.dynamic.sql.select.QueryExpressionDSL;
-import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
 class ComplexQueryTest {
@@ -107,7 +106,7 @@ class ComplexQueryTest {
     }
 
     SelectStatementProvider search(@Nullable Integer targetId, @Nullable String fName, @Nullable String lName) {
-        QueryExpressionDSL<SelectModel>.QueryExpressionWhereBuilder builder = select(id, firstName, lastName)
+        SelectDSL.QueryExpressionWhereBuilder builder = select(id, firstName, lastName)
                 .from(person)
                 .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
                 .where();

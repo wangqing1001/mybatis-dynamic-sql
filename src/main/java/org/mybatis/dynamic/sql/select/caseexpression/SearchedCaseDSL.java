@@ -20,13 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.jspecify.annotations.Nullable;
-import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
-import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.BindableColumn;
-import org.mybatis.dynamic.sql.ColumnAndConditionCriterion;
-import org.mybatis.dynamic.sql.CriteriaGroup;
-import org.mybatis.dynamic.sql.RenderableCondition;
-import org.mybatis.dynamic.sql.SqlCriterion;
+import org.mybatis.dynamic.sql.*;
 import org.mybatis.dynamic.sql.dsl.BooleanOperations;
 
 public class SearchedCaseDSL implements ElseDSL<SearchedCaseDSL.SearchedCaseEnder> {

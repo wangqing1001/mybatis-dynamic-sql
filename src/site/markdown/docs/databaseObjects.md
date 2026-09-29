@@ -33,7 +33,7 @@ We recommend using the base class `AliasableSqlTable` in all cases as it provide
 For example:
 
 ```java
-import org.mybatis.dynamic.sql.AliasableSqlTable;
+
 
 public class MyTable extends AliasableSqlTable<MyTable> {
     public MyTable() {

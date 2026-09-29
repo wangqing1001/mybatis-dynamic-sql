@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2026 the original author or authors.
+ *    Copyright 2016-2025 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -102,12 +102,19 @@ public class ValuePhraseVisitor extends InsertMappingVisitor<Optional<FieldAndVa
     }
 
     private String calculateJdbcPlaceholder(SqlColumn<?> column) {
-        return column.renderingStrategy().orElse(renderingStrategy)
-                .getRecordBasedInsertBinding(column, "row"); //$NON-NLS-1$
+        RenderingStrategy renderingStrategy = column.renderingStrategy();
+        if(renderingStrategy==null){
+            renderingStrategy = this.renderingStrategy;
+        }
+
+        return renderingStrategy.getRecordBasedInsertBinding(column, "row"); //$NON-NLS-1$
     }
 
     private String calculateJdbcPlaceholder(SqlColumn<?> column, String parameterName) {
-        return column.renderingStrategy().orElse(renderingStrategy)
-                .getRecordBasedInsertBinding(column, "row", parameterName); //$NON-NLS-1$
+        RenderingStrategy renderingStrategy = column.renderingStrategy();
+        if(renderingStrategy==null){
+            renderingStrategy = this.renderingStrategy;
+        }
+        return renderingStrategy.getRecordBasedInsertBinding(column, "row", parameterName); //$NON-NLS-1$
     }
 }

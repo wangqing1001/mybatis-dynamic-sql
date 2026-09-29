@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2026 the original author or authors.
+ *    Copyright 2016-2025 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -19,11 +19,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 import static org.mybatis.dynamic.sql.subselect.FooDynamicSqlSupport.*;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-import org.mybatis.dynamic.sql.AndOrCriteriaGroup;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
@@ -31,7 +31,7 @@ class NoInitialConditionTest {
 
     @Test
     void testNoInitialConditionEmptyList() {
-        List<AndOrCriteriaGroup> criteria = List.of();
+        List<AndOrCriteriaGroup> criteria = Collections.emptyList();
 
         SelectStatementProvider selectStatement = buildSelectStatement(criteria);
 

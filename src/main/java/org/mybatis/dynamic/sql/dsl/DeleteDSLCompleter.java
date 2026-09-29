@@ -18,7 +18,6 @@ package org.mybatis.dynamic.sql.dsl;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 
-import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;

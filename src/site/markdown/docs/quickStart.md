@@ -66,9 +66,6 @@ package examples.simple;
 import java.sql.JDBCType;
 import java.util.Date;
 
-import org.mybatis.dynamic.sql.SqlColumn;
-import org.mybatis.dynamic.sql.AliasableSqlTable;
-
 public final class PersonDynamicSqlSupport {
     public static final Person person = new Person();
     public static final SqlColumn<Integer> id = person.id;

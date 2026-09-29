@@ -15,6 +15,7 @@
  */
 package examples.simple;
 
+import org.jspecify.annotations.NonNull;
 import org.mybatis.dynamic.sql.ParameterTypeConverter;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.render.RenderingStrategy;
@@ -99,8 +100,9 @@ public class PrimaryKeyColumn<T> extends SqlColumn<T> {
             return new PrimaryKeyColumn<>(this);
         }
 
+
         @Override
-        protected Builder<T> getThis() {
+        protected @NonNull Builder<T> self() {
             return this;
         }
     }

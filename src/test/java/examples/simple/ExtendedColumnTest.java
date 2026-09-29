@@ -1,5 +1,5 @@
 /*
- *    Copyright 2016-2026 the original author or authors.
+ *    Copyright 2016-2025 the original author or authors.
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -18,8 +18,6 @@ package examples.simple;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
-import org.mybatis.dynamic.sql.ParameterTypeConverter;
-import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 
 class ExtendedColumnTest {
@@ -43,7 +41,7 @@ class ExtendedColumnTest {
     void testPropagatedAlias() {
         var baz = bar.as("fred");
 
-        assertThat(baz.alias()).hasValue("fred");
+        assertThat(baz.alias()).isEqualTo("fred");
         assertThat(baz.isPrimaryKeyColumn()).isTrue();
     }
 
@@ -65,15 +63,14 @@ class ExtendedColumnTest {
     void testPropagatedWithTypeHandler() {
         var baz = bar.withTypeHandler("barney");
 
-        assertThat(baz.typeHandler()).hasValue("barney");
+        assertThat(baz.typeHandler()).isNotNull().isEqualTo("barney");
         assertThat(baz.isPrimaryKeyColumn()).isTrue();
     }
 
     @Test
     void testPropagatedRenderingStrategy() {
         var baz = bar.withRenderingStrategy(RenderingStrategies.MYBATIS3);
-
-        assertThat(baz.renderingStrategy()).hasValue(RenderingStrategies.MYBATIS3);
+        assertThat(baz.renderingStrategy()).isEqualTo(RenderingStrategies.MYBATIS3);
         assertThat(baz.isPrimaryKeyColumn()).isTrue();
     }
 
@@ -88,8 +85,7 @@ class ExtendedColumnTest {
     @Test
     void testPropagatedJavaType() {
         var baz = bar.withJavaType(Integer.class);
-
-        assertThat(baz.javaType()).hasValue(Integer.class);
+        assertThat(baz.javaType()).isNotNull().isEqualTo(Integer.class);
         assertThat(baz.isPrimaryKeyColumn()).isTrue();
     }
 
@@ -113,11 +109,11 @@ class ExtendedColumnTest {
                 .withJavaType(Integer.class)
                 .withJavaProperty("id");
 
-        assertThat(baz.alias()).hasValue("\"firstName\"");
-        assertThat(baz.typeHandler()).hasValue("barney");
-        assertThat(baz.renderingStrategy()).hasValue(RenderingStrategies.MYBATIS3);
+        assertThat(baz.alias()).isEqualTo("\"firstName\"");
+        assertThat(baz.typeHandler()).isNotNull().isEqualTo("barney");
+        assertThat(baz.renderingStrategy()).isEqualTo(RenderingStrategies.MYBATIS3);
         assertThat(baz.convertParameterType(11)).isEqualTo("11");
-        assertThat(baz.javaType()).hasValue(Integer.class);
+        assertThat(baz.javaType()).isEqualTo(Integer.class);
         assertThat(baz.javaProperty()).hasValue("id");
         assertThat(baz.isPrimaryKeyColumn()).isTrue();
     }
