@@ -205,7 +205,7 @@ class KMariaDBTest {
             where {
                 description(isLike("%fred%", '#').filter { _ -> false })
             }
-            configureStatement { isNonRenderingWhereClauseAllowed = true }
+            configureStatement { nonRenderingWhereClauseAllowed( true) }
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo("select id, description from items")
@@ -222,7 +222,7 @@ class KMariaDBTest {
                     .map { s -> s.uppercase(Locale.getDefault()) }
                     .filter{_ -> false })
             }
-            configureStatement { isNonRenderingWhereClauseAllowed = true }
+            configureStatement { nonRenderingWhereClauseAllowed( true) }
         }
 
         assertThat(selectStatement.selectStatement).isEqualTo("select id, description from items")

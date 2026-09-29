@@ -62,6 +62,6 @@ abstract class AbstractNoValueCondition<T> : RenderableCondition<T> {
          * @return this condition if renderable and the supplier returns true, otherwise a condition that will not
          * render.
         </S> */
-        fun <S> filter(booleanSupplier: BooleanSupplier?): AbstractNoValueCondition<S>
+        fun <S> filter(booleanSupplier: BooleanSupplier): AbstractNoValueCondition<S>
     }
 }

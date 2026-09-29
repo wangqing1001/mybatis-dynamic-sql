@@ -48,6 +48,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.exception.NonRenderingWhereClauseException;
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
@@ -737,7 +738,7 @@ class PersonMapperTest {
 
             SelectStatementProvider selectStatement = countFrom(person, "p")
                     .join(address, "a").on(person.id, isEqualTo(address.id))
-                    .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                    .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
 

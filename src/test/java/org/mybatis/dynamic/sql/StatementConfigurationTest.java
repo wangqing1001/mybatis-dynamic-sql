@@ -52,7 +52,7 @@ class StatementConfigurationTest {
     void testCountWhereCalledButNoCriteriaRequiresConfiguration() {
         SelectStatementProvider selectStatement = countFrom(person)
                 .where()
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -83,7 +83,7 @@ class StatementConfigurationTest {
     void testDeleteWhereCalledButNoCriteriaRequiresConfiguration() {
         DeleteStatementProvider deleteStatement = deleteFrom(person)
                 .where()
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -116,7 +116,7 @@ class StatementConfigurationTest {
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
                 .where()
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -152,7 +152,7 @@ class StatementConfigurationTest {
         UpdateStatementProvider updateStatement = update(person)
                 .set(id).equalTo(1)
                 .where()
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 

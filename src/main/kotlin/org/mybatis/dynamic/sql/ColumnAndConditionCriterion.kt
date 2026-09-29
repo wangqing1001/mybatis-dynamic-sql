@@ -16,7 +16,7 @@
 package org.mybatis.dynamic.sql
 
 
-class ColumnAndConditionCriterion<T: Any> private constructor(builder: Builder<T>) : SqlCriterion(builder) {
+class ColumnAndConditionCriterion<T>(builder: Builder<T>) : SqlCriterion(builder) {
 
     private val column: BindableColumn<T>
     private val condition: RenderableCondition<T>
@@ -38,7 +38,7 @@ class ColumnAndConditionCriterion<T: Any> private constructor(builder: Builder<T
         return visitor.visit(this)
     }
 
-    class Builder<T: Any> : AbstractBuilder<Builder<T>>() {
+    class Builder<T> : AbstractBuilder<Builder<T>>() {
         lateinit var column: BindableColumn<T>
         lateinit var condition: RenderableCondition<T>
 
@@ -64,7 +64,7 @@ class ColumnAndConditionCriterion<T: Any> private constructor(builder: Builder<T
     companion object {
 
         @JvmStatic
-        fun <T: Any> withColumn(column: BindableColumn<T>): Builder<T> {
+        fun <T> withColumn(column: BindableColumn<T>): Builder<T> {
             return Builder<T>().withColumn(column)
         }
 

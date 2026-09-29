@@ -14,6 +14,8 @@
  *    limitations under the License.
  */
 package examples.spring;
+import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlTable;
 
 public final class AddressDynamicSqlSupport {
     public static final Address address = new Address();

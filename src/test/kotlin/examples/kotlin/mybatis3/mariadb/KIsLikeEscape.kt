@@ -22,7 +22,7 @@ import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
 
-sealed class KIsLikeEscape<T : Any>(
+sealed class KIsLikeEscape<T>(
     value: T,
     private val escapeCharacter: Char? = null
 ) : AbstractSingleValueCondition<T>(value), AbstractSingleValueCondition.Filterable<T>,
@@ -50,16 +50,16 @@ sealed class KIsLikeEscape<T : Any>(
     override fun filter(predicate: Predicate<in T>): KIsLikeEscape<T> =
         filterSupport(predicate, EmptyIsLikeEscape::empty, this)
 
-    override fun <R : Any> map(mapper : Function<in T, out R>): KIsLikeEscape<R> =
+    override fun <R> map(mapper : Function<in T, out R>): KIsLikeEscape<R> =
         mapSupport(mapper, { r -> ConcreteIsLikeEscape(r, escapeCharacter) }, EmptyIsLikeEscape::empty)
 
     companion object {
-        fun <T: Any> isLike(value: T, escapeCharacter: Char? = null) : KIsLikeEscape<T> =
+        fun <T> isLike(value: T, escapeCharacter: Char? = null) : KIsLikeEscape<T> =
             ConcreteIsLikeEscape(value, escapeCharacter)
     }
 }
 
-private class ConcreteIsLikeEscape<T: Any>(
+private class ConcreteIsLikeEscape<T>(
     value: T,
     escapeCharacter: Char? = null
 ) : KIsLikeEscape<T>(value, escapeCharacter)
@@ -78,6 +78,6 @@ private class EmptyIsLikeEscape : KIsLikeEscape<Any>(-1) {
         private val EMPTY: KIsLikeEscape<Any> = EmptyIsLikeEscape()
 
         @Suppress("UNCHECKED_CAST")
-        fun <T : Any> empty(): KIsLikeEscape<T> = EMPTY as KIsLikeEscape<T>
+        fun <T> empty(): KIsLikeEscape<T> = EMPTY as KIsLikeEscape<T>
     }
 }

@@ -22,7 +22,7 @@ import org.mybatis.dynamic.sql.util.StringUtilities
 import java.util.function.*
 import java.util.function.Function
 
-abstract class AbstractTwoValueCondition<T : Any>(
+abstract class AbstractTwoValueCondition<T>(
     protected val value1: T,
     protected val value2: T
 ) : RenderableCondition<T> {
@@ -103,7 +103,7 @@ abstract class AbstractTwoValueCondition<T : Any>(
      *
      * @param <T> the Java type related to the database column type
     </T> */
-    interface Filterable<T : Any> {
+    interface Filterable<T> {
         /**
          * If renderable and the values match the predicate, returns this condition. Else returns a condition
          * that will not render.
@@ -152,7 +152,7 @@ abstract class AbstractTwoValueCondition<T : Any>(
          * @return a new condition with the result of applying the mappers to the values of this condition,
          * if renderable, otherwise a condition that will not render.
         </R> */
-        fun <R : Any> map(
+        fun <R> map(
             mapper1: Function<in T, out R>,
             mapper2: Function<in T, out R>
         ): AbstractTwoValueCondition<R>
@@ -166,6 +166,6 @@ abstract class AbstractTwoValueCondition<T : Any>(
          * @return a new condition with the result of applying the mappers to the values of this condition,
          * if renderable, otherwise a condition that will not render.
         </R> */
-        fun <R : Any> map(mapper: Function<in T, out R>): AbstractTwoValueCondition<R>
+        fun <R> map(mapper: Function<in T, out R>): AbstractTwoValueCondition<R>
     }
 }

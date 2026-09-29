@@ -15,6 +15,8 @@
  */
 package examples.mysql;
 
+import org.mybatis.dynamic.sql.AbstractNoValueCondition;
+
 import java.util.Objects;
 
 public class MemberOfCondition<T> extends AbstractNoValueCondition<T> {

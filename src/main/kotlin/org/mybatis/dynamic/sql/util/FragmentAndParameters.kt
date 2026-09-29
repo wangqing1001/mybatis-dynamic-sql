@@ -21,7 +21,7 @@ import java.util.function.UnaryOperator
 class FragmentAndParameters private constructor(builder: Builder) {
 
     private val fragment: String
-    private val parameters: MutableMap<String, Any>
+    private val parameters: MutableMap<String, Any?>
 
     init {
         fragment = builder.fragment
@@ -32,7 +32,7 @@ class FragmentAndParameters private constructor(builder: Builder) {
         return fragment
     }
 
-    fun parameters(): MutableMap<String, Any> {
+    fun parameters(): MutableMap<String, Any?> {
         return parameters
     }
 

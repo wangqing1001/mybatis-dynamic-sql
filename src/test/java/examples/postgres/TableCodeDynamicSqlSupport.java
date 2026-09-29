@@ -16,6 +16,8 @@
 package examples.postgres;
 
 import java.sql.JDBCType;
+import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlTable;
 
 public final class TableCodeDynamicSqlSupport {
     public static final TableCode tableCode = new TableCode();

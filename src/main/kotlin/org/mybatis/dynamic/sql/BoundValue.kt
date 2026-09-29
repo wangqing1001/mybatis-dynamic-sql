@@ -39,7 +39,7 @@ import java.util.*
  * @param <T> the column type
  * @since 1.5.1
 </T> */
-class BoundValue<T: Any> private constructor(private val value: T) : BindableColumn<T> {
+class BoundValue<T> private constructor(private val value: T) : BindableColumn<T> {
 
 
     override fun render(renderingContext: RenderingContext): FragmentAndParameters {
@@ -59,7 +59,7 @@ class BoundValue<T: Any> private constructor(private val value: T) : BindableCol
 
     companion object {
         @JvmStatic
-        fun <T : Any> of(value: T): BoundValue<T> {
+        fun <T> of(value: T): BoundValue<T> {
             return BoundValue(value)
         }
     }

@@ -118,7 +118,7 @@ open class SpringKotlinSubQueryTest {
         val personId = DerivedColumn.of<Int>("personId", "b")
 
         val selectStatement =
-            select(outerFirstName.asCamelCase(), personId, rowNum `as` "myRows") {
+            select(outerFirstName.asCamelCase(), personId, rowNum.`as`( "myRows") ) {
                 from {
                     select(id `as` "personId", firstName) {
                         from(person, "a")

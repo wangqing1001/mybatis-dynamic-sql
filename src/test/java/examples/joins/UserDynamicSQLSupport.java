@@ -17,6 +17,9 @@ package examples.joins;
 
 import java.sql.JDBCType;
 
+import org.mybatis.dynamic.sql.AliasableSqlTable;
+import org.mybatis.dynamic.sql.SqlColumn;
+
 public class UserDynamicSQLSupport {
     public static final User user = new User();
     public final SqlColumn<Integer> userId = user.userId;

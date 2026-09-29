@@ -15,6 +15,9 @@
  */
 package examples.spring;
 
+import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlTable;
+
 import java.util.Date;
 
 public final class PersonDynamicSqlSupport {

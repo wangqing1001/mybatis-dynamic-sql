@@ -14,7 +14,8 @@
  *    limitations under the License.
  */
 package examples.complexquery;
-
+import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlTable;
 public final class PersonDynamicSqlSupport {
     public static final Person person = new Person();
     public static final SqlColumn<Integer> id = person.id;

@@ -16,6 +16,8 @@
 package examples.mariadb;
 
 import java.sql.JDBCType;
+import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlTable;
 
 public final class ItemsDynamicSQLSupport {
     public static final Items items = new Items();

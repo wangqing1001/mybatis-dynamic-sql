@@ -27,7 +27,6 @@ abstract class SqlCriterion {
         subCriteria.addAll(builder.subCriteria)
     }
 
-
     abstract fun <R> accept(visitor: SqlCriterionVisitor<R>): R
 
 

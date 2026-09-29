@@ -93,7 +93,7 @@ import java.util.*
  *
  * @param <T> the Java type associated with the column
 </T> */
-open class SqlColumn<T: Any> protected constructor(builder: AbstractBuilder<T, *>) : BindableColumn<T>, SortSpecification {
+open class SqlColumn<T> protected constructor(builder: AbstractBuilder<T, *>) : BindableColumn<T>, SortSpecification {
 
     protected val name: String
     protected val table: SqlTable
@@ -295,7 +295,7 @@ open class SqlColumn<T: Any> protected constructor(builder: AbstractBuilder<T, *
      * @param <S> the type of the new column (will be the same as T)
      * @return a new column instance with the specified type handler
     </S> */
-    open fun <S : Any> withJavaType(javaType: Class<S>): SqlColumn<S> {
+    open fun <S> withJavaType(javaType: Class<S>): SqlColumn<S> {
         return cast(copyBuilder().withJavaType(javaType as Class<T>).build())
     }
 
@@ -316,7 +316,7 @@ open class SqlColumn<T: Any> protected constructor(builder: AbstractBuilder<T, *
      * @param <S> the type of the new column (will be the same as T)
      * @return a new column instance with the specified type handler
     </S> */
-    open fun <S : Any> withJavaProperty(javaProperty: String?): SqlColumn<S> {
+    open fun <S> withJavaProperty(javaProperty: String?): SqlColumn<S> {
         return cast<SqlColumn<S>>(copyBuilder().withJavaProperty(javaProperty).build())
     }
 
@@ -362,7 +362,7 @@ open class SqlColumn<T: Any> protected constructor(builder: AbstractBuilder<T, *
     }
 
 
-    abstract class AbstractBuilder<T: Any, B : AbstractBuilder<T, B>> {
+    abstract class AbstractBuilder<T, B : AbstractBuilder<T, B>> {
 
         lateinit var name: String
         lateinit var table: SqlTable
@@ -436,10 +436,10 @@ open class SqlColumn<T: Any> protected constructor(builder: AbstractBuilder<T, *
         abstract fun build(): SqlColumn<T>
     }
 
-    class Builder<T: Any> : AbstractBuilder<T, Builder<T>>() {
+    class Builder<T> : AbstractBuilder<T, Builder<T>>() {
 
         override fun build(): SqlColumn<T> {
-            return SqlColumn<T>(this)
+            return SqlColumn(this)
         }
 
         override fun self(): Builder<T> {
@@ -451,12 +451,12 @@ open class SqlColumn<T: Any> protected constructor(builder: AbstractBuilder<T, *
     companion object {
 
         @JvmStatic
-        fun <T: Any> of(name: String, table: SqlTable): SqlColumn<T> {
+        fun <T> of(name: String, table: SqlTable): SqlColumn<T> {
             return Builder<T>().withName(name).withTable(table).build()
         }
 
         @JvmStatic
-        fun <T: Any> of(name: String, table: SqlTable, jdbcType: JDBCType?): SqlColumn<T> {
+        fun <T> of(name: String, table: SqlTable, jdbcType: JDBCType?): SqlColumn<T> {
             return Builder<T>().withName(name).withTable(table).withJdbcType(jdbcType).build()
         }
 

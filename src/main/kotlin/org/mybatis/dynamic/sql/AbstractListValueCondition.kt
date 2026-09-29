@@ -26,7 +26,7 @@ import java.util.function.Supplier
 import java.util.stream.Collectors
 import java.util.stream.Stream
 
-abstract class AbstractListValueCondition<T: Any> constructor(val values: Collection<T>) : RenderableCondition<T> {
+abstract class AbstractListValueCondition<T>(val values: Collection<T>) : RenderableCondition<T> {
 
     fun values(): Stream<T> {
         return values.stream()
@@ -102,7 +102,7 @@ abstract class AbstractListValueCondition<T: Any> constructor(val values: Collec
      *
      * @param <T> the Java type related to the database column type
     </T> */
-    interface Filterable<T : Any> {
+    interface Filterable<T> {
         /**
          * If renderable and the value matches the predicate, returns this condition. Else returns a condition
          * that will not render.
@@ -138,6 +138,6 @@ abstract class AbstractListValueCondition<T: Any> constructor(val values: Collec
          * @return a new condition with the result of applying the mapper to the value of this condition,
          * if renderable, otherwise a condition that will not render.
         </R> */
-        fun <R : Any> map(mapper: Function<in T, out R>): AbstractListValueCondition<R>
+        fun <R> map(mapper: Function<in T, out R>): AbstractListValueCondition<R>
     }
 }

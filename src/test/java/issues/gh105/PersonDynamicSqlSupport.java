@@ -14,6 +14,8 @@
  *    limitations under the License.
  */
 package issues.gh105;
+import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlTable;
 
 public final class PersonDynamicSqlSupport {
     public static final Person person = new Person();

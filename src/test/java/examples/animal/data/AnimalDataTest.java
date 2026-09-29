@@ -47,6 +47,8 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.exception.NonRenderingWhereClauseException;
 import org.mybatis.dynamic.sql.insert.render.BatchInsert;
@@ -644,7 +646,7 @@ class AnimalDataTest {
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isInWhenPresent(null, 22, null).filter(i -> i != 22))
-                    .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                    .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
 
@@ -740,7 +742,7 @@ class AnimalDataTest {
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(animalName, isNotInCaseInsensitiveWhenPresent((String) null))
-                    .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))                    .build()
+                    .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))                    .build()
                     .render(RenderingStrategies.MYBATIS3);
 
             List<AnimalData> animals = mapper.selectMany(selectStatement);
@@ -756,7 +758,7 @@ class AnimalDataTest {
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(id, isNotInWhenPresent(null, 22, null).filter(i -> i != 22))
-                    .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                    .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
 

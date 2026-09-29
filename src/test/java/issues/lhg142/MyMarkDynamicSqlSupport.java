@@ -15,6 +15,9 @@
  */
 package issues.lhg142;
 
+import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlTable;
+
 import java.time.LocalDateTime;
 
 public final class MyMarkDynamicSqlSupport {

@@ -18,6 +18,8 @@ package examples.type_conversion;
 import java.sql.JDBCType;
 import java.util.Optional;
 
+import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.function.AbstractTypeConvertingFunction;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
@@ -29,19 +31,19 @@ public class ToBase64 extends AbstractTypeConvertingFunction<byte[], String, ToB
     }
 
     @Override
-    public Optional<JDBCType> jdbcType() {
-        return Optional.of(JDBCType.VARCHAR);
+    public JDBCType jdbcType() {
+        return JDBCType.VARCHAR;
     }
 
     @Override
     public FragmentAndParameters render(RenderingContext renderingContext) {
-        return column.render(renderingContext)
+        return getColumn().render(renderingContext)
                 .mapFragment(f -> "TO_BASE64(" + f + ")"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override
     protected ToBase64 copy() {
-        return new ToBase64(column);
+        return new ToBase64(getColumn());
     }
 
     public static ToBase64 toBase64(BindableColumn<byte[]> column) {

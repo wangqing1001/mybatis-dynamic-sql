@@ -17,6 +17,8 @@ package examples.mysql;
 
 import java.util.Objects;
 
+import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.function.AbstractTypeConvertingFunction;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
@@ -32,12 +34,12 @@ public class MemberOfFunction<T> extends AbstractTypeConvertingFunction<T, Long,
 
     @Override
     protected MemberOfFunction<T> copy() {
-        return new MemberOfFunction<>(column, jsonArray);
+        return new MemberOfFunction<>(getColumn(), jsonArray);
     }
 
     @Override
     public FragmentAndParameters render(RenderingContext renderingContext) {
-        return column.render(renderingContext)
+        return getColumn().render(renderingContext)
                 .mapFragment(f -> f + " member of(" + jsonArray + ")");
     }
 

@@ -28,7 +28,7 @@ import org.mybatis.dynamic.sql.util.ValueOrNullMapping
 import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping
 
 @MyBatisDslMarker
-sealed class AbstractInsertColumnMapCompleter<T : Any>(
+sealed class AbstractInsertColumnMapCompleter<T>(
     internal val column: SqlColumn<T>,
     internal val mappingConsumer: (AbstractColumnMapping) -> Unit) {
 
@@ -49,7 +49,7 @@ class MultiRowInsertColumnMapCompleter<T : Any>(
     fun toRow() = mappingConsumer.invoke(RowMapping.of(column))
 }
 
-class SingleRowInsertColumnMapCompleter<T : Any>(
+class SingleRowInsertColumnMapCompleter<T>(
     column: SqlColumn<T>,
     mappingConsumer: (AbstractColumnMapping) -> Unit)
     : AbstractInsertColumnMapCompleter<T>(column, mappingConsumer) {

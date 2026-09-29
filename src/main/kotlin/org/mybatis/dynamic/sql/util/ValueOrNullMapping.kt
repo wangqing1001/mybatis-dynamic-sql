@@ -1,0 +1,52 @@
+/*
+ *    Copyright 2016-2025 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql.util
+
+import org.mybatis.dynamic.sql.SqlColumn
+import java.util.Objects
+import java.util.Optional
+import java.util.function.Supplier
+
+/**
+ * 表示将列映射到值或 null 的映射。
+ */
+class ValueOrNullMapping<T> private constructor(
+    column: SqlColumn<T>,
+    private val valueSupplier: Supplier<T?>
+) : AbstractColumnMapping(column) {
+    // 保留对列的引用,以免丢失类型
+    private val localColumn: SqlColumn<T>
+
+    init {
+        Objects.requireNonNull(valueSupplier)
+        localColumn = Objects.requireNonNull(column)
+    }
+
+    fun value(): Optional<Any> {
+        return Optional.ofNullable(localColumn.convertParameterType(valueSupplier.get()))
+    }
+
+    override fun <R> accept(visitor: ColumnMappingVisitor<R>): R {
+        return visitor.visit(this)
+    }
+
+    companion object {
+        @JvmStatic
+        fun <T> of(column: SqlColumn<T>, valueSupplier: Supplier<T?>): ValueOrNullMapping<T> {
+            return ValueOrNullMapping(column, valueSupplier)
+        }
+    }
+}

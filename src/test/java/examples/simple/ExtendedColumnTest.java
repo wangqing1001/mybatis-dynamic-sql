@@ -18,6 +18,8 @@ package examples.simple;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
+import org.mybatis.dynamic.sql.ParameterTypeConverter;
+import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 
 class ExtendedColumnTest {

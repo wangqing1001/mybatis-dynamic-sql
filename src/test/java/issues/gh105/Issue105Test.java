@@ -91,7 +91,7 @@ class Issue105Test {
                 .from(person)
                 .where(firstName, isLikeWhenPresent((String) null).map(SearchUtils::addWildcards))
                 .and(lastName, isLikeWhenPresent((String) null).map(SearchUtils::addWildcards))
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -520,7 +520,7 @@ class Issue105Test {
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
                 .where(age, isBetweenWhenPresent(1).and((Integer) null).map(i1 -> i1 + 1,  i2 -> i2 + 2))
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -536,7 +536,7 @@ class Issue105Test {
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
                 .where(age, isEqualToWhenPresent((Integer) null).map(i -> i + 1))
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -552,7 +552,7 @@ class Issue105Test {
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
                 .where(age, isGreaterThanOrEqualToWhenPresent((Integer) null).map(i -> i + 1))
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -568,7 +568,7 @@ class Issue105Test {
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
                 .where(age, isGreaterThanWhenPresent((Integer) null).map(i -> i + 1))
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -584,7 +584,7 @@ class Issue105Test {
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
                 .where(age, isLessThanOrEqualToWhenPresent((Integer) null).map(i -> i + 1))
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -600,7 +600,7 @@ class Issue105Test {
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
                 .where(age, isLessThanWhenPresent((Integer) null).map(i -> i + 1))
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -616,7 +616,7 @@ class Issue105Test {
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
                 .where(firstName, isLikeCaseInsensitiveWhenPresent((String) null).map(SearchUtils::addWildcards))
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -632,7 +632,7 @@ class Issue105Test {
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
                 .where(firstName, isLikeWhenPresent((String) null).map(SearchUtils::addWildcards))
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -648,7 +648,7 @@ class Issue105Test {
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
                 .where(age, isNotBetweenWhenPresent((Integer) null).and(10).map(i1 -> i1 + 1,  i2 -> i2 + 2))
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -664,7 +664,7 @@ class Issue105Test {
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
                 .where(age, isNotBetweenWhenPresent(1).and((Integer) null).map(i1 -> i1 + 1,  i2 -> i2 + 2))
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -680,7 +680,7 @@ class Issue105Test {
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
                 .where(age, isNotEqualToWhenPresent((Integer) null).map(i -> i + 1))
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -696,7 +696,7 @@ class Issue105Test {
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
                 .where(firstName, isNotLikeCaseInsensitiveWhenPresent((String) null).map(SearchUtils::addWildcards))
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -712,7 +712,7 @@ class Issue105Test {
         SelectStatementProvider selectStatement = select(id, firstName, lastName)
                 .from(person)
                 .where(firstName, isNotLikeWhenPresent((String) null).map(SearchUtils::addWildcards))
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 

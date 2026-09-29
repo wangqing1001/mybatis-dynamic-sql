@@ -157,7 +157,7 @@ class VariousListConditionsTest {
                     .from(animalData)
                     .where(id, isInWhenPresent(Collections.emptyList()))
                     .orderBy(id)
-                    .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                    .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
 
@@ -181,7 +181,7 @@ class VariousListConditionsTest {
                     .from(animalData)
                     .where(id, isInWhenPresent((Collection<Integer>) null))
                     .orderBy(id)
-                    .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                    .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
 
@@ -259,7 +259,7 @@ class VariousListConditionsTest {
                     .from(animalData)
                     .where(animalName, isInCaseInsensitiveWhenPresent("Fred", "Betty").filter(s -> false))
                     .orderBy(id)
-                    .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                    .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
 
@@ -284,7 +284,7 @@ class VariousListConditionsTest {
                     .from(animalData)
                     .where(animalName, isNotInCaseInsensitiveWhenPresent("Fred", "Betty").filter(s -> false))
                     .orderBy(id)
-                    .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                    .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
 

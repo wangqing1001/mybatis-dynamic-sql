@@ -24,6 +24,7 @@ import java.util.Optional;
 import org.apache.ibatis.annotations.Arg;
 import org.apache.ibatis.annotations.CacheNamespace;
 import org.apache.ibatis.annotations.SelectProvider;
+import org.mybatis.dynamic.sql.BasicColumn;
 import org.mybatis.dynamic.sql.dsl.DeleteDSLCompleter;
 import org.mybatis.dynamic.sql.dsl.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.dsl.UpdateDSLCompleter;

@@ -20,6 +20,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import org.jspecify.annotations.Nullable;
+import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
+import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
@@ -33,9 +35,10 @@ public class IsLikeEscape<T> extends AbstractSingleValueCondition<T>
         }
 
         @Override
-        public boolean empty() {
+        public boolean isEmpty() {
             return true;
         }
+
     };
 
     public static <T> IsLikeEscape<T> empty1() {

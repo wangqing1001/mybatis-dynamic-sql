@@ -889,10 +889,10 @@ class PersonMapperTest {
                     from(person)
                     where { id isGreaterThanOrEqualToWhenPresent null }
                     // following should be ignored in favor of the statement configuration...
-                    configureStatement { isNonRenderingWhereClauseAllowed = false }
+                    configureStatement { nonRenderingWhereClauseAllowed(false)  }
                 }
             }
-            configureStatement { isNonRenderingWhereClauseAllowed = true }
+            configureStatement { nonRenderingWhereClauseAllowed(false) }
         }
 
         val expected = "(select id, first_name from Person where id <= #{parameters.p1,jdbcType=INTEGER}) " +
@@ -921,9 +921,9 @@ class PersonMapperTest {
                 from(person)
                 where { id isGreaterThanOrEqualToWhenPresent null }
                 // following should be ignored in favor of the statement configuration...
-                configureStatement { isNonRenderingWhereClauseAllowed = false }
+                configureStatement { nonRenderingWhereClauseAllowed(false) }
             }
-            configureStatement { isNonRenderingWhereClauseAllowed = true }
+            configureStatement { nonRenderingWhereClauseAllowed(false) }
         }
 
         val expected = "insert into Person " +

@@ -15,6 +15,9 @@
  */
 package issues.gh324;
 
+import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlTable;
+
 import java.sql.JDBCType;
 
 public class NameTableDynamicSqlSupport {

@@ -28,9 +28,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+import org.mybatis.dynamic.sql.SortSpecification;
 import org.mybatis.dynamic.sql.exception.NonRenderingWhereClauseException;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlTable;
 
 class SelectStatementTest {
 
@@ -359,7 +362,7 @@ class SelectStatementTest {
         SelectStatementProvider selectStatement = select(column1, column3)
                 .from(table)
                 .where(column3, isInWhenPresent((Collection<String>) null))
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -371,7 +374,7 @@ class SelectStatementTest {
         SelectStatementProvider selectStatement = select(column1, column3)
                 .from(table)
                 .where(column3, isInCaseInsensitiveWhenPresent((Collection<String>) null))
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -383,7 +386,7 @@ class SelectStatementTest {
         SelectStatementProvider selectStatement = select(column1, column3)
                 .from(table)
                 .where(column3, isNotInWhenPresent((Collection<String>) null))
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -395,7 +398,7 @@ class SelectStatementTest {
         SelectStatementProvider selectStatement = select(column1, column3)
                 .from(table)
                 .where(column3, isNotInCaseInsensitiveWhenPresent((Collection<String>) null))
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 

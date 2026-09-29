@@ -15,6 +15,9 @@
  */
 package examples.generated.always.mybatis;
 
+import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlTable;
+
 import java.sql.JDBCType;
 
 public final class GeneratedAlwaysDynamicSqlSupport {

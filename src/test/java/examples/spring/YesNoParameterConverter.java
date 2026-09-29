@@ -15,6 +15,8 @@
  */
 package examples.spring;
 
+import org.mybatis.dynamic.sql.ParameterTypeConverter;
+
 public class YesNoParameterConverter implements ParameterTypeConverter<Boolean, String> {
 
     @Override

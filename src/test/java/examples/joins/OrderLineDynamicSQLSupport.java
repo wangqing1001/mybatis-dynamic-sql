@@ -16,6 +16,8 @@
 package examples.joins;
 
 import java.sql.JDBCType;
+import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlTable;
 
 public final class OrderLineDynamicSQLSupport {
     public static final OrderLine orderLine = new OrderLine();

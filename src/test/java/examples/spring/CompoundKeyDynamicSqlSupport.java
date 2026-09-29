@@ -15,6 +15,9 @@
  */
 package examples.spring;
 
+import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlTable;
+
 public class CompoundKeyDynamicSqlSupport {
     public static final CompoundKey compoundKey = new CompoundKey();
     public static final SqlColumn<Integer> id1 = compoundKey.id1;

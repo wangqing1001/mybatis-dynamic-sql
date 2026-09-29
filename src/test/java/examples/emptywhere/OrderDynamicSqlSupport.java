@@ -16,6 +16,8 @@
 package examples.emptywhere;
 
 import java.util.Date;
+import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlTable;
 
 public class OrderDynamicSqlSupport {
 

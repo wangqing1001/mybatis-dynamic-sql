@@ -23,7 +23,7 @@ import java.util.function.Function
 import java.util.function.Predicate
 import java.util.function.Supplier
 
-abstract class AbstractSingleValueCondition<T : Any> protected constructor(protected val value: T) : RenderableCondition<T> {
+abstract class AbstractSingleValueCondition<T> protected constructor(protected val value: T) : RenderableCondition<T> {
 
     open fun value(): T {
         return value
@@ -69,7 +69,7 @@ abstract class AbstractSingleValueCondition<T : Any> protected constructor(prote
      *
      * @param <T> the Java type related to the database column type
     </T> */
-    interface Filterable<T : Any> {
+    interface Filterable<T> {
         /**
          * If renderable and the value matches the predicate, returns this condition. Else returns a condition
          * that will not render.
@@ -106,7 +106,7 @@ abstract class AbstractSingleValueCondition<T : Any> protected constructor(prote
          * @return a new condition with the result of applying the mapper to the value of this condition,
          * if renderable, otherwise a condition that will not render.
         </R> */
-        fun <R: Any> map(mapper: Function<in T, out R>): AbstractSingleValueCondition<R>
+        fun <R> map(mapper: Function<in T, out R>): AbstractSingleValueCondition<R>
 
     }
 }

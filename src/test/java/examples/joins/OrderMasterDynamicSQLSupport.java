@@ -17,6 +17,8 @@ package examples.joins;
 
 import java.sql.JDBCType;
 import java.util.Date;
+import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlTable;
 
 public final class OrderMasterDynamicSQLSupport {
     public static final OrderMaster orderMaster = new OrderMaster();

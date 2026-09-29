@@ -15,6 +15,9 @@
  */
 package examples.type_conversion;
 
+import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlTable;
+
 import java.sql.JDBCType;
 
 public final class MyFilesDynamicSqlSupport {

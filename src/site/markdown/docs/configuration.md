@@ -30,7 +30,7 @@ DSL. Consider the following statement:
 ```java
 DeleteStatementProvider deleteStatement = deleteFrom(animalData)
     .where(id, isIn(null, 22, null).filter(Objects::nonNull).filter(i -> i != 22))
-    .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+    .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
     .build()
     .render(RenderingStrategies.MYBATIS3);
 ```

@@ -48,6 +48,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mybatis.dynamic.sql.*;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.dsl.CountDSL;
 import org.mybatis.dynamic.sql.dsl.CountDSLCompleter;
@@ -800,7 +801,7 @@ class PersonMapperV2Test {
 
             SelectStatementProvider selectStatement = CountDSL.countFrom(person, "p")
                     .join(address, "a").on(person.id, isEqualTo(address.id))
-                    .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                    .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
 
@@ -826,7 +827,7 @@ class PersonMapperV2Test {
             SelectStatementProvider selectStatement = CountDSL.countFrom(person, "p")
                     .join(address, "a").on(person.id, isEqualTo(address.id))
                     .applyWhere(whereApplier)
-                    .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                    .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
 
@@ -854,7 +855,7 @@ class PersonMapperV2Test {
 
             var selectStatement = start
                     .or(person.id, isLessThan(4))
-                    .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                    .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
 
@@ -1184,7 +1185,7 @@ class PersonMapperV2Test {
                 .rowsOnly()
                 .nowait()
                 .forUpdate()
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 
@@ -1206,7 +1207,7 @@ class PersonMapperV2Test {
             SelectStatementProvider selectStatement = SelectDSL.select(id, lastName)
                     .from(person)
                     .where(id, isGreaterThan(25))
-                    .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                    .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                     .offset(10)
                     .fetchFirst(10)
                     .rowsOnly()
@@ -1437,7 +1438,7 @@ class PersonMapperV2Test {
         SelectStatementProvider selectStatement = SelectDSL.select(person.id, address.city)
                 .from(person, "p")
                 .join(address, "a").on(person.id, isEqualTo(address.id))
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
 

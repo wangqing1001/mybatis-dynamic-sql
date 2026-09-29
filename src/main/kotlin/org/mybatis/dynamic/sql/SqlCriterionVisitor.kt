@@ -17,7 +17,7 @@ package org.mybatis.dynamic.sql
 
 interface SqlCriterionVisitor<R> {
 
-    fun <T : Any> visit(criterion: ColumnAndConditionCriterion<T>): R
+    fun <T> visit(criterion: ColumnAndConditionCriterion<T>): R
 
     fun visit(criterion: ExistsCriterion): R
 

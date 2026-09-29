@@ -17,6 +17,9 @@ package examples.sharding;
 
 import java.sql.JDBCType;
 
+import org.mybatis.dynamic.sql.AliasableSqlTable;
+import org.mybatis.dynamic.sql.SqlColumn;
+
 public final class TableCodesDynamicSqlSupport {
     public static final TableCodes tableCodes = new TableCodes();
     public static final SqlColumn<Integer> id = tableCodes.id;

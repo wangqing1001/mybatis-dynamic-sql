@@ -24,6 +24,8 @@ import java.sql.JDBCType;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
+import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlTable;
 
 class DeleteStatementTest {
     private static final SqlTable foo = SqlTable.of("foo");

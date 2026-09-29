@@ -18,6 +18,8 @@ package examples.animal.data;
 import java.sql.JDBCType;
 import java.util.Optional;
 
+import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.select.function.AbstractTypeConvertingFunction;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
@@ -28,19 +30,19 @@ public class Length extends AbstractTypeConvertingFunction<Object, Integer, Leng
     }
 
     @Override
-    public Optional<JDBCType> jdbcType() {
-        return Optional.of(JDBCType.INTEGER);
+    public JDBCType jdbcType() {
+        return JDBCType.INTEGER;
     }
 
     @Override
     public FragmentAndParameters render(RenderingContext renderingContext) {
-        return column.render(renderingContext)
+        return getColumn().render(renderingContext)
                 .mapFragment(f -> "length(" + f + ")"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     @Override
     protected Length copy() {
-        return new Length(column);
+        return new Length(getColumn());
     }
 
     public static Length length(BindableColumn<?> column) {

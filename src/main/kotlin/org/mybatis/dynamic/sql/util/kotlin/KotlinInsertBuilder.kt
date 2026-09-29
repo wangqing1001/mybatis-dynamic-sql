@@ -27,7 +27,7 @@ import org.mybatis.dynamic.sql.util.MappedColumnWhenPresentMapping
 typealias KotlinInsertCompleter<T> = KotlinInsertBuilder<T>.() -> Unit
 
 @MyBatisDslMarker
-class KotlinInsertBuilder<T : Any> (private val row: T): Buildable<InsertModel<T>> {
+class KotlinInsertBuilder<T> (private val row: T): Buildable<InsertModel<T>> {
     private var table: SqlTable? = null
     private val columnMappings = mutableListOf<AbstractColumnMapping>()
 
@@ -35,23 +35,22 @@ class KotlinInsertBuilder<T : Any> (private val row: T): Buildable<InsertModel<T
         this.table = table
     }
 
-    fun <C : Any> map(column: SqlColumn<C>) = SingleRowInsertColumnMapCompleter(column) {
+    fun <C> map(column: SqlColumn<C>) = SingleRowInsertColumnMapCompleter(column) {
         columnMappings.add(it)
     }
 
-    fun <C : Any> withMappedColumn(column: SqlColumn<C>) {
+    fun <C> withMappedColumn(column: SqlColumn<C>) {
         columnMappings.add(MappedColumnMapping.of(column))
     }
 
-    fun <C : Any> withMappedColumnWhenPresent(column: SqlColumn<C>, valueSupplier: () -> Any?) {
+    fun <C> withMappedColumnWhenPresent(column: SqlColumn<C>, valueSupplier: () -> Any?) {
         columnMappings.add(MappedColumnWhenPresentMapping.of(column, valueSupplier))
     }
 
     override fun build(): InsertModel<T> {
         assertNotNull(table, "ERROR.25") //$NON-NLS-1$
-        return with(InsertDSL.Builder<T>()) {
-            withRow(row)
-            withTable(table!!)
+        return with(InsertDSL.Builder(row)) {
+            withTable(table)
             withColumnMappings(columnMappings)
             build()
         }.build()

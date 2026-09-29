@@ -15,6 +15,9 @@
  */
 package examples.animal.data;
 
+import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlTable;
+
 import java.sql.JDBCType;
 
 public final class AnimalDataDynamicSqlSupport {

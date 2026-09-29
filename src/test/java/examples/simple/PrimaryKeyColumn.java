@@ -102,7 +102,7 @@ public class PrimaryKeyColumn<T> extends SqlColumn<T> {
 
 
         @Override
-        protected @NonNull Builder<T> self() {
+        protected Builder<T> self() {
             return this;
         }
     }

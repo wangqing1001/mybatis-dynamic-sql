@@ -16,6 +16,8 @@
 package examples.groupby;
 
 import java.sql.JDBCType;
+import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlTable;
 
 public final class Person2DynamicSqlSupport {
     public static final Person2 person2 = new Person2();

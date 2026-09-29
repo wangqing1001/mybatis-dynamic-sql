@@ -27,7 +27,8 @@ import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.dsl.WhereDSL;
 import org.mybatis.dynamic.sql.where.WhereApplier;
-
+import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlTable;
 class OptionalCriterionRenderTest {
     private static final SqlTable person = SqlTable.of("person");
     private static final SqlColumn<Integer> id = person.column("id");
@@ -40,7 +41,7 @@ class OptionalCriterionRenderTest {
         SelectStatementProvider selectStatement = select(person.allColumns())
                 .from(person)
                 .applyWhere(variation.whereApplier)
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 

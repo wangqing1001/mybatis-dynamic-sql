@@ -32,7 +32,7 @@ class GlobalConfigurationTest {
         GlobalConfiguration configuration = new GlobalConfiguration();
         System.clearProperty(GlobalConfiguration.CONFIGURATION_FILE_PROPERTY);
 
-        assertThat(configuration.isIsNonRenderingWhereClauseAllowed()).isTrue();
+        assertThat(configuration.nonRenderingWhereClauseAllowed()).isTrue();
     }
 
     @Test
@@ -41,7 +41,7 @@ class GlobalConfigurationTest {
         GlobalConfiguration configuration = new GlobalConfiguration();
         System.clearProperty(GlobalConfiguration.CONFIGURATION_FILE_PROPERTY);
 
-        assertThat(configuration.isIsNonRenderingWhereClauseAllowed()).isFalse();
+        assertThat(configuration.nonRenderingWhereClauseAllowed()).isFalse();
     }
 
     @Test
@@ -50,7 +50,7 @@ class GlobalConfigurationTest {
         GlobalConfiguration configuration = new GlobalConfiguration();
         System.clearProperty(GlobalConfiguration.CONFIGURATION_FILE_PROPERTY);
 
-        assertThat(configuration.isIsNonRenderingWhereClauseAllowed()).isFalse();
+        assertThat(configuration.nonRenderingWhereClauseAllowed()).isFalse();
     }
 
     @Test

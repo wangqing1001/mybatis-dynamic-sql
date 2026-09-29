@@ -24,6 +24,8 @@ import java.sql.JDBCType;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
+import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlTable;
 
 class UpdateStatementTest {
     private static final SqlTable foo = SqlTable.of("foo");

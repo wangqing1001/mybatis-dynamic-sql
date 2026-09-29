@@ -108,7 +108,7 @@ class ComplexQueryTest {
     SelectStatementProvider search(@Nullable Integer targetId, @Nullable String fName, @Nullable String lName) {
         SelectDSL.QueryExpressionWhereBuilder builder = select(id, firstName, lastName)
                 .from(person)
-                .configureStatement(c -> c.setNonRenderingWhereClauseAllowed(true))
+                .configureStatement(c -> c.nonRenderingWhereClauseAllowed(true))
                 .where();
 
         if (targetId != null) {

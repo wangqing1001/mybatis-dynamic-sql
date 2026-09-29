@@ -16,6 +16,7 @@
 package examples.spring;
 
 import org.jspecify.annotations.Nullable;
+import org.mybatis.dynamic.sql.ParameterTypeConverter;
 import org.springframework.core.convert.converter.Converter;
 
 public class LastNameParameterConverter implements ParameterTypeConverter<LastName, String>,

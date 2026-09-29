@@ -1,0 +1,87 @@
+/*
+ *    Copyright 2016-2025 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql.where.condition
+
+import org.mybatis.dynamic.sql.AbstractTwoValueCondition
+import java.util.NoSuchElementException
+import java.util.function.BiPredicate
+import java.util.function.Function
+import java.util.function.Predicate
+
+/**
+ * not between 条件,如 column not between value1 and value2。
+ */
+open class IsNotBetween<T> private constructor(value1: T, value2: T) : AbstractTwoValueCondition<T>(value1, value2),
+    AbstractTwoValueCondition.Filterable<T>, AbstractTwoValueCondition.Mappable<T> {
+
+    override fun operator1(): String {
+        return "not between" //$NON-NLS-1$
+    }
+
+    override fun operator2(): String {
+        return "and" //$NON-NLS-1$
+    }
+
+    override fun filter(predicate: BiPredicate<in T, in T>): IsNotBetween<T> {
+        return filterSupport(predicate, { empty() }, this)
+    }
+
+    override fun filter(predicate: Predicate<in T>): IsNotBetween<T> {
+        return filterSupport(predicate, { empty() }, this)
+    }
+
+    override fun <R> map(mapper1: Function<in T, out R>, mapper2: Function<in T, out R>): IsNotBetween<R> {
+        return mapSupport(mapper1, mapper2, { r1: R, r2: R -> IsNotBetween(r1, r2) }, { empty() })
+    }
+
+    override fun <R> map(mapper: Function<in T, out R>): IsNotBetween<R> {
+        return map(mapper, mapper)
+    }
+
+    class Builder<T> internal constructor(value1: T) : AndGatherer<T, IsNotBetween<T>>(value1) {
+
+        override fun build(value2: T): IsNotBetween<T> {
+            return IsNotBetween(value1, value2)
+        }
+    }
+
+    companion object {
+        private val EMPTY: IsNotBetween<Any> = object : IsNotBetween<Any>(-1, -1) {
+            override fun value1(): Any {
+                throw NoSuchElementException("No value present") //$NON-NLS-1$
+            }
+
+            override fun value2(): Any {
+                throw NoSuchElementException("No value present") //$NON-NLS-1$
+            }
+
+            override fun isEmpty(): Boolean {
+                return true
+            }
+        }
+
+        @JvmStatic
+        fun <T> empty(): IsNotBetween<T> {
+            @Suppress("UNCHECKED_CAST")
+            return EMPTY as IsNotBetween<T>
+        }
+
+        @JvmStatic
+        fun <T> isNotBetween(value1: T): Builder<T> {
+            return Builder(value1)
+        }
+    }
+}

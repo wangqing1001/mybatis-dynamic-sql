@@ -15,6 +15,7 @@
  */
 package examples.custom_render;
 
+import org.mybatis.dynamic.sql.BindableColumn;
 import org.mybatis.dynamic.sql.render.MyBatis3RenderingStrategy;
 
 public class JsonRenderingStrategy extends MyBatis3RenderingStrategy {

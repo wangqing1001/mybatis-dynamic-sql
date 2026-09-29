@@ -14,6 +14,8 @@
  *    limitations under the License.
  */
 package examples.generated.always.spring;
+import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlTable;
 
 public final class GeneratedAlwaysDynamicSqlSupport {
     public static final GeneratedAlways generatedAlways = new GeneratedAlways();

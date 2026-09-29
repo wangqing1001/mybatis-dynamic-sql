@@ -16,6 +16,8 @@
 package examples.groupby;
 
 import java.sql.JDBCType;
+import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlTable;
 
 public final class AddressDynamicSqlSupport {
     public static final Address address = new Address();

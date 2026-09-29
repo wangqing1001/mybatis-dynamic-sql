@@ -14,6 +14,8 @@
  *    limitations under the License.
  */
 package issues.gh100;
+import org.mybatis.dynamic.sql.SqlColumn;
+import org.mybatis.dynamic.sql.SqlTable;
 
 public class StudentRegDynamicSqlSupport {
     public static final StudentReg studentReg = new StudentReg();
