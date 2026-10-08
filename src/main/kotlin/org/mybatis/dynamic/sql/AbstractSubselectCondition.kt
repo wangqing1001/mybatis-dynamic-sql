@@ -28,7 +28,7 @@ abstract class AbstractSubselectCondition<T> protected constructor(selectModelBu
     abstract fun operator(): String
 
     override fun renderCondition(renderingContext: RenderingContext,leftColumn: BindableColumn<T>): FragmentAndParameters {
-        return SubQueryRenderer.withSelectModel(selectModel).withRenderingContext(renderingContext)
-            .withPrefix(operator() + " (").withSuffix(")").build().render()
+        return SubQueryRenderer(selectModel,renderingContext,"${operator()} (",")").render()
     }
+
 }

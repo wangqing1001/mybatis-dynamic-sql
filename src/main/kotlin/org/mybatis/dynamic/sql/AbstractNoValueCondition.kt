@@ -33,7 +33,7 @@ abstract class AbstractNoValueCondition<T> : RenderableCondition<T> {
     abstract fun operator(): String
 
     override fun renderCondition(renderingContext: RenderingContext,leftColumn: BindableColumn<T>): FragmentAndParameters {
-        return FragmentAndParameters.fromFragment(operator())
+        return FragmentAndParameters(operator())
     }
 
     /**

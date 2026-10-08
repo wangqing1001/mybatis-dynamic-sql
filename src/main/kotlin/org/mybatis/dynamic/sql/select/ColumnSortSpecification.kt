@@ -43,6 +43,6 @@ class ColumnSortSpecification private constructor(
     }
 
     override fun renderForOrderBy(renderingContext: RenderingContext): FragmentAndParameters {
-        return FragmentAndParameters.fromFragment(tableAlias + "." + column.name() + descendingPhrase) //$NON-NLS-1$
+        return FragmentAndParameters(tableAlias + "." + column.name() + descendingPhrase) //$NON-NLS-1$
     }
 }

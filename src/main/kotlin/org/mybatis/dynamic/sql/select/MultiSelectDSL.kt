@@ -16,8 +16,9 @@
 package org.mybatis.dynamic.sql.select
 
 import org.mybatis.dynamic.sql.SortSpecification
-import org.mybatis.dynamic.sql.common.OrderByModel
+import org.mybatis.dynamic.sql.order.OrderByModel
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration
+import org.mybatis.dynamic.sql.select.paging.PagingModel
 import org.mybatis.dynamic.sql.util.Buildable
 import org.mybatis.dynamic.sql.util.ConfigurableStatement
 import java.util.Arrays
@@ -29,16 +30,12 @@ import java.util.function.Consumer
  */
 class MultiSelectDSL(builder: Buildable<SelectModel>) : Buildable<MultiSelectModel>, ConfigurableStatement<MultiSelectDSL> {
     private val unionQueries: MutableList<UnionQuery> = ArrayList()
-    private val initialSelect: SelectModel
+    private val initialSelect: SelectModel = builder.build()
     private var orderByModel: OrderByModel? = null
     private var limit: Long? = null
     private var offset: Long? = null
     private var fetchFirstRows: Long? = null
     private val statementConfiguration: StatementConfiguration = StatementConfiguration()
-
-    init {
-        initialSelect = builder.build()
-    }
 
     fun union(builder: Buildable<SelectModel>): MultiSelectDSL {
         unionQueries.add(UnionQuery("union", builder.build())) //$NON-NLS-1$
@@ -87,21 +84,14 @@ class MultiSelectDSL(builder: Buildable<SelectModel>) : Buildable<MultiSelectMod
     }
 
     override fun build(): MultiSelectModel {
-        return MultiSelectModel.Builder()
-            .withInitialSelect(initialSelect)
-            .withUnionQueries(unionQueries)
-            .withOrderByModel(orderByModel)
-            .withPagingModel(buildPagingModel().orElse(null))
-            .withStatementConfiguration(statementConfiguration)
-            .build()
+        return MultiSelectModel(initialSelect,unionQueries,statementConfiguration,orderByModel,buildPagingModel())
     }
 
-    private fun buildPagingModel(): Optional<PagingModel> {
-        return PagingModel.Builder()
-            .withLimit(limit)
-            .withOffset(offset)
-            .withFetchFirstRows(fetchFirstRows)
-            .build()
+    private fun buildPagingModel(): PagingModel? {
+        if(limit==null || offset==null || fetchFirstRows==null ){
+            return null
+        }
+        return PagingModel(limit,offset,fetchFirstRows)
     }
 
     override fun configureStatement(consumer: Consumer<StatementConfiguration>): MultiSelectDSL {

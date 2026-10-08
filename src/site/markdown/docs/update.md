@@ -45,12 +45,12 @@ are using an annotated mapper, the update method should look like this:
 
 ```java
 import org.apache.ibatis.annotations.UpdateProvider;
-import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
+import org.mybatis.dynamic.sql.update.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 
 ...
-    @UpdateProvider(type=SqlProviderAdapter.class, method="update")
-    int update(UpdateStatementProvider updateStatement);
+@UpdateProvider(type = SqlProviderAdapter.class, method = "update")
+int update(UpdateStatementProvider updateStatement);
 ...
 ```
 

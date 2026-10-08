@@ -20,7 +20,7 @@ import org.mybatis.dynamic.sql.NullCriterion
 import org.mybatis.dynamic.sql.SortSpecification
 import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.SqlTable
-import org.mybatis.dynamic.sql.common.OrderByModel
+import org.mybatis.dynamic.sql.order.OrderByModel
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration
 import org.mybatis.dynamic.sql.delete.DeleteModel
 import org.mybatis.dynamic.sql.util.Buildable
@@ -29,7 +29,6 @@ import org.mybatis.dynamic.sql.util.Validator
 import org.mybatis.dynamic.sql.where.WhereApplier
 import org.mybatis.dynamic.sql.where.WhereModel
 import java.util.ArrayList
-import java.util.Arrays
 import java.util.function.Consumer
 
 /**
@@ -91,13 +90,8 @@ abstract class AbstractDeleteDSL<M, D : AbstractDeleteDSL<M, D>> protected const
      * @return 模型类
      */
     protected fun buildDeleteModel(): DeleteModel {
-        return DeleteModel.withTable(table)
-            .withTableAlias(tableAlias)
-            .withLimit(limit)
-            .withOrderByModel(orderByModel)
-            .withWhereModel(if (whereBuilder == null) null else whereBuilder!!.buildWhereModel())
-            .withStatementConfiguration(statementConfiguration)
-            .build()
+        val whereModel = if (whereBuilder == null) null else whereBuilder!!.buildWhereModel()
+        return DeleteModel(table,statementConfiguration, tableAlias,whereModel,limit,orderByModel)
     }
 
     override fun configureStatement(consumer: Consumer<StatementConfiguration>): D {
@@ -152,10 +146,7 @@ abstract class AbstractDeleteDSL<M, D : AbstractDeleteDSL<M, D>> protected const
         }
 
         fun buildWhereModel(): WhereModel {
-            return WhereModel.Builder()
-                .withInitialCriterion(initialCriterion)
-                .withSubCriteria(subCriteria)
-                .build()
+            return WhereModel(initialCriterion,subCriteria)
         }
     }
 }

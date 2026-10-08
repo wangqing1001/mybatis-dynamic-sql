@@ -92,18 +92,10 @@ abstract class AbstractCountDSL<M, D : AbstractCountDSL<M, D>> protected constru
     }
 
     protected fun buildSelectModel(): SelectModel {
-        val queryExpressionModel = QueryExpressionModel.Builder()
-            .withSelectColumn(countColumn)
-            .withTable(table())
-            .withTableAliases(tableAliases())
-            .withJoinModel(buildJoinModel())
-            .withWhereModel(if (whereBuilder == null) null else whereBuilder!!.buildWhereModel())
-            .build()
-
-        return SelectModel.Builder()
-            .withQueryExpression(queryExpressionModel)
-            .withStatementConfiguration(statementConfiguration)
-            .build()
+        val whereModel = whereBuilder?.buildWhereModel()
+        val queryExpressionModel = QueryExpressionModel(table(),listOf(countColumn),whereModel,
+            tableAliases(),buildJoinModel())
+        return SelectModel(listOf(queryExpressionModel),statementConfiguration)
     }
 
     protected abstract fun getThis(): D
@@ -204,10 +196,7 @@ abstract class AbstractCountDSL<M, D : AbstractCountDSL<M, D>> protected constru
         }
 
         fun buildWhereModel(): WhereModel {
-            return WhereModel.Builder()
-                .withInitialCriterion(initialCriterion)
-                .withSubCriteria(subCriteria)
-                .build()
+            return WhereModel(initialCriterion,subCriteria)
         }
     }
 }

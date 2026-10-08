@@ -13,33 +13,16 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.select.render
+package org.mybatis.dynamic.sql.select.join
 
+import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionModel
 import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionRenderer
-import org.mybatis.dynamic.sql.select.join.JoinSpecification
+import org.mybatis.dynamic.sql.render.RenderingContext
 
 /**
  * join 规范渲染器。
  */
-class JoinSpecificationRenderer private constructor(builder: Builder) :
-    AbstractBooleanExpressionRenderer("on", builder) { //$NON-NLS-1$
-
-    companion object {
-        @JvmStatic
-        fun withJoinSpecification(joinSpecification: JoinSpecification): Builder {
-            return Builder(joinSpecification)
-        }
-    }
-
-    class Builder(joinSpecification: JoinSpecification) : AbstractBuilder<Builder>(joinSpecification) {
-        fun build(): JoinSpecificationRenderer {
-            return JoinSpecificationRenderer(this)
-        }
-
-        override fun self(): Builder {
-            return this
-        }
-
-
-    }
-}
+class JoinSpecificationRenderer(
+    model: AbstractBooleanExpressionModel,
+    renderingContext: RenderingContext
+) : AbstractBooleanExpressionRenderer("on",model,renderingContext)

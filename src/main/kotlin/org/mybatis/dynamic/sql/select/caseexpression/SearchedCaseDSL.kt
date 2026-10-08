@@ -32,24 +32,12 @@ class SearchedCaseDSL private constructor() : ElseDSL<SearchedCaseDSL.SearchedCa
     private val whenConditions: MutableList<SearchedCaseWhenCondition> = ArrayList()
     private var elseValue: BasicColumn? = null
 
-    fun <T> `when`(
-        column: BindableColumn<T>,
-        condition: RenderableCondition<T>,
-        vararg subCriteria: AndOrCriteriaGroup
-    ): WhenDSL {
-        return `when`(column, condition, Arrays.asList(*subCriteria))
+    fun <T> `when`(column: BindableColumn<T>,condition: RenderableCondition<T>,vararg subCriteria: AndOrCriteriaGroup): WhenDSL {
+        return `when`(column, condition, listOf(*subCriteria))
     }
 
-    fun <T> `when`(
-        column: BindableColumn<T>,
-        condition: RenderableCondition<T>,
-        subCriteria: List<AndOrCriteriaGroup>
-    ): WhenDSL {
-        val sqlCriterion = ColumnAndConditionCriterion.withColumn(column)
-            .withCondition(condition)
-            .withSubCriteria(subCriteria)
-            .build()
-
+    fun <T> `when`(column: BindableColumn<T>,condition: RenderableCondition<T>,subCriteria: List<AndOrCriteriaGroup>): WhenDSL {
+        val sqlCriterion = ColumnAndConditionCriterion(column,condition,subCriteria)
         return initialize(sqlCriterion)
     }
 
@@ -58,12 +46,7 @@ class SearchedCaseDSL private constructor() : ElseDSL<SearchedCaseDSL.SearchedCa
     }
 
     fun `when`(initialCriterion: SqlCriterion, subCriteria: List<AndOrCriteriaGroup>): WhenDSL {
-        val sqlCriterion = CriteriaGroup.Builder()
-            .withInitialCriterion(initialCriterion)
-            .withSubCriteria(subCriteria)
-            .build()
-
-        return initialize(sqlCriterion)
+        return initialize(CriteriaGroup(initialCriterion,subCriteria))
     }
 
     private fun initialize(sqlCriterion: SqlCriterion): WhenDSL {
@@ -93,11 +76,7 @@ class SearchedCaseDSL private constructor() : ElseDSL<SearchedCaseDSL.SearchedCa
         }
 
         override fun then(column: BasicColumn): SearchedCaseDSL {
-            whenConditions.add(SearchedCaseWhenCondition.Builder()
-                .withInitialCriterion(initialCriterion)
-                .withSubCriteria(subCriteria)
-                .withThenValue(column)
-                .build())
+            whenConditions.add(SearchedCaseWhenCondition(column,initialCriterion,subCriteria))
             return this@SearchedCaseDSL
         }
 

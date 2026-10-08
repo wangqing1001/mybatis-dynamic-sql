@@ -77,5 +77,5 @@ class GeneralInsertColumnSetCompleter<T : Any>(
 
     infix fun toValueWhenPresent(value: T?) = toValueWhenPresent { value }
 
-    infix fun toValueWhenPresent(value: () -> T?) = mappingConsumer.invoke(ValueWhenPresentMapping.of(column, value))
+    infix fun toValueWhenPresent(value: () -> T?) = mappingConsumer.invoke(ValueWhenPresentMapping(column, value))
 }

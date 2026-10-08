@@ -13,12 +13,10 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.select.render
+package org.mybatis.dynamic.sql.select.paging
 
 import org.mybatis.dynamic.sql.exception.InvalidSqlException
-import org.mybatis.dynamic.sql.render.RenderedParameterInfo
 import org.mybatis.dynamic.sql.render.RenderingContext
-import org.mybatis.dynamic.sql.select.PagingModel
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.InternalError
 import org.mybatis.dynamic.sql.util.Messages
@@ -32,55 +30,42 @@ class FetchFirstPagingModelRenderer(
 ) {
 
     fun render(): FragmentAndParameters {
-        return pagingModel.offset()
-            .map { offset: Long -> renderWithOffset(offset) }
-            .orElseGet { renderFetchFirstRowsOnly() }
+        val offset = pagingModel.offset()?: return renderFetchFirstRowsOnly()
+        return renderWithOffset(offset)
     }
 
     private fun renderWithOffset(offset: Long): FragmentAndParameters {
-        return pagingModel.fetchFirstRows()
-            .map { ffr: Long -> renderOffsetAndFetchFirstRows(offset, ffr) }
-            .orElseGet { renderOffsetOnly(offset) }
+        val fetchFirstRows = pagingModel.fetchFirstRows() ?: return renderOffsetOnly(offset)
+        return renderOffsetAndFetchFirstRows(offset, fetchFirstRows)
     }
 
     private fun renderFetchFirstRowsOnly(): FragmentAndParameters {
-        return pagingModel.fetchFirstRows().map { fetchFirstRows: Long -> renderFetchFirstRowsOnly(fetchFirstRows) }
-            .orElseThrow {
-                InvalidSqlException(Messages.getInternalErrorString(InternalError.INTERNAL_ERROR_13))
-            }
+        val fetchFirstRows = pagingModel.fetchFirstRows()?: throw InvalidSqlException(Messages.getInternalErrorString(InternalError.INTERNAL_ERROR_13))
+        return renderFetchFirstRowsOnly(fetchFirstRows)
     }
 
     private fun renderFetchFirstRowsOnly(fetchFirstRows: Long): FragmentAndParameters {
         val fetchFirstParameterInfo = renderingContext.calculateFetchFirstRowsParameterInfo()
-        return FragmentAndParameters
-            .withFragment(
-                "fetch first " + fetchFirstParameterInfo.renderedPlaceHolder //$NON-NLS-1$
-                    + " rows only" //$NON-NLS-1$
-            )
-            .withParameter(fetchFirstParameterInfo.parameterMapKey, fetchFirstRows)
-            .build()
+        val fragment = "fetch first ${fetchFirstParameterInfo.renderedPlaceHolder} rows only"
+        val parameters = mapOf(fetchFirstParameterInfo.parameterMapKey to fetchFirstRows)
+        return FragmentAndParameters(fragment,parameters)
     }
 
     private fun renderOffsetOnly(offset: Long): FragmentAndParameters {
         val offsetParameterInfo = renderingContext.calculateOffsetParameterInfo()
-        return FragmentAndParameters.withFragment(
-            "offset " + offsetParameterInfo.renderedPlaceHolder //$NON-NLS-1$
-                + " rows" //$NON-NLS-1$
-        )
-            .withParameter(offsetParameterInfo.parameterMapKey, offset)
-            .build()
+        val fragment = "offset ${offsetParameterInfo.renderedPlaceHolder} rows"
+        val parameters = mapOf(offsetParameterInfo.parameterMapKey to offset)
+        return FragmentAndParameters(fragment,parameters)
     }
 
     private fun renderOffsetAndFetchFirstRows(offset: Long, fetchFirstRows: Long): FragmentAndParameters {
         val offsetParameterInfo = renderingContext.calculateOffsetParameterInfo()
         val fetchFirstParameterInfo = renderingContext.calculateFetchFirstRowsParameterInfo()
-        return FragmentAndParameters.withFragment(
-            "offset " + offsetParameterInfo.renderedPlaceHolder //$NON-NLS-1$
-                + " rows fetch first " + fetchFirstParameterInfo.renderedPlaceHolder //$NON-NLS-1$
-                + " rows only" //$NON-NLS-1$
+        val sql = "offset ${offsetParameterInfo.renderedPlaceHolder} rows fetch first ${fetchFirstParameterInfo.renderedPlaceHolder} rows only"
+        val parameters = mapOf(
+            offsetParameterInfo.parameterMapKey to offset,
+            fetchFirstParameterInfo.parameterMapKey to fetchFirstRows
         )
-            .withParameter(offsetParameterInfo.parameterMapKey, offset)
-            .withParameter(fetchFirstParameterInfo.parameterMapKey, fetchFirstRows)
-            .build()
+        return FragmentAndParameters(sql, parameters)
     }
 }

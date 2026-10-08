@@ -1,23 +1,9 @@
-/*
- *    Copyright 2016-2025 the original author or authors.
- *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *       https://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
- */
-package org.mybatis.dynamic.sql.insert
+package org.mybatis.dynamic.sql.dsl
 
 import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration
+import org.mybatis.dynamic.sql.insert.GeneralInsertModel
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping
 import org.mybatis.dynamic.sql.util.Buildable
 import org.mybatis.dynamic.sql.util.ConstantMapping
@@ -47,11 +33,7 @@ class GeneralInsertDSL private constructor(builder: Builder) : Buildable<General
     }
 
     override fun build(): GeneralInsertModel {
-        return GeneralInsertModel.Builder()
-            .withTable(table)
-            .withInsertMappings(columnMappings)
-            .withStatementConfiguration(StatementConfiguration()) // 此语句暂无可配置项
-            .build()
+        return GeneralInsertModel(table, StatementConfiguration(), columnMappings)
     }
 
     companion object {
@@ -101,7 +83,7 @@ class GeneralInsertDSL private constructor(builder: Builder) : Buildable<General
         }
 
         fun toValueWhenPresent(valueSupplier: Supplier<T?>): GeneralInsertDSL {
-            columnMappings.add(ValueWhenPresentMapping.of(column, valueSupplier))
+            columnMappings.add(ValueWhenPresentMapping(column, valueSupplier))
             return this@GeneralInsertDSL
         }
     }

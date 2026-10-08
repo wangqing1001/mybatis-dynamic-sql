@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql.insert.render
 import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.render.RenderingStrategy
 import org.mybatis.dynamic.sql.util.ConstantMapping
+import org.mybatis.dynamic.sql.util.FieldAndValueAndParameters
 import org.mybatis.dynamic.sql.util.MappedColumnMapping
 import org.mybatis.dynamic.sql.util.MultiRowInsertMappingVisitor
 import org.mybatis.dynamic.sql.util.NullMapping
@@ -35,44 +36,34 @@ open class MultiRowValuePhraseVisitor internal constructor(
 ) : MultiRowInsertMappingVisitor<FieldAndValueAndParameters>() {
 
     override fun visit(mapping: NullMapping): FieldAndValueAndParameters {
-        return FieldAndValueAndParameters.withFieldName(mapping.columnName())
-            .withValuePhrase("null") //$NON-NLS-1$
-            .build()
+        return FieldAndValueAndParameters(mapping.columnName(), "null")
     }
 
     override fun visit(mapping: ConstantMapping): FieldAndValueAndParameters {
-        return FieldAndValueAndParameters.withFieldName(mapping.columnName())
-            .withValuePhrase(mapping.constant())
-            .build()
+        return FieldAndValueAndParameters(mapping.columnName(), mapping.constant())
     }
 
     override fun visit(mapping: StringConstantMapping): FieldAndValueAndParameters {
-        return FieldAndValueAndParameters.withFieldName(mapping.columnName())
-            .withValuePhrase(StringUtilities.formatConstantForSQL(mapping.constant()))
-            .build()
+        val valuePhrase = StringUtilities.formatConstantForSQL(mapping.constant())
+        return FieldAndValueAndParameters(mapping.columnName(), valuePhrase)
     }
 
     override fun visit(mapping: PropertyMapping): FieldAndValueAndParameters {
-        return FieldAndValueAndParameters.withFieldName(mapping.columnName())
-            .withValuePhrase(calculateJdbcPlaceholder(mapping.column(), mapping.property()))
-            .build()
+        val valuePhrase = calculateJdbcPlaceholder(mapping.column(), mapping.property())
+        return FieldAndValueAndParameters(mapping.columnName(), valuePhrase)
     }
 
     override fun visit(mapping: RowMapping): FieldAndValueAndParameters {
-        return FieldAndValueAndParameters.withFieldName(mapping.columnName())
-            .withValuePhrase(calculateJdbcPlaceholder(mapping.column()))
-            .build()
+        val valuePhrase = calculateJdbcPlaceholder(mapping.column())
+        return FieldAndValueAndParameters(mapping.columnName(), valuePhrase)
     }
 
     override fun visit(mapping: MappedColumnMapping): FieldAndValueAndParameters {
-        return FieldAndValueAndParameters.withFieldName(mapping.columnName())
-            .withValuePhrase(
-                calculateJdbcPlaceholder(
-                    mapping.column(),
-                    InsertRenderingUtilities.getMappedPropertyName(mapping.column())
-                )
-            )
-            .build()
+        val valuePhrase = calculateJdbcPlaceholder(
+            mapping.column(),
+            InsertRenderingUtilities.getMappedPropertyName(mapping.column())
+        )
+        return FieldAndValueAndParameters(mapping.columnName(), valuePhrase)
     }
 
     private fun calculateJdbcPlaceholder(column: SqlColumn<*>): String {

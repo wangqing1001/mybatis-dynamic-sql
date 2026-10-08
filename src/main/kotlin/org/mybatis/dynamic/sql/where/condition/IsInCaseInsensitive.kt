@@ -32,7 +32,7 @@ class IsInCaseInsensitive<T> private constructor(values: Collection<T>) : Abstra
 ), CaseInsensitiveRenderableCondition<T>, AbstractListValueCondition.Filterable<T>, AbstractListValueCondition.Mappable<T> {
 
     override fun shouldRender(renderingContext: RenderingContext): Boolean {
-        Validator.assertNotEmpty(values, "ERROR.44", "IsInCaseInsensitive") //$NON-NLS-1$ //$NON-NLS-2$
+        Validator.assertNotEmpty(values(), "ERROR.44", "IsInCaseInsensitive") //$NON-NLS-1$ //$NON-NLS-2$
         return true
     }
 
@@ -40,13 +40,15 @@ class IsInCaseInsensitive<T> private constructor(values: Collection<T>) : Abstra
         return "in" //$NON-NLS-1$
     }
 
-    override fun filter(predicate: Predicate<in T>): IsInCaseInsensitive<T> {
+    override fun filter(predicate: (T) -> Boolean): AbstractListValueCondition<T> {
         return filterSupport(predicate, { IsInCaseInsensitive(it) }, this, { empty() })
     }
 
-    override fun <R> map(mapper: Function<in T, out R>): IsInCaseInsensitive<R> {
+    override fun <R> map(mapper: (T) -> R): AbstractListValueCondition<R> {
         return mapSupport(mapper, { IsInCaseInsensitive(it) }, { empty() })
     }
+
+
 
     companion object {
         private val EMPTY: IsInCaseInsensitive<Any> = IsInCaseInsensitive(Collections.emptyList<Any>())

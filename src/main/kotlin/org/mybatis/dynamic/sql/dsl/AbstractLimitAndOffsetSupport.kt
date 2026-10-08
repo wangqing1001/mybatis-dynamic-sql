@@ -16,7 +16,7 @@
 package org.mybatis.dynamic.sql.dsl
 
 import org.mybatis.dynamic.sql.SortSpecification
-import org.mybatis.dynamic.sql.select.PagingModel
+import org.mybatis.dynamic.sql.select.paging.PagingModel
 import org.mybatis.dynamic.sql.util.Buildable
 import java.util.Optional
 
@@ -26,10 +26,8 @@ import java.util.Optional
  * @param T DSL 类型
  * @param M 模型类型
  */
-abstract class AbstractLimitAndOffsetSupport<T, M> : LimitAndOffsetOperations<T, M>
-    where T : ForAndWaitOperations<T>,
-          T : OrderByOperations<T>,
-          T : Buildable<M> {
+abstract class AbstractLimitAndOffsetSupport<T, M> :
+    LimitAndOffsetOperations<T, M> where T : ForAndWaitOperations<T>,T : OrderByOperations<T>,T : Buildable<M> {
 
     private var limit: Long? = null
     private var offset: Long? = null
@@ -57,12 +55,11 @@ abstract class AbstractLimitAndOffsetSupport<T, M> : LimitAndOffsetOperations<T,
 
     protected abstract fun getThis(): T
 
-    protected fun toPagingModel(): Optional<PagingModel> {
-        return PagingModel.Builder()
-            .withLimit(limit)
-            .withOffset(offset)
-            .withFetchFirstRows(fetchFirstRows)
-            .build()
+    protected fun toPagingModel(): PagingModel? {
+        if(limit==null || offset==null || fetchFirstRows==null ){
+            return null
+        }
+        return PagingModel(limit,offset,fetchFirstRows)
     }
 
     open inner class ExtraMethods : ForAndWaitOperations<T>, OrderByOperations<T>, Buildable<M> {
@@ -91,9 +88,11 @@ abstract class AbstractLimitAndOffsetSupport<T, M> : LimitAndOffsetOperations<T,
     }
 
     inner class OffsetFirstFinisherImpl : ExtraMethods(), LimitAndOffsetOperations.OffsetFirstFinisher<T, M> {
+
         override fun fetchFirstWhenPresent(fetchFirstRows: Long?): LimitAndOffsetOperations.FetchFirstFinisher<T> {
             return this@AbstractLimitAndOffsetSupport.fetchFirstWhenPresent(fetchFirstRows)
         }
+
     }
 
     inner class FetchFirstFinisherImpl : LimitAndOffsetOperations.FetchFirstFinisher<T> {

@@ -19,10 +19,9 @@ import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import org.mybatis.dynamic.sql.util.FragmentCollector
+import org.mybatis.dynamic.sql.util.toFragmentCollector
 import java.util.ArrayList
 import java.util.Arrays
-import java.util.stream.Collectors
 
 /**
  * concat 函数,将所有列连接为一个 concat(...) 表达式。
@@ -39,12 +38,9 @@ class Concat<T> protected constructor(
     }
 
     override fun render(renderingContext: RenderingContext): FragmentAndParameters {
-        // 注意 - 下面的类型标注是为了解决某些编译器中的类型推断问题
-        return allColumns.stream()
-            .map { column: BasicColumn -> column.render(renderingContext) }
-            .collect(FragmentCollector.collect()).toFragmentAndParameters(
-                Collectors.joining(", ", "concat(", ")") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            )
+        return allColumns.map { it.render(renderingContext) }
+            .toFragmentCollector().toFragmentAndParameters(", ", "concat(", ")")
+
     }
 
     override fun copy(): Concat<T> {

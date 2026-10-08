@@ -15,63 +15,48 @@
  */
 package org.mybatis.dynamic.sql.select.render
 
-import org.mybatis.dynamic.sql.common.OrderByModel
-import org.mybatis.dynamic.sql.common.OrderByRenderer
+import org.mybatis.dynamic.sql.order.OrderByModel
+import org.mybatis.dynamic.sql.order.OrderByRenderer
 import org.mybatis.dynamic.sql.render.RenderingContext
-import org.mybatis.dynamic.sql.select.PagingModel
+import org.mybatis.dynamic.sql.select.paging.PagingModel
 import org.mybatis.dynamic.sql.select.QueryExpressionModel
 import org.mybatis.dynamic.sql.select.SelectModel
+import org.mybatis.dynamic.sql.select.paging.PagingModelRenderer
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import org.mybatis.dynamic.sql.util.FragmentCollector
+import org.mybatis.dynamic.sql.util.toFragmentCollector
 import java.util.Objects
-import java.util.stream.Collectors
 
-/**
- * 子查询渲染器,负责将 SelectModel 渲染为子查询片段。
- */
-class SubQueryRenderer private constructor(builder: Builder) {
-    private val selectModel: SelectModel
-    private val renderingContext: RenderingContext
-    private val prefix: String
-    private val suffix: String
 
-    init {
-        selectModel = Objects.requireNonNull(builder.selectModel!!)
-        renderingContext = Objects.requireNonNull(builder.renderingContext!!)
-        prefix = if (builder.prefix == null) "" else builder.prefix!! //$NON-NLS-1$
-        suffix = if (builder.suffix == null) "" else builder.suffix!! //$NON-NLS-1$
-    }
+class SubQueryRenderer @JvmOverloads constructor(
+    private val selectModel: SelectModel,
+    private val renderingContext: RenderingContext,
+    private val prefix: String = "",
+    private val suffix: String = ""
+) {
 
     fun render(): FragmentAndParameters {
-        val fragmentCollector = selectModel
-            .queryExpressions()
-            .map { queryExpressionModel: QueryExpressionModel -> renderQueryExpression(queryExpressionModel) }
-            .collect(FragmentCollector.collect())
-
-        selectModel.orderByModel()
-            .map { orderByModel: OrderByModel -> renderOrderBy(orderByModel) }
-            .ifPresent { fragmentCollector.add(it) }
-
-        selectModel.pagingModel()
-            .map { pagingModel: PagingModel -> renderPagingModel(pagingModel) }
-            .ifPresent { fragmentCollector.add(it) }
-
-        selectModel.forClause()
-            .map { forClause: String -> FragmentAndParameters.fromFragment(forClause) }
-            .ifPresent { fragmentCollector.add(it) }
-
-        selectModel.waitClause()
-            .map { waitClause: String -> FragmentAndParameters.fromFragment(waitClause) }
-            .ifPresent { fragmentCollector.add(it) }
-
-        return fragmentCollector.toFragmentAndParameters(Collectors.joining(" ", prefix, suffix)) //$NON-NLS-1$
+        val list = selectModel.queryExpressions().map { renderQueryExpression(it) }.toMutableList()
+        val orderModel = selectModel.orderByModel()
+        if(orderModel != null) {
+            list.add(renderOrderBy(orderModel))
+        }
+        val pagingModel = selectModel.pagingModel()
+        if(pagingModel != null) {
+            list.add(renderPagingModel(pagingModel))
+        }
+        val forClause = selectModel.forClause()
+        if(forClause != null) {
+            list.add(FragmentAndParameters(forClause))
+        }
+        val waitClause = selectModel.waitClause()
+        if(waitClause != null) {
+            list.add(FragmentAndParameters(waitClause))
+        }
+        return list.toFragmentCollector().toFragmentAndParameters(" ",prefix,suffix)
     }
 
     private fun renderQueryExpression(queryExpressionModel: QueryExpressionModel): FragmentAndParameters {
-        return QueryExpressionRenderer.withQueryExpression(queryExpressionModel)
-            .withRenderingContext(renderingContext)
-            .build()
-            .render()
+        return QueryExpressionRenderer(queryExpressionModel,renderingContext).render()
     }
 
     private fun renderOrderBy(orderByModel: OrderByModel): FragmentAndParameters {
@@ -79,49 +64,7 @@ class SubQueryRenderer private constructor(builder: Builder) {
     }
 
     private fun renderPagingModel(pagingModel: PagingModel): FragmentAndParameters {
-        return PagingModelRenderer.Builder()
-            .withPagingModel(pagingModel)
-            .withRenderingContext(renderingContext)
-            .build()
-            .render()
+        return PagingModelRenderer(pagingModel,renderingContext).render()
     }
 
-    companion object {
-        @JvmStatic
-        fun withSelectModel(selectModel: SelectModel): Builder {
-            return Builder().withSelectModel(selectModel)
-        }
-    }
-
-    class Builder {
-        // 字段公开,以便外部类访问(Kotlin 外部类不能访问嵌套类私有成员)
-        var selectModel: SelectModel? = null
-        var renderingContext: RenderingContext? = null
-        var prefix: String? = null
-        var suffix: String? = null
-
-        fun withRenderingContext(renderingContext: RenderingContext): Builder {
-            this.renderingContext = renderingContext
-            return this
-        }
-
-        fun withSelectModel(selectModel: SelectModel): Builder {
-            this.selectModel = selectModel
-            return this
-        }
-
-        fun withPrefix(prefix: String): Builder {
-            this.prefix = prefix
-            return this
-        }
-
-        fun withSuffix(suffix: String): Builder {
-            this.suffix = suffix
-            return this
-        }
-
-        fun build(): SubQueryRenderer {
-            return SubQueryRenderer(this)
-        }
-    }
 }

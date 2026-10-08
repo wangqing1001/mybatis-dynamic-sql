@@ -172,18 +172,8 @@ class ReusableWhereTest {
      * @return a new select model that is "select count(*) from (subquery)" where subquery is the input select statement
      */
     static SelectModel toCount(SelectModel selectModel) {
-        // remove any paging configuration, order by, wait clause, etc. from the incoming select model
-        SelectModel strippedSelectModel = SelectModel.withQueryExpressions(selectModel.queryExpressions().toList())
-                .withStatementConfiguration(selectModel.statementConfiguration())
-                .build();
-
-        QueryExpressionModel model = QueryExpressionModel
-                .withSelectList(List.of(new CountAll()))
-                .withTable(new SubQuery.Builder().withSelectModel(strippedSelectModel).build())
-                .build();
-
-        return SelectModel.withQueryExpressions(List.of(model))
-                .withStatementConfiguration(selectModel.statementConfiguration())
-                .build();
+        SelectModel strippedSelectModel = new SelectModel(selectModel.queryExpressions(),selectModel.statementConfiguration());
+        QueryExpressionModel model = new QueryExpressionModel(new SubQuery(strippedSelectModel),List.of(new CountAll()));
+        return new SelectModel(List.of(model),selectModel.statementConfiguration());
     }
 }

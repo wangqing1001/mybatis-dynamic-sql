@@ -23,16 +23,13 @@ import java.util.stream.Stream
 /**
  * 基于条件的 when 条件。
  */
-class ConditionBasedWhenCondition<T>(conditions: List<RenderableCondition<T>>, thenValue: BasicColumn) :
-    SimpleCaseWhenCondition<T>(thenValue) {
-    private val conditions: MutableList<RenderableCondition<T>> = ArrayList()
+class ConditionBasedWhenCondition<T>(
+    thenValue: BasicColumn,
+    private val conditions: List<RenderableCondition<T>>
+) : SimpleCaseWhenCondition<T>(thenValue) {
 
-    init {
-        this.conditions.addAll(conditions)
-    }
-
-    fun conditions(): Stream<RenderableCondition<T>> {
-        return conditions.stream()
+    fun conditions(): Collection<RenderableCondition<T>> {
+        return conditions
     }
 
     override fun <R> accept(visitor: SimpleCaseWhenConditionVisitor<T, R>): R {

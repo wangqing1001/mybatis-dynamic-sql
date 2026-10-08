@@ -13,17 +13,11 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.select.render
+package org.mybatis.dynamic.sql.select.paging
 
-import org.mybatis.dynamic.sql.render.RenderedParameterInfo
 import org.mybatis.dynamic.sql.render.RenderingContext
-import org.mybatis.dynamic.sql.select.PagingModel
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import java.util.Objects
 
-/**
- * limit 与 offset 分页渲染器。
- */
 class LimitAndOffsetPagingModelRenderer(
     private val renderingContext: RenderingContext,
     private val limit: Long,
@@ -31,26 +25,23 @@ class LimitAndOffsetPagingModelRenderer(
 ) {
 
     fun render(): FragmentAndParameters {
-        return pagingModel.offset().map { offset: Long -> renderLimitAndOffset(offset) }
-            .orElseGet { renderLimitOnly() }
+        val offset = pagingModel.offset()?:return renderLimitOnly()
+        return renderLimitAndOffset(offset)
     }
 
     private fun renderLimitOnly(): FragmentAndParameters {
         val limitParameterInfo = renderingContext.calculateLimitParameterInfo()
-        return FragmentAndParameters.withFragment("limit " + limitParameterInfo.renderedPlaceHolder) //$NON-NLS-1$
-            .withParameter(limitParameterInfo.parameterMapKey, limit)
-            .build()
+        val fragment = "limit ${limitParameterInfo.renderedPlaceHolder}"
+        val parameters = mapOf(limitParameterInfo.parameterMapKey to limit)
+        return FragmentAndParameters(fragment,parameters)
     }
 
     private fun renderLimitAndOffset(offset: Long): FragmentAndParameters {
         val limitParameterInfo = renderingContext.calculateLimitParameterInfo()
         val offsetParameterInfo = renderingContext.calculateOffsetParameterInfo()
-        return FragmentAndParameters.withFragment(
-            "limit " + limitParameterInfo.renderedPlaceHolder //$NON-NLS-1$
-                + " offset " + offsetParameterInfo.renderedPlaceHolder //$NON-NLS-1$
-        )
-            .withParameter(limitParameterInfo.parameterMapKey, limit)
-            .withParameter(offsetParameterInfo.parameterMapKey, offset)
-            .build()
+        val fragment = "limit ${limitParameterInfo.renderedPlaceHolder} offset ${offsetParameterInfo.renderedPlaceHolder}"
+        val parameters = mapOf(limitParameterInfo.parameterMapKey to limit,offsetParameterInfo.parameterMapKey to offset)
+        return FragmentAndParameters(fragment, parameters)
     }
+
 }

@@ -15,8 +15,6 @@
  */
 package org.mybatis.dynamic.sql
 
-import java.util.*
-import java.util.function.Supplier
 
 abstract class AliasableSqlTable<T : AliasableSqlTable<T>> protected constructor(
     tableName: String,
@@ -47,7 +45,7 @@ abstract class AliasableSqlTable<T : AliasableSqlTable<T>> protected constructor
         return newTable
     }
 
-    public override fun tableAlias(): Optional<String> {
-        return Optional.ofNullable(tableAlias)
+    override fun tableAlias(): String? {
+        return tableAlias
     }
 }

@@ -27,18 +27,12 @@ import java.util.Optional
 /**
  * insert-select 模型。
  */
-class InsertSelectModel private constructor(builder: Builder) {
-    private val table: SqlTable
-    private val columnList: InsertColumnListModel?
-    private val selectModel: SelectModel
-    private val statementConfiguration: StatementConfiguration
-
-    init {
-        table = Objects.requireNonNull(builder.table)
-        columnList = builder.columnList
-        selectModel = Objects.requireNonNull(builder.selectModel)
-        statementConfiguration = Objects.requireNonNull(builder.statementConfiguration)
-    }
+class InsertSelectModel @JvmOverloads constructor(
+    private val table: SqlTable,
+    private val selectModel: SelectModel,
+    private val statementConfiguration: StatementConfiguration,
+    private val columnList: InsertColumnListModel? = null
+) {
 
     fun table(): SqlTable {
         return table
@@ -48,8 +42,8 @@ class InsertSelectModel private constructor(builder: Builder) {
         return selectModel
     }
 
-    fun columnList(): Optional<InsertColumnListModel> {
-        return Optional.ofNullable(columnList)
+    fun columnList(): InsertColumnListModel? {
+        return columnList
     }
 
     fun statementConfiguration(): StatementConfiguration {
@@ -57,48 +51,7 @@ class InsertSelectModel private constructor(builder: Builder) {
     }
 
     fun render(renderingStrategy: RenderingStrategy): InsertSelectStatementProvider {
-        return InsertSelectRenderer.withInsertSelectModel(this)
-            .withRenderingStrategy(renderingStrategy)
-            .build()
-            .render()
+        return InsertSelectRenderer(this,renderingStrategy).render()
     }
 
-    companion object {
-        @JvmStatic
-        fun withTable(table: SqlTable): Builder {
-            return Builder().withTable(table)
-        }
-    }
-
-    class Builder {
-        // 字段公开,以便外部类访问(Kotlin 外部类不能访问嵌套类私有成员)
-        lateinit var table: SqlTable
-        var columnList: InsertColumnListModel? = null
-        lateinit var selectModel: SelectModel
-        lateinit var statementConfiguration: StatementConfiguration
-
-        fun withTable(table: SqlTable): Builder {
-            this.table = table
-            return this
-        }
-
-        fun withColumnList(columnList: InsertColumnListModel?): Builder {
-            this.columnList = columnList
-            return this
-        }
-
-        fun withSelectModel(selectModel: SelectModel): Builder {
-            this.selectModel = selectModel
-            return this
-        }
-
-        fun withStatementConfiguration(statementConfiguration: StatementConfiguration): Builder {
-            this.statementConfiguration = statementConfiguration
-            return this
-        }
-
-        fun build(): InsertSelectModel {
-            return InsertSelectModel(this)
-        }
-    }
 }

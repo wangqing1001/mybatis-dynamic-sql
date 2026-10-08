@@ -17,7 +17,6 @@ package org.mybatis.dynamic.sql
 
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import org.mybatis.dynamic.sql.util.FragmentAndParameters.Companion.withFragment
 import org.mybatis.dynamic.sql.util.StringUtilities
 import java.util.function.*
 import java.util.function.Function
@@ -65,26 +64,20 @@ abstract class AbstractTwoValueCondition<T>(
         }
     }
 
-    abstract fun operator1(): String?
+    abstract fun operator1(): String
 
-    abstract fun operator2(): String?
+    abstract fun operator2(): String
 
-    override fun renderCondition(
-        renderingContext: RenderingContext,
-        leftColumn: BindableColumn<T>
-    ): FragmentAndParameters {
+    override fun renderCondition(renderingContext: RenderingContext,leftColumn: BindableColumn<T>): FragmentAndParameters {
         val parameterInfo1 = renderingContext.calculateParameterInfo(leftColumn)
         val parameterInfo2 = renderingContext.calculateParameterInfo(leftColumn)
 
         val finalFragment = (operator1()
                 + StringUtilities.spaceBefore(parameterInfo1.renderedPlaceHolder)
-                + StringUtilities.spaceBefore(operator2()!!)
+                + StringUtilities.spaceBefore(operator2())
                 + StringUtilities.spaceBefore(parameterInfo2.renderedPlaceHolder))
-
-        return withFragment(finalFragment)
-            .withParameter(parameterInfo1.parameterMapKey, leftColumn.convertParameterType(value1())!!)
-            .withParameter(parameterInfo2.parameterMapKey, leftColumn.convertParameterType(value2())!!)
-            .build()
+        val parameters = mapOf(parameterInfo1.parameterMapKey to leftColumn.convertParameterType(value1())!!, parameterInfo2.parameterMapKey to leftColumn.convertParameterType(value2()))
+        return FragmentAndParameters(finalFragment, parameters)
     }
 
     /**

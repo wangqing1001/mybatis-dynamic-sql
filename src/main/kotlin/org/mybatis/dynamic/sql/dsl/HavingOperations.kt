@@ -21,46 +21,27 @@ import org.mybatis.dynamic.sql.ColumnAndConditionCriterion
 import org.mybatis.dynamic.sql.CriteriaGroup
 import org.mybatis.dynamic.sql.RenderableCondition
 import org.mybatis.dynamic.sql.SqlCriterion
-import org.mybatis.dynamic.sql.select.HavingApplier
-import java.util.Arrays
+import org.mybatis.dynamic.sql.select.having.HavingApplier
 
 /**
  * 支持 having 子句的 DSL 接口。
  */
 interface HavingOperations<F : BooleanOperations<F>> {
 
-    fun <T> having(
-        column: BindableColumn<T>,
-        condition: RenderableCondition<T>,
-        vararg subCriteria: AndOrCriteriaGroup
-    ): F {
+    fun <T> having(column: BindableColumn<T>,condition: RenderableCondition<T>,vararg subCriteria: AndOrCriteriaGroup): F {
         return having(column, condition, listOf(*subCriteria))
     }
 
-    fun <T> having(
-        column: BindableColumn<T>,
-        condition: RenderableCondition<T>,
-        subCriteria: List<AndOrCriteriaGroup>
-    ): F {
-        val sqlCriterion = ColumnAndConditionCriterion.withColumn(column)
-            .withCondition(condition)
-            .withSubCriteria(subCriteria)
-            .build()
-
-        return having(sqlCriterion)
+    fun <T> having(column: BindableColumn<T>,condition: RenderableCondition<T>,subCriteria: List<AndOrCriteriaGroup>): F {
+        return having(ColumnAndConditionCriterion(column,condition,subCriteria))
     }
 
     fun having(initialCriterion: SqlCriterion, vararg subCriteria: AndOrCriteriaGroup): F {
-        return having(initialCriterion, Arrays.asList(*subCriteria))
+        return having(initialCriterion, listOf(*subCriteria))
     }
 
     fun having(initialCriterion: SqlCriterion, subCriteria: List<AndOrCriteriaGroup>): F {
-        val sqlCriterion = CriteriaGroup.Builder()
-            .withInitialCriterion(initialCriterion)
-            .withSubCriteria(subCriteria)
-            .build()
-
-        return having(sqlCriterion)
+        return having(CriteriaGroup(initialCriterion,subCriteria))
     }
 
     fun having(initialCriterion: SqlCriterion): F

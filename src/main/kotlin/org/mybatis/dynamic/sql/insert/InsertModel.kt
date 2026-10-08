@@ -28,20 +28,18 @@ import java.util.stream.Stream
 /**
  * 单行 insert 模型。
  */
-class InsertModel<T> private constructor(builder: Builder<T>) {
-    private val table: SqlTable
-    private val row: T
-    private val columnMappings: List<AbstractColumnMapping>
+class InsertModel<T> @JvmOverloads constructor(
+    private val table: SqlTable,
+    private val row: T,
+    private val columnMappings: List<AbstractColumnMapping> = emptyList()
+) {
 
     init {
-        table = Objects.requireNonNull(builder.table)
-        row = Objects.requireNonNull(builder.row!!)
-        columnMappings = Objects.requireNonNull(builder.columnMappings)
         Validator.assertNotEmpty(columnMappings, "ERROR.7") //$NON-NLS-1$
     }
 
-    fun columnMappings(): Stream<AbstractColumnMapping> {
-        return columnMappings.stream()
+    fun columnMappings(): List<AbstractColumnMapping> {
+        return columnMappings
     }
 
     fun row(): T {
@@ -53,42 +51,7 @@ class InsertModel<T> private constructor(builder: Builder<T>) {
     }
 
     fun render(renderingStrategy: RenderingStrategy): InsertStatementProvider<T> {
-        return InsertRenderer.withInsertModel(this)
-            .withRenderingStrategy(renderingStrategy)
-            .build()
-            .render()
+        return InsertRenderer(this,renderingStrategy).render()
     }
 
-    companion object {
-        @JvmStatic
-        fun <T> withRow(row: T): Builder<T> {
-            return Builder<T>().withRow(row)
-        }
-    }
-
-    class Builder<T> {
-        // 字段公开,以便外部类访问(Kotlin 外部类不能访问嵌套类私有成员)
-        lateinit var table: SqlTable
-        var row: T? = null
-        val columnMappings: MutableList<AbstractColumnMapping> = ArrayList()
-
-        fun withTable(table: SqlTable): Builder<T> {
-            this.table = table
-            return this
-        }
-
-        fun withRow(row: T): Builder<T> {
-            this.row = row
-            return this
-        }
-
-        fun withColumnMappings(columnMappings: List<AbstractColumnMapping>): Builder<T> {
-            this.columnMappings.addAll(columnMappings)
-            return this
-        }
-
-        fun build(): InsertModel<T> {
-            return InsertModel(this)
-        }
-    }
 }

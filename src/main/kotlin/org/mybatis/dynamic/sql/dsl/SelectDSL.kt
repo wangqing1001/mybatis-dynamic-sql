@@ -22,12 +22,12 @@ import org.mybatis.dynamic.sql.SortSpecification
 import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.TableExpression
-import org.mybatis.dynamic.sql.common.OrderByModel
+import org.mybatis.dynamic.sql.order.OrderByModel
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration
 import org.mybatis.dynamic.sql.select.GroupByModel
-import org.mybatis.dynamic.sql.select.HavingApplier
-import org.mybatis.dynamic.sql.select.HavingModel
-import org.mybatis.dynamic.sql.select.PagingModel
+import org.mybatis.dynamic.sql.select.having.HavingApplier
+import org.mybatis.dynamic.sql.select.having.HavingModel
+import org.mybatis.dynamic.sql.select.paging.PagingModel
 import org.mybatis.dynamic.sql.select.QueryExpressionModel
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.select.join.JoinType
@@ -36,8 +36,6 @@ import org.mybatis.dynamic.sql.util.ConfigurableStatement
 import org.mybatis.dynamic.sql.util.Validator
 import org.mybatis.dynamic.sql.where.WhereApplier
 import org.mybatis.dynamic.sql.where.WhereModel
-import java.util.ArrayList
-import java.util.Arrays
 import java.util.Objects
 import java.util.function.Consumer
 
@@ -45,16 +43,19 @@ import java.util.function.Consumer
  * select 语句 DSL。支持 from、join、where、group by、having、order by、limit/offset、
  * for/wait 子句与 union 查询。
  */
-class SelectDSL private constructor(selectList: Collection<BasicColumn>, isDistinct: Boolean) :
-    JoinOperations<SelectDSL.JoinSpecificationFinisher>,
+class SelectDSL(
+    selectList: Collection<BasicColumn>,
+    isDistinct: Boolean
+) : JoinOperations<SelectDSL.JoinSpecificationFinisher>,
     WhereOperations<SelectDSL.QueryExpressionWhereBuilder>,
-    OrderByOperations<SelectDSL>,
-    GroupByOperations<SelectDSL>,
     HavingOperations<SelectDSL.QueryExpressionHavingBuilder>,
     LimitAndOffsetOperations<SelectDSL, SelectModel>,
+    OrderByOperations<SelectDSL>,
+    GroupByOperations<SelectDSL>,
     ForAndWaitOperations<SelectDSL>,
     ConfigurableStatement<SelectDSL>,
-    Buildable<SelectModel> {
+    Buildable<SelectModel>
+{
 
     private val statementConfiguration: StatementConfiguration = StatementConfiguration()
     private var currentQueryValues: CurrentQueryValues = CurrentQueryValues()
@@ -65,30 +66,8 @@ class SelectDSL private constructor(selectList: Collection<BasicColumn>, isDisti
     private var waitClause: String? = null
 
     init {
-        currentQueryValues.builder.withSelectList(selectList)
-        currentQueryValues.builder.isDistinct(isDistinct)
-    }
-
-    companion object {
-        @JvmStatic
-        fun select(vararg selectList: BasicColumn): SelectDSL {
-            return select(listOf(*selectList))
-        }
-
-        @JvmStatic
-        fun select(selectList: Collection<BasicColumn>): SelectDSL {
-            return SelectDSL(selectList, false)
-        }
-
-        @JvmStatic
-        fun selectDistinct(vararg selectList: BasicColumn): SelectDSL {
-            return selectDistinct(listOf(*selectList))
-        }
-
-        @JvmStatic
-        fun selectDistinct(selectList: Collection<BasicColumn>): SelectDSL {
-            return SelectDSL(selectList, true)
-        }
+        currentQueryValues.selectList.addAll(selectList)
+        currentQueryValues.isDistinct = isDistinct
     }
 
     fun from(select: Buildable<SelectModel>): SelectDSL {
@@ -153,7 +132,7 @@ class SelectDSL private constructor(selectList: Collection<BasicColumn>, isDisti
     }
 
     override fun groupBy(columns: Collection<BasicColumn>): SelectDSL {
-        currentQueryValues.builder.withGroupByModel(GroupByModel.of(columns))
+        currentQueryValues.groupByModel = GroupByModel(columns.toList())
         return this
     }
 
@@ -208,32 +187,28 @@ class SelectDSL private constructor(selectList: Collection<BasicColumn>, isDisti
     }
 
     override fun build(): SelectModel {
-        return SelectModel.Builder()
-            .withStatementConfiguration(statementConfiguration)
-            .withQueryExpressions(unionQueries)
-            .withQueryExpression(currentQueryValues.toQueryExpressionModel())
-            .withOrderByModel(orderByModel)
-            .withPagingModel(limitAndOffsetSupport.buildPagingModel())
-            .withForClause(forClause)
-            .withWaitClause(waitClause)
-            .build()
+        val queryExpressions = mutableListOf<QueryExpressionModel>()
+        queryExpressions.addAll(unionQueries)
+        queryExpressions.add(currentQueryValues.toQueryExpressionModel())
+        val pagingModel = limitAndOffsetSupport.buildPagingModel()
+        return SelectModel(queryExpressions,statementConfiguration,forClause,waitClause,orderByModel,pagingModel)
     }
 
     private inner class CurrentQueryValues : AbstractQueryingDSL() {
-        // 字段公开,以便外部类 SelectDSL 访问(Kotlin 嵌套类与 Java 不同,外部类无法访问嵌套类私有成员)
-        val builder: QueryExpressionModel.Builder = QueryExpressionModel.Builder()
+        var isDistinct: Boolean = false
+        val selectList: MutableList<BasicColumn> = mutableListOf()
+        var groupByModel: GroupByModel? = null
+        var connector: String? = null
         var whereBuilder: QueryExpressionWhereBuilder? = null
         var havingBuilder: QueryExpressionHavingBuilder? = null
 
         fun toQueryExpressionModel(): QueryExpressionModel {
-            return builder
-                .withTableAliases(tableAliases())
-                .withTable(table())
-                .withJoinModel(buildJoinModel())
-                .withWhereModel(if (whereBuilder == null) null else whereBuilder!!.buildWhereModel())
-                .withHavingModel(if (havingBuilder == null) null else havingBuilder!!.buildHavingModel())
-                .build()
+            val whereModel = whereBuilder?.buildWhereModel()
+            val havingModel = havingBuilder?.buildHavingModel()
+            val joinModel = buildJoinModel()
+            return QueryExpressionModel(table(),selectList,whereModel,tableAliases(),joinModel,groupByModel,havingModel,isDistinct,connector)
         }
+
     }
 
     inner class QueryExpressionWhereBuilder @JvmOverloads constructor(
@@ -293,10 +268,7 @@ class SelectDSL private constructor(selectList: Collection<BasicColumn>, isDisti
         }
 
         fun buildWhereModel(): WhereModel {
-            return WhereModel.Builder()
-                .withInitialCriterion(initialCriterion)
-                .withSubCriteria(subCriteria)
-                .build()
+            return WhereModel(initialCriterion,subCriteria)
         }
 
         override fun configureStatement(consumer: Consumer<StatementConfiguration>): QueryExpressionWhereBuilder {
@@ -444,10 +416,7 @@ class SelectDSL private constructor(selectList: Collection<BasicColumn>, isDisti
         }
 
         fun buildHavingModel(): HavingModel {
-            return HavingModel.Builder()
-                .withInitialCriterion(initialCriterion)
-                .withSubCriteria(subCriteria)
-                .build()
+            return HavingModel(initialCriterion,subCriteria)
         }
 
         override fun limitWhenPresent(limit: Long?): LimitAndOffsetOperations.LimitFinisher<SelectDSL, SelectModel> {
@@ -475,7 +444,7 @@ class SelectDSL private constructor(selectList: Collection<BasicColumn>, isDisti
         constructor() : super(this@SelectDSL)
 
         fun buildPagingModel(): PagingModel? {
-            return toPagingModel().orElse(null)
+            return toPagingModel()
         }
 
         override fun getThis(): SelectDSL {
@@ -486,25 +455,50 @@ class SelectDSL private constructor(selectList: Collection<BasicColumn>, isDisti
     inner class UnionBuilder(val connector: String) {
 
         fun select(vararg selectList: BasicColumn): SelectDSL {
-            return select(Arrays.asList(*selectList))
+            return select(listOf(*selectList))
         }
 
         fun select(selectList: List<BasicColumn>): SelectDSL {
             unionQueries.add(currentQueryValues.toQueryExpressionModel())
             currentQueryValues = CurrentQueryValues()
-            currentQueryValues.builder.withConnector(connector)
-            currentQueryValues.builder.withSelectList(selectList)
+            currentQueryValues.connector = connector
+            currentQueryValues.selectList.addAll(selectList)
             return this@SelectDSL
         }
 
         fun selectDistinct(vararg selectList: BasicColumn): SelectDSL {
-            return selectDistinct(Arrays.asList(*selectList))
+            return selectDistinct(listOf(*selectList))
         }
 
         fun selectDistinct(selectList: List<BasicColumn>): SelectDSL {
             select(selectList)
-            currentQueryValues.builder.isDistinct(true)
+            currentQueryValues.isDistinct = true
             return this@SelectDSL
         }
+    }
+
+
+    companion object {
+
+        @JvmStatic
+        fun select(vararg selectList: BasicColumn): SelectDSL {
+            return select(listOf(*selectList))
+        }
+
+        @JvmStatic
+        fun select(selectList: Collection<BasicColumn>): SelectDSL {
+            return SelectDSL(selectList, false)
+        }
+
+        @JvmStatic
+        fun selectDistinct(vararg selectList: BasicColumn): SelectDSL {
+            return selectDistinct(listOf(*selectList))
+        }
+
+        @JvmStatic
+        fun selectDistinct(selectList: Collection<BasicColumn>): SelectDSL {
+            return SelectDSL(selectList, true)
+        }
+
     }
 }

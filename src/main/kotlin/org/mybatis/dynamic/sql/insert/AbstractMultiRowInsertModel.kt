@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.insert
 
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping
+import org.mybatis.dynamic.sql.util.Validator
 import java.util.Collections
 import java.util.Objects
 import java.util.stream.Stream
@@ -24,19 +25,14 @@ import java.util.stream.Stream
 /**
  * 多行 insert 模型的抽象基类,持有表、记录与列映射。
  */
-abstract class AbstractMultiRowInsertModel<T> protected constructor(builder: AbstractBuilder<T, *>) {
-    private val table: SqlTable
-    private val records: List<T>
-    protected val columnMappings: List<AbstractColumnMapping>
+abstract class AbstractMultiRowInsertModel<T> protected constructor(
+    private val table: SqlTable,
+    private val records: List<T>,
+    private val columnMappings: List<AbstractColumnMapping> = emptyList()
+) {
 
-    init {
-        table = Objects.requireNonNull(builder.table)
-        records = Collections.unmodifiableList(Objects.requireNonNull(builder.records))
-        columnMappings = Objects.requireNonNull(builder.columnMappings)
-    }
-
-    fun columnMappings(): Stream<AbstractColumnMapping> {
-        return columnMappings.stream()
+    fun columnMappings(): List<AbstractColumnMapping> {
+        return columnMappings
     }
 
     fun records(): List<T> {

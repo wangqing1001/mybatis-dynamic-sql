@@ -20,44 +20,33 @@ import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.FragmentCollector
 import org.mybatis.dynamic.sql.util.StringUtilities
 import org.mybatis.dynamic.sql.where.render.CriterionRenderer
-import java.util.Optional
-import java.util.stream.Collectors
+
 
 /**
  * 布尔表达式渲染器抽象基类,用于 where / having 子句的渲染。
  */
-abstract class AbstractBooleanExpressionRenderer protected constructor(private val prefix: String, builder: AbstractBuilder<*>) {
+abstract class AbstractBooleanExpressionRenderer protected constructor(
+    private val prefix: String,
+    protected val model: AbstractBooleanExpressionModel,
+    protected val renderingContext: RenderingContext,
+) {
+    private val criterionRenderer: CriterionRenderer = CriterionRenderer(renderingContext)
 
-    protected val model: AbstractBooleanExpressionModel = builder.model
-    private val criterionRenderer: CriterionRenderer
-    protected val renderingContext: RenderingContext
-
-    init {
-        renderingContext = builder.renderingContext
-        criterionRenderer = CriterionRenderer(renderingContext)
-    }
-
-    open fun render(): Optional<FragmentAndParameters> {
-        return criterionRenderer.render(model.initialCriterion(), model.subCriteria(), ::calculateClause)
-            .map { it.fragmentAndParameters() }
+    open fun render(): FragmentAndParameters? {
+        val initialCriterion = model.initialCriterion()
+        val subCriteria = model.subCriteria()
+        return criterionRenderer.render(initialCriterion,subCriteria,::calculateClause)?.fragmentAndParameters()
     }
 
     private fun calculateClause(collector: FragmentCollector): String {
-        return if (collector.hasMultipleFragments()) {
-            collector.collectFragments(
-                Collectors.joining(" ", StringUtilities.spaceAfter(prefix), "")
-            ) //$NON-NLS-1$ //$NON-NLS-2$
-        } else {
-            collector.firstFragment()
-                .map { stripEnclosingParenthesesIfPresent(it) }
-                .map { addPrefix(it) }
-                .orElse("")
+        if (collector.hasMultipleFragments()) {
+            return collector.collectFragments(" ", StringUtilities.spaceAfter(prefix))
         }
+        return collector.firstFragment()?.let { stripEnclosingParenthesesIfPresent(it) }
+            ?.let { addPrefix(it) } ?: ""
     }
 
     private fun stripEnclosingParenthesesIfPresent(fragment: String): String {
-        // 当渲染出多个条件时,片段会有前后括号。因为只有一个片段,所以最终渲染的
-        // 子句中不需要这些括号
         return if (fragment.startsWith("(") && fragment.endsWith(")")) { //$NON-NLS-1$ //$NON-NLS-2$
             fragment.substring(1, fragment.length - 1)
         } else {
@@ -69,17 +58,4 @@ abstract class AbstractBooleanExpressionRenderer protected constructor(private v
         return StringUtilities.spaceAfter(prefix) + fragment
     }
 
-    abstract class AbstractBuilder<B : AbstractBuilder<B>> protected constructor(
-        val model: AbstractBooleanExpressionModel
-    ) {
-
-        lateinit var renderingContext: RenderingContext
-
-        fun withRenderingContext(renderingContext: RenderingContext): B {
-            this.renderingContext = renderingContext
-            return self()
-        }
-
-        protected abstract fun self(): B
-    }
 }

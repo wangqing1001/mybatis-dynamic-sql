@@ -18,6 +18,8 @@ package org.mybatis.dynamic.sql.where.render;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.util.Collections;
+
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 
@@ -25,13 +27,8 @@ class RenderedCriterionTest {
 
     @Test
     void testSimpleCriteria() {
-        RenderedCriterion rc = new RenderedCriterion.Builder()
-                .withConnector("and")
-                .withFragmentAndParameters(FragmentAndParameters.withFragment("col1 = :p1").build())
-                .build();
-
+        RenderedCriterion rc = new RenderedCriterion("and",new FragmentAndParameters("col1 = :p1"));
         FragmentAndParameters fp = rc.fragmentAndParametersWithConnector();
-
         assertAll(
                 () -> assertThat(fp.fragment()).isEqualTo("and col1 = :p1"),
                 () -> assertThat(fp.parameters()).isEmpty()

@@ -15,39 +15,23 @@
  */
 package org.mybatis.dynamic.sql.select.caseexpression
 
+import org.mybatis.dynamic.sql.AndOrCriteriaGroup
 import org.mybatis.dynamic.sql.BasicColumn
+import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionModel
 import java.util.Objects
 
 /**
  * 搜索型 case when 条件。
  */
-class SearchedCaseWhenCondition private constructor(builder: Builder) : AbstractBooleanExpressionModel(builder) {
-    private val thenValue: BasicColumn
-
-    init {
-        thenValue = Objects.requireNonNull(builder.thenValue)
-    }
+class SearchedCaseWhenCondition(
+    private val thenValue: BasicColumn,
+    initialCriterion: SqlCriterion,
+    subCriteria: List<AndOrCriteriaGroup> = mutableListOf()
+) : AbstractBooleanExpressionModel(initialCriterion,subCriteria) {
 
     fun thenValue(): BasicColumn {
         return thenValue
     }
 
-    class Builder : AbstractBuilder<Builder>() {
-        // 字段公开,以便外部类访问(Kotlin 外部类不能访问嵌套类私有成员)
-        lateinit var thenValue: BasicColumn
-
-        fun withThenValue(thenValue: BasicColumn): Builder {
-            this.thenValue = thenValue
-            return this
-        }
-
-        fun build(): SearchedCaseWhenCondition {
-            return SearchedCaseWhenCondition(this)
-        }
-
-        override fun self(): Builder {
-            return this
-        }
-    }
 }

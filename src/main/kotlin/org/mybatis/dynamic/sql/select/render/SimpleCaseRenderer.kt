@@ -20,11 +20,10 @@ import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.select.caseexpression.SimpleCaseModel
 import org.mybatis.dynamic.sql.select.caseexpression.SimpleCaseWhenCondition
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import org.mybatis.dynamic.sql.util.FragmentCollector
+import org.mybatis.dynamic.sql.util.toFragmentCollector
 import java.util.Objects
 import java.util.Optional
-import java.util.stream.Collectors
-import java.util.stream.Stream
+
 
 /**
  * 简单 case 表达式渲染器。
@@ -44,41 +43,40 @@ class SimpleCaseRenderer<T>(
     }
 
     fun render(): FragmentAndParameters {
-        val fc = FragmentCollector()
-        fc.add(renderCase())
-        fc.add(renderWhenConditions())
-        renderElse().ifPresent { fc.add(it) }
-        fc.add(renderEnd())
-        return fc.toFragmentAndParameters(Collectors.joining(" ")) //$NON-NLS-1$
+        val list = mutableListOf(renderCase(),renderWhenConditions())
+
+
+
+        renderElse().ifPresent { list.add(it) }
+        list.add(renderEnd())
+        return list.toFragmentCollector().toFragmentAndParameters(" ") //$NON-NLS-1$
     }
 
     private fun renderCase(): FragmentAndParameters {
         val alias = simpleCaseModel.column().alias()
         if (alias != null) {
-            return FragmentAndParameters.fromFragment(alias)
+            return FragmentAndParameters(alias)
         }
         return simpleCaseModel.column().render(renderingContext).mapFragment { f: String -> "case $f" }
     }
 
     private fun renderWhenConditions(): FragmentAndParameters {
-        return simpleCaseModel.whenConditions().map { whenCondition: SimpleCaseWhenCondition<T> ->
-            renderWhenCondition(whenCondition)
-        }
-            .collect(FragmentCollector.collect())
-            .toFragmentAndParameters(Collectors.joining(" ")) //$NON-NLS-1$
+        return simpleCaseModel.whenConditions().map {
+            renderWhenCondition(it)
+        }.toFragmentCollector().toFragmentAndParameters(" ")
     }
 
     private fun renderWhenCondition(whenCondition: SimpleCaseWhenCondition<T>): FragmentAndParameters {
-        return Stream.of(
+        return listOf(
             renderWhen(),
             renderConditions(whenCondition),
             renderThen(whenCondition)
-        ).collect(FragmentCollector.collect())
-            .toFragmentAndParameters(Collectors.joining(" ")) //$NON-NLS-1$
+        ).toFragmentCollector()
+            .toFragmentAndParameters(" ")
     }
 
     private fun renderWhen(): FragmentAndParameters {
-        return FragmentAndParameters.fromFragment("when") //$NON-NLS-1$
+        return FragmentAndParameters("when")
     }
 
     private fun renderConditions(whenCondition: SimpleCaseWhenCondition<T>): FragmentAndParameters {
@@ -99,6 +97,6 @@ class SimpleCaseRenderer<T>(
     }
 
     private fun renderEnd(): FragmentAndParameters {
-        return FragmentAndParameters.fromFragment("end") //$NON-NLS-1$
+        return FragmentAndParameters("end") //$NON-NLS-1$
     }
 }

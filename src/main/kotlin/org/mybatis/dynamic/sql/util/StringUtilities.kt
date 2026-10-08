@@ -23,7 +23,7 @@ interface StringUtilities {
     companion object {
         @JvmStatic
         fun spaceAfter(str: String): String {
-            return "$str " //$NON-NLS-1$
+            return "$str "
         }
 
         @JvmStatic

@@ -16,14 +16,14 @@
 package org.mybatis.dynamic.sql
 
 
-class ColumnAndConditionCriterion<T>(builder: Builder<T>) : SqlCriterion(builder) {
+class ColumnAndConditionCriterion<T> @JvmOverloads constructor(
+    private val column: BindableColumn<T> ,
+    private val condition: RenderableCondition<T> ,
+    subCriteria: List<AndOrCriteriaGroup> = emptyList()
+) : SqlCriterion(subCriteria) {
 
-    private val column: BindableColumn<T>
-    private val condition: RenderableCondition<T>
-
-    init {
-        column = builder.column
-        condition = builder.condition
+    override fun <R> accept(visitor: SqlCriterionVisitor<R>): R {
+        return visitor.visit(this)
     }
 
     fun column(): BindableColumn<T> {
@@ -34,39 +34,4 @@ class ColumnAndConditionCriterion<T>(builder: Builder<T>) : SqlCriterion(builder
         return condition
     }
 
-    override fun <R> accept(visitor: SqlCriterionVisitor<R>): R {
-        return visitor.visit(this)
-    }
-
-    class Builder<T> : AbstractBuilder<Builder<T>>() {
-        lateinit var column: BindableColumn<T>
-        lateinit var condition: RenderableCondition<T>
-
-        fun withColumn(column: BindableColumn<T>): Builder<T> {
-            this.column = column
-            return this
-        }
-
-        fun withCondition(condition: RenderableCondition<T>): Builder<T> {
-            this.condition = condition
-            return this
-        }
-
-        override fun self(): Builder<T> {
-            return this
-        }
-
-        fun build(): ColumnAndConditionCriterion<T> {
-            return ColumnAndConditionCriterion<T>(this)
-        }
-    }
-
-    companion object {
-
-        @JvmStatic
-        fun <T> withColumn(column: BindableColumn<T>): Builder<T> {
-            return Builder<T>().withColumn(column)
-        }
-
-    }
 }

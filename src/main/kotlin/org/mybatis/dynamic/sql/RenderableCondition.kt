@@ -19,7 +19,7 @@ import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import java.util.function.Supplier
 
-fun interface RenderableCondition<T> {
+interface RenderableCondition<T> {
 
     /**
      * Render a condition - typically a condition in a WHERE clause.
@@ -50,9 +50,9 @@ fun interface RenderableCondition<T> {
      * @param leftColumn the column related to this condition in a where clause
      * @return the rendered column
      */
-    fun renderLeftColumn(renderingContext: RenderingContext, leftColumn: BindableColumn<T>): FragmentAndParameters? {
-        val alias = leftColumn.alias() ?: return leftColumn.render(renderingContext);
-        return FragmentAndParameters.fromFragment(alias)
+    fun renderLeftColumn(renderingContext: RenderingContext, leftColumn: BindableColumn<T>): FragmentAndParameters {
+        val alias = leftColumn.alias() ?: return leftColumn.render(renderingContext)
+        return FragmentAndParameters(alias)
     }
 
     /**

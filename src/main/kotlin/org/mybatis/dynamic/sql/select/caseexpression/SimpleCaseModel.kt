@@ -50,8 +50,8 @@ class SimpleCaseModel<T> private constructor(builder: Builder<T>) : BasicColumn,
         return column
     }
 
-    fun whenConditions(): Stream<SimpleCaseWhenCondition<T>> {
-        return whenConditions.stream()
+    fun whenConditions(): Collection<SimpleCaseWhenCondition<T>> {
+        return whenConditions
     }
 
     fun elseValue(): Optional<BasicColumn> {

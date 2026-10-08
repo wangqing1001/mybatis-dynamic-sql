@@ -13,34 +13,19 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.select
+package org.mybatis.dynamic.sql.order
 
-import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionModel
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import org.mybatis.dynamic.sql.select.render.HavingRenderer
-import java.util.Optional
+import org.mybatis.dynamic.sql.util.toFragmentCollector
 
 /**
- * having 子句模型。
+ * order by 子句渲染器。
  */
-class HavingModel private constructor(builder: Builder) : AbstractBooleanExpressionModel(builder) {
+class OrderByRenderer(private val renderingContext: RenderingContext) {
 
-    fun render(renderingContext: RenderingContext): Optional<FragmentAndParameters> {
-        return HavingRenderer.withHavingModel(this)
-            .withRenderingContext(renderingContext)
-            .build()
-            .render()
-    }
-
-    class Builder : AbstractBuilder<Builder>() {
-
-        fun build(): HavingModel {
-            return HavingModel(this)
-        }
-
-        override fun self(): Builder {
-            return this
-        }
+    fun render(orderByModel: OrderByModel): FragmentAndParameters {
+        return orderByModel.columns().map { it.renderForOrderBy(renderingContext) }.toFragmentCollector()
+            .toFragmentAndParameters(", ", "order by ", "")
     }
 }

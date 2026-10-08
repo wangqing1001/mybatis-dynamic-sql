@@ -25,7 +25,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
+import org.mybatis.dynamic.sql.delete.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.insert.BatchInsertModel;
 import org.mybatis.dynamic.sql.insert.GeneralInsertModel;
 import org.mybatis.dynamic.sql.insert.InsertModel;
@@ -35,7 +35,7 @@ import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
+import org.mybatis.dynamic.sql.update.UpdateStatementProvider;
 import org.mybatis.dynamic.sql.util.Buildable;
 import org.mybatis.dynamic.sql.util.spring.BatchInsertUtility;
 import org.mybatis.dynamic.sql.util.spring.NamedParameterJdbcTemplateExtensions;
@@ -247,7 +247,7 @@ class SpringTest {
                 .build()
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 
-        int[] updateCounts = template.batchUpdate(batchInsert.getInsertStatementSQL(), batch);
+        int[] updateCounts = template.batchUpdate(batchInsert.getInsertStatement(), batch);
 
         assertThat(updateCounts).hasSize(2);
         assertThat(updateCounts[0]).isEqualTo(1);

@@ -25,12 +25,12 @@ are using an annotated mapper, the delete method should look like this:
 
 ```java
 import org.apache.ibatis.annotations.DeleteProvider;
-import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
+import org.mybatis.dynamic.sql.delete.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 
 ...
-    @DeleteProvider(type=SqlProviderAdapter.class, method="delete")
-    int delete(DeleteStatementProvider deleteStatement);
+@DeleteProvider(type = SqlProviderAdapter.class, method = "delete")
+int delete(DeleteStatementProvider deleteStatement);
 ...
 
 ```

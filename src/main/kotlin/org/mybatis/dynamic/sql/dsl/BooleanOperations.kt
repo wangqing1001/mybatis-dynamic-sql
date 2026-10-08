@@ -97,15 +97,15 @@ interface BooleanOperations<T : BooleanOperations<T>> {
     }
 
     private fun <R> buildCriterion(column: BindableColumn<R>,condition: RenderableCondition<R>): SqlCriterion {
-        return ColumnAndConditionCriterion.withColumn(column).withCondition(condition).build()
+        return ColumnAndConditionCriterion(column,condition)
     }
 
     private fun buildCriterion(existsPredicate: ExistsPredicate): SqlCriterion {
-        return ExistsCriterion.Builder().withExistsPredicate(existsPredicate).build()
+        return ExistsCriterion(existsPredicate)
     }
 
     private fun buildCriterion(initialCriterion: SqlCriterion): SqlCriterion {
-        return CriteriaGroup.Builder().withInitialCriterion(initialCriterion).build()
+        return CriteriaGroup(initialCriterion)
     }
 
     private fun  addSubCriterion(connector: String,initialCriterion: SqlCriterion,subCriteria: List<AndOrCriteriaGroup>): T {

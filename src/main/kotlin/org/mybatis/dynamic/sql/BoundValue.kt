@@ -18,9 +18,7 @@ package org.mybatis.dynamic.sql
 import org.mybatis.dynamic.sql.exception.InvalidSqlException
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import org.mybatis.dynamic.sql.util.FragmentAndParameters.Companion.withFragment
 import org.mybatis.dynamic.sql.util.Messages
-import java.util.*
 
 /**
  * BoundValues are added to rendered SQL as a parameter marker only.
@@ -44,9 +42,8 @@ class BoundValue<T> private constructor(private val value: T) : BindableColumn<T
 
     override fun render(renderingContext: RenderingContext): FragmentAndParameters {
         val rpi = renderingContext.calculateParameterInfo<T>(this)
-        return withFragment(rpi.renderedPlaceHolder)
-            .withParameter(rpi.parameterMapKey, value)
-            .build()
+        val parameters = mapOf(rpi.parameterMapKey to value)
+        return FragmentAndParameters(rpi.renderedPlaceHolder, parameters)
     }
 
     override fun alias(): String? {

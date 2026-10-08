@@ -15,6 +15,8 @@
  */
 package org.mybatis.dynamic.sql.select.join
 
+import org.mybatis.dynamic.sql.AndOrCriteriaGroup
+import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.TableExpression
 import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionModel
 import java.util.Objects
@@ -22,14 +24,12 @@ import java.util.Objects
 /**
  * 连接规格,描述一次 join 的表、连接类型与连接条件。
  */
-class JoinSpecification private constructor(builder: Builder) : AbstractBooleanExpressionModel(builder) {
-    private val table: TableExpression
-    private val joinType: JoinType
-
-    init {
-        table = Objects.requireNonNull(builder.table!!)
-        joinType = Objects.requireNonNull(builder.joinType!!)
-    }
+class JoinSpecification(
+    private val table: TableExpression,
+    private val joinType: JoinType,
+    initialCriterion: SqlCriterion,
+    subCriteria: List<AndOrCriteriaGroup> = mutableListOf()
+) : AbstractBooleanExpressionModel(initialCriterion,subCriteria) {
 
     fun table(): TableExpression {
         return table
@@ -39,34 +39,4 @@ class JoinSpecification private constructor(builder: Builder) : AbstractBooleanE
         return joinType
     }
 
-    companion object {
-        @JvmStatic
-        fun withJoinTable(table: TableExpression): Builder {
-            return Builder().withJoinTable(table)
-        }
-    }
-
-    class Builder : AbstractBuilder<Builder>() {
-        // 字段公开,以便外部类访问(Kotlin 外部类不能访问嵌套类私有成员)
-        var table: TableExpression? = null
-        var joinType: JoinType? = null
-
-        fun withJoinTable(table: TableExpression): Builder {
-            this.table = table
-            return this
-        }
-
-        fun withJoinType(joinType: JoinType): Builder {
-            this.joinType = joinType
-            return this
-        }
-
-        fun build(): JoinSpecification {
-            return JoinSpecification(this)
-        }
-
-        override fun self(): Builder {
-            return this
-        }
-    }
 }

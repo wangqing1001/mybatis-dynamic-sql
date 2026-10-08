@@ -17,7 +17,7 @@ package org.mybatis.dynamic.sql.dsl
 
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup
 import org.mybatis.dynamic.sql.SqlCriterion
-import org.mybatis.dynamic.sql.select.HavingApplier
+import org.mybatis.dynamic.sql.select.having.HavingApplier
 import java.util.ArrayList
 
 /**

@@ -108,7 +108,7 @@ class SpringMapToRowTest {
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 
         String expected = "insert into CompoundKey (id1, id2) values (22, :row)";
-        assertThat(insertStatement.getInsertStatementSQL()).isEqualTo(expected);
+        assertThat(insertStatement.getInsertStatement()).isEqualTo(expected);
 
         int[] rowCounts = template.insertBatch(insertStatement);
 

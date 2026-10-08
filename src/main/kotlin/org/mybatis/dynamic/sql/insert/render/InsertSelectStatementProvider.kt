@@ -20,7 +20,9 @@ package org.mybatis.dynamic.sql.insert.render
  * insert-select 语句提供者接口。
  */
 interface InsertSelectStatementProvider {
+
     val parameters: Map<String, Any?>
 
     val insertStatement: String
+
 }

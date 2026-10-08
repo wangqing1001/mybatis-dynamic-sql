@@ -18,38 +18,7 @@ package org.mybatis.dynamic.sql.insert.render
 /**
  * 默认 insert 语句提供者。
  */
-class DefaultInsertStatementProvider<T> private constructor(builder: Builder<T>) : InsertStatementProvider<T> {
-    override val insertStatement: String = builder.insertStatement
-    override val row: T = builder.row!!
-
-
-
-
-
-    companion object {
-        @JvmStatic
-        fun <T> withRow(row: T): Builder<T> {
-            return Builder<T>().withRow(row)
-        }
-    }
-
-    class Builder<T> {
-        // 字段公开,以便外部类访问(Kotlin 外部类不能访问嵌套类私有成员)
-        lateinit var insertStatement: String
-        var row: T?=null
-
-        fun withInsertStatement(insertStatement: String): Builder<T> {
-            this.insertStatement = insertStatement
-            return this
-        }
-
-        fun withRow(row: T): Builder<T> {
-            this.row = row
-            return this
-        }
-
-        fun build(): DefaultInsertStatementProvider<T> {
-            return DefaultInsertStatementProvider(this)
-        }
-    }
-}
+class DefaultInsertStatementProvider<T> (
+    override val insertStatement: String,
+    override val row: T
+) : InsertStatementProvider<T>

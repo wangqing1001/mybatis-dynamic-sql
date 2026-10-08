@@ -15,79 +15,23 @@
  */
 package org.mybatis.dynamic.sql.util
 
-import java.util.*
 import java.util.function.UnaryOperator
 
-class FragmentAndParameters private constructor(builder: Builder) {
-
-    private val fragment: String
-    private val parameters: MutableMap<String, Any?>
-
-    init {
-        fragment = builder.fragment
-        parameters = Collections.unmodifiableMap(builder.parameters)
-    }
+class FragmentAndParameters @JvmOverloads constructor (
+    private val fragment: String,
+    private val parameters: Map<String, Any?> = emptyMap()
+) {
 
     fun fragment(): String {
         return fragment
     }
 
-    fun parameters(): MutableMap<String, Any?> {
+    fun parameters(): Map<String, Any?> {
         return parameters
     }
 
-    /**
-     * Return a new instance with the same parameters and a transformed fragment.
-     *
-     * @param mapper a function that can change the value of the fragment
-     * @return a new instance with the same parameters and a transformed fragment
-     */
     fun mapFragment(mapper: UnaryOperator<String>): FragmentAndParameters {
-        return withFragment(mapper.apply(fragment))
-            .withParameters(parameters)
-            .build()
+        return FragmentAndParameters(mapper.apply(fragment),parameters)
     }
 
-    class Builder {
-
-        lateinit var fragment: String
-        val parameters: MutableMap<String, Any?> = mutableMapOf()
-
-        fun withFragment(fragment: String): Builder {
-            this.fragment = fragment
-            return this
-        }
-
-        fun withParameter(key: String, value: Any?): Builder {
-            parameters[key] = value
-            return this
-        }
-
-        fun withParameters(parameters: Map<String, Any?>): Builder {
-            this.parameters.putAll(parameters)
-            return this
-        }
-
-        fun build(): FragmentAndParameters {
-            return FragmentAndParameters(this)
-        }
-
-        fun buildOptional(): Optional<FragmentAndParameters> {
-            return Optional.of(build())
-        }
-    }
-
-    companion object {
-
-        @JvmStatic
-        fun withFragment(fragment: String): Builder {
-            return Builder().withFragment(fragment)
-        }
-
-        @JvmStatic
-        fun fromFragment(fragment: String): FragmentAndParameters {
-            return Builder().withFragment(fragment).build()
-        }
-
-    }
 }

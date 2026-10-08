@@ -17,7 +17,6 @@ package org.mybatis.dynamic.sql
 
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import org.mybatis.dynamic.sql.util.FragmentAndParameters.Companion.fromFragment
 import java.util.*
 
 class Constant<T> private constructor(
@@ -32,7 +31,7 @@ class Constant<T> private constructor(
     }
 
     override fun render(renderingContext: RenderingContext): FragmentAndParameters {
-        return fromFragment(value)
+        return FragmentAndParameters(value)
     }
 
     override fun `as`(alias: String): Constant<T> {

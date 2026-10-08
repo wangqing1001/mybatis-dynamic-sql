@@ -18,50 +18,42 @@ package org.mybatis.dynamic.sql.select
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.TableExpression
+import org.mybatis.dynamic.sql.select.having.HavingModel
 import org.mybatis.dynamic.sql.select.join.JoinModel
 import org.mybatis.dynamic.sql.util.Validator
 import org.mybatis.dynamic.sql.where.WhereModel
 import java.util.Objects
-import java.util.Optional
-import java.util.stream.Stream
+
 
 /**
  * 查询表达式模型。表示单个 select 查询的全部信息。
  */
-class QueryExpressionModel private constructor(builder: Builder) {
-    private val connector: String?
-    private val isDistinct: Boolean
-    private val selectList: List<BasicColumn>
-    private val table: TableExpression
-    private val joinModel: JoinModel?
-    private val tableAliases: Map<SqlTable, String>
-    private val whereModel: WhereModel?
-    private val groupByModel: GroupByModel?
-    private val havingModel: HavingModel?
+class QueryExpressionModel @JvmOverloads constructor(
+    private val table: TableExpression,
+    private val selectList: List<BasicColumn> = emptyList(),
+    private val whereModel: WhereModel? = null,
+    private val tableAliases: Map<SqlTable, String> = emptyMap(),
+    private val joinModel: JoinModel? = null,
+    private val groupByModel: GroupByModel? = null,
+    private val havingModel: HavingModel? = null,
+    private val isDistinct: Boolean = false,
+    private val connector: String? = null
+) {
 
     init {
-        connector = builder.connector
-        isDistinct = builder.isDistinct
-        selectList = Objects.requireNonNull(builder.selectList)
-        table = builder.table
-        joinModel = builder.joinModel
-        tableAliases = builder.tableAliases
-        whereModel = builder.whereModel
-        groupByModel = builder.groupByModel
-        havingModel = builder.havingModel
         Validator.assertNotEmpty(selectList, "ERROR.13") //$NON-NLS-1$
     }
 
-    fun connector(): Optional<String> {
-        return Optional.ofNullable(connector)
+    fun connector(): String? {
+        return connector
     }
 
     fun isDistinct(): Boolean {
         return isDistinct
     }
 
-    fun columns(): Stream<BasicColumn> {
-        return selectList.stream()
+    fun columns(): Collection<BasicColumn> {
+        return selectList
     }
 
     fun table(): TableExpression {
@@ -72,92 +64,20 @@ class QueryExpressionModel private constructor(builder: Builder) {
         return tableAliases
     }
 
-    fun whereModel(): Optional<WhereModel> {
-        return Optional.ofNullable(whereModel)
+    fun whereModel(): WhereModel? {
+        return whereModel
     }
 
-    fun joinModel(): Optional<JoinModel> {
-        return Optional.ofNullable(joinModel)
+    fun joinModel(): JoinModel? {
+        return joinModel
     }
 
-    fun groupByModel(): Optional<GroupByModel> {
-        return Optional.ofNullable(groupByModel)
+    fun groupByModel(): GroupByModel? {
+        return groupByModel
     }
 
-    fun havingModel(): Optional<HavingModel> {
-        return Optional.ofNullable(havingModel)
+    fun havingModel(): HavingModel? {
+        return havingModel
     }
 
-    companion object {
-        @JvmStatic
-        fun withSelectList(columnList: List<BasicColumn>): Builder {
-            return Builder().withSelectList(columnList)
-        }
-    }
-
-    class Builder {
-        var connector: String? = null
-        var isDistinct: Boolean = false
-        val selectList: MutableList<BasicColumn> = ArrayList()
-        lateinit var table: TableExpression
-        val tableAliases: MutableMap<SqlTable, String> = HashMap()
-        var whereModel: WhereModel? = null
-        var joinModel: JoinModel? = null
-        var groupByModel: GroupByModel? = null
-        var havingModel: HavingModel? = null
-
-        fun withConnector(connector: String?): Builder {
-            this.connector = connector
-            return this
-        }
-
-        fun withTable(table: TableExpression): Builder {
-            this.table = table
-            return this
-        }
-
-        fun isDistinct(isDistinct: Boolean): Builder {
-            this.isDistinct = isDistinct
-            return this
-        }
-
-        fun withSelectColumn(selectColumn: BasicColumn): Builder {
-            this.selectList.add(selectColumn)
-            return this
-        }
-
-        fun withSelectList(selectList: Collection<BasicColumn>): Builder {
-            this.selectList.addAll(selectList)
-            return this
-        }
-
-        fun withTableAliases(tableAliases: Map<SqlTable, String>): Builder {
-            this.tableAliases.putAll(tableAliases)
-            return this
-        }
-
-        fun withWhereModel(whereModel: WhereModel?): Builder {
-            this.whereModel = whereModel
-            return this
-        }
-
-        fun withJoinModel(joinModel: JoinModel?): Builder {
-            this.joinModel = joinModel
-            return this
-        }
-
-        fun withGroupByModel(groupByModel: GroupByModel?): Builder {
-            this.groupByModel = groupByModel
-            return this
-        }
-
-        fun withHavingModel(havingModel: HavingModel?): Builder {
-            this.havingModel = havingModel
-            return this
-        }
-
-        fun build(): QueryExpressionModel {
-            return QueryExpressionModel(this)
-        }
-    }
 }

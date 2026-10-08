@@ -260,10 +260,7 @@ interface JoinOperations<F : BooleanOperations<F>> {
 }
 
 private fun buildSubQuery(selectModel: Buildable<SelectModel>, alias: String?): SubQuery {
-    return SubQuery.Builder()
-        .withSelectModel(selectModel.build())
-        .withAlias(alias)
-        .build()
+    return SubQuery(selectModel.build(),alias)
 }
 
 /**
@@ -274,24 +271,11 @@ class JoinOnGatherer<F : BooleanOperations<*>> internal constructor(
 ) {
 
     fun <T> on(joinColumn: BindableColumn<T>, joinCondition: RenderableCondition<T>): F {
-        return on(
-            ColumnAndConditionCriterion.withColumn(joinColumn)
-                .withCondition(joinCondition)
-                .build()
-        )
+        return on(ColumnAndConditionCriterion(joinColumn,joinCondition))
     }
 
-    fun <T> on(
-        joinColumn: BindableColumn<T>,
-        onJoinCondition: RenderableCondition<T>,
-        vararg subCriteria: AndOrCriteriaGroup
-    ): F {
-        return on(
-            ColumnAndConditionCriterion.withColumn(joinColumn)
-                .withCondition(onJoinCondition)
-                .withSubCriteria(Arrays.asList(*subCriteria))
-                .build()
-        )
+    fun <T> on(joinColumn: BindableColumn<T>,onJoinCondition: RenderableCondition<T>,vararg subCriteria: AndOrCriteriaGroup): F {
+        return on(ColumnAndConditionCriterion(joinColumn,onJoinCondition,listOf(*subCriteria)))
     }
 
     fun on(initialCriterion: SqlCriterion): F {

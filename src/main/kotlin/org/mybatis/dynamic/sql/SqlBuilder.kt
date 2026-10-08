@@ -15,14 +15,11 @@
  */
 package org.mybatis.dynamic.sql
 
-import org.mybatis.dynamic.sql.ColumnAndConditionCriterion.Companion.withColumn
 import org.mybatis.dynamic.sql.Constant.Companion.of
 import org.mybatis.dynamic.sql.SqlBuilder.Companion.concat
 import org.mybatis.dynamic.sql.SqlBuilder.Companion.concatenate
-import org.mybatis.dynamic.sql.SqlBuilder.Companion.insertBatch
 import org.mybatis.dynamic.sql.dsl.*
-import org.mybatis.dynamic.sql.insert.*
-import org.mybatis.dynamic.sql.insert.InsertSelectDSL.SelectGatherer
+import org.mybatis.dynamic.sql.dsl.InsertSelectDSL.SelectGatherer
 import org.mybatis.dynamic.sql.select.ColumnSortSpecification
 import org.mybatis.dynamic.sql.select.MultiSelectDSL
 import org.mybatis.dynamic.sql.select.SelectModel
@@ -37,13 +34,11 @@ import org.mybatis.dynamic.sql.select.function.*
 import org.mybatis.dynamic.sql.select.function.Substring.Companion.of
 import org.mybatis.dynamic.sql.util.Buildable
 import org.mybatis.dynamic.sql.where.condition.*
-import java.util.*
 import java.util.function.Supplier
 
 interface SqlBuilder {
 
-    class InsertIntoNextStep(table: SqlTable) {
-        private val table: SqlTable = Objects.requireNonNull(table)
+    class InsertIntoNextStep(private val table: SqlTable) {
 
         fun withSelectStatement(selectModelBuilder: Buildable<SelectModel>): InsertSelectDSL {
             return InsertSelectDSL.insertInto(table)
@@ -67,12 +62,11 @@ interface SqlBuilder {
     }
 
     class CastFinisher(private val column: BasicColumn) {
+
         fun `as`(targetType: String): Cast {
-            return Cast.Builder()
-                .withColumn(column)
-                .withTargetType(targetType)
-                .build()
+            return Cast(column,targetType)
         }
+
     }
 
     companion object {
@@ -151,55 +145,17 @@ interface SqlBuilder {
             return BatchInsertDSL.insert(*records)
         }
 
-        /**
-         * Insert a Batch of records. The model object is structured to support bulk inserts with JDBC batch support.
-         *
-         * @param records
-         * records to insert
-         * @param <T>
-         * the type of record to insert
-         *
-         * @return the next step in the DSL
-        </T> */
         @JvmStatic
         fun <T> insertBatch(records: MutableCollection<T>): BatchInsertDSL.IntoGatherer<T> {
             return BatchInsertDSL.insert<T>(records)
         }
 
-        /**
-         * Insert multiple records in a single statement. The model object is structured as a single insert statement with
-         * multiple values clauses. This statement is suitable for use with a small number of records. It is not suitable
-         * for large bulk inserts as it is possible to exceed the limit of parameter markers in a prepared statement.
-         *
-         *
-         * For large bulk inserts, see [insertBatch]
-         * @param records
-         * records to insert
-         * @param <T>
-         * the type of record to insert
-         *
-         * @return the next step in the DSL
-        </T> */
         @JvmStatic
         @SafeVarargs
         fun <T> insertMultiple(vararg records: T): MultiRowInsertDSL.IntoGatherer<T> {
             return MultiRowInsertDSL.insert(*records)
         }
 
-        /**
-         * Insert multiple records in a single statement. The model object is structured as a single insert statement with
-         * multiple values clauses. This statement is suitable for use with a small number of records. It is not suitable
-         * for large bulk inserts as it is possible to exceed the limit of parameter markers in a prepared statement.
-         *
-         *
-         * For large bulk inserts, see [insertBatch]
-         * @param records
-         * records to insert
-         * @param <T>
-         * the type of record to insert
-         *
-         * @return the next step in the DSL
-        </T> */
         @JvmStatic
         fun <T> insertMultiple(records: Collection<T>): MultiRowInsertDSL.IntoGatherer<T> {
             return MultiRowInsertDSL.insert(records)
@@ -247,14 +203,8 @@ interface SqlBuilder {
             return WhereDSL()
         }
         @JvmStatic
-        fun <T> where(
-            column: BindableColumn<T>, condition: RenderableCondition<T>,
-            vararg subCriteria: AndOrCriteriaGroup
-        ): WhereDSL {
-            val initialCriterion = withColumn(column)
-                .withCondition(condition)
-                .build()
-
+        fun <T> where(column: BindableColumn<T>, condition: RenderableCondition<T>,vararg subCriteria: AndOrCriteriaGroup): WhereDSL {
+            val initialCriterion = ColumnAndConditionCriterion(column,condition)
             return where(initialCriterion, *subCriteria)
         }
 
@@ -265,16 +215,13 @@ interface SqlBuilder {
 
         @JvmStatic
         fun where(existsPredicate: ExistsPredicate, vararg subCriteria: AndOrCriteriaGroup): WhereDSL {
-            val existsCriterion = ExistsCriterion.Builder()
-                .withExistsPredicate(existsPredicate).build()
+            val existsCriterion = ExistsCriterion(existsPredicate)
             return where(existsCriterion, *subCriteria)
         }
+
         @JvmStatic
-        fun <T> having(
-            column: BindableColumn<T>, condition: RenderableCondition<T>,
-            vararg subCriteria: AndOrCriteriaGroup
-        ): HavingDSL {
-            val initialCriterion: SqlCriterion = withColumn(column).withCondition(condition).build()
+        fun <T> having(column: BindableColumn<T>, condition: RenderableCondition<T>,vararg subCriteria: AndOrCriteriaGroup): HavingDSL {
+            val initialCriterion = ColumnAndConditionCriterion(column,condition)
             return having(initialCriterion, *subCriteria)
         }
 
@@ -290,18 +237,11 @@ interface SqlBuilder {
         ): CriteriaGroup {
             return group(column, condition, listOf(*subCriteria))
         }
+
         @JvmStatic
-        fun <T> group(
-            column: BindableColumn<T>, condition: RenderableCondition<T>,
-            subCriteria: List<AndOrCriteriaGroup>
-        ): CriteriaGroup {
-            return CriteriaGroup.Builder()
-                .withInitialCriterion(
-                    ColumnAndConditionCriterion.Builder<T>().withColumn(column)
-                        .withCondition(condition).build()
-                )
-                .withSubCriteria(subCriteria)
-                .build()
+        fun <T> group(column: BindableColumn<T>, condition: RenderableCondition<T>,subCriteria: List<AndOrCriteriaGroup> ): CriteriaGroup {
+            val initialCriterion = ColumnAndConditionCriterion(column,condition)
+            return CriteriaGroup(initialCriterion,subCriteria)
         }
 
         @JvmStatic
@@ -310,13 +250,8 @@ interface SqlBuilder {
         }
         @JvmStatic
         fun group(existsPredicate: ExistsPredicate, subCriteria: List<AndOrCriteriaGroup>): CriteriaGroup {
-            return CriteriaGroup.Builder()
-                .withInitialCriterion(
-                    ExistsCriterion.Builder()
-                        .withExistsPredicate(existsPredicate).build()
-                )
-                .withSubCriteria(subCriteria)
-                .build()
+            val initialCriterion = ExistsCriterion(existsPredicate)
+            return CriteriaGroup(initialCriterion,subCriteria)
         }
 
         @JvmStatic
@@ -325,37 +260,21 @@ interface SqlBuilder {
         }
         @JvmStatic
         fun group(initialCriterion: SqlCriterion, subCriteria: List<AndOrCriteriaGroup>): CriteriaGroup {
-            return CriteriaGroup.Builder()
-                .withInitialCriterion(initialCriterion)
-                .withSubCriteria(subCriteria)
-                .build()
+            return CriteriaGroup(initialCriterion,subCriteria)
         }
         @JvmStatic
-        fun group(subCriteria: MutableList<AndOrCriteriaGroup>): CriteriaGroup {
-            return CriteriaGroup.Builder()
-                .withInitialCriterion(NullCriterion())
-                .withSubCriteria(subCriteria)
-                .build()
+        fun group(subCriteria: List<AndOrCriteriaGroup>): CriteriaGroup {
+            return CriteriaGroup(NullCriterion(),subCriteria)
         }
         @JvmStatic
-        fun <T> not(
-            column: BindableColumn<T>, condition: RenderableCondition<T>,
-            vararg subCriteria: AndOrCriteriaGroup
-        ): NotCriterion {
+        fun <T> not(column: BindableColumn<T>, condition: RenderableCondition<T>,vararg subCriteria: AndOrCriteriaGroup): NotCriterion {
             return not(column, condition, listOf(*subCriteria))
         }
+
         @JvmStatic
-        fun <T> not(
-            column: BindableColumn<T>, condition: RenderableCondition<T>,
-            subCriteria: List<AndOrCriteriaGroup>
-        ): NotCriterion {
-            return NotCriterion.Builder()
-                .withInitialCriterion(
-                    ColumnAndConditionCriterion.Builder<T>().withColumn(column)
-                        .withCondition(condition).build()
-                )
-                .withSubCriteria(subCriteria)
-                .build()
+        fun <T> not(column: BindableColumn<T>, condition: RenderableCondition<T>,subCriteria: List<AndOrCriteriaGroup>): NotCriterion {
+            val initialCriterion = ColumnAndConditionCriterion(column,condition)
+            return NotCriterion(initialCriterion,subCriteria)
         }
 
         @JvmStatic
@@ -364,13 +283,8 @@ interface SqlBuilder {
         }
         @JvmStatic
         fun not(existsPredicate: ExistsPredicate, subCriteria: List<AndOrCriteriaGroup>): NotCriterion {
-            return NotCriterion.Builder()
-                .withInitialCriterion(
-                    ExistsCriterion.Builder()
-                        .withExistsPredicate(existsPredicate).build()
-                )
-                .withSubCriteria(subCriteria)
-                .build()
+            val initialCriterion = ExistsCriterion(existsPredicate)
+            return NotCriterion(initialCriterion,subCriteria)
         }
 
         @JvmStatic
@@ -379,31 +293,20 @@ interface SqlBuilder {
         }
         @JvmStatic
         fun not(initialCriterion: SqlCriterion, subCriteria: List<AndOrCriteriaGroup>): NotCriterion {
-            return NotCriterion.Builder()
-                .withInitialCriterion(initialCriterion)
-                .withSubCriteria(subCriteria)
-                .build()
+            return NotCriterion(initialCriterion,subCriteria)
         }
         @JvmStatic
         fun not(subCriteria: List<AndOrCriteriaGroup>): NotCriterion {
-            return NotCriterion.Builder()
-                .withInitialCriterion(NullCriterion())
-                .withSubCriteria(subCriteria)
-                .build()
+            return NotCriterion(NullCriterion(),subCriteria)
         }
+
         @JvmStatic
-        fun <T> or(
-            column: BindableColumn<T>, condition: RenderableCondition<T>,
-            vararg subCriteria: AndOrCriteriaGroup
-        ): AndOrCriteriaGroup {
+        fun <T> or(column: BindableColumn<T>, condition: RenderableCondition<T>,vararg subCriteria: AndOrCriteriaGroup): AndOrCriteriaGroup {
+            val initialCriterion = ColumnAndConditionCriterion(column,condition)
             return AndOrCriteriaGroup.Builder()
-                .withInitialCriterion(
-                    withColumn(column)
-                        .withCondition(condition)
-                        .build()
-                )
-                .withConnector("or") //$NON-NLS-1$
-                .withSubCriteria(Arrays.asList(*subCriteria))
+                .withInitialCriterion(initialCriterion)
+                .withConnector("or")
+                .withSubCriteria(listOf(*subCriteria))
                 .build()
         }
 
@@ -411,8 +314,7 @@ interface SqlBuilder {
         fun or(existsPredicate: ExistsPredicate, vararg subCriteria: AndOrCriteriaGroup): AndOrCriteriaGroup {
             return AndOrCriteriaGroup.Builder()
                 .withInitialCriterion(
-                    ExistsCriterion.Builder()
-                        .withExistsPredicate(existsPredicate).build()
+                    ExistsCriterion(existsPredicate)
                 )
                 .withConnector("or") //$NON-NLS-1$
                 .withSubCriteria(listOf(*subCriteria))
@@ -440,12 +342,9 @@ interface SqlBuilder {
             column: BindableColumn<T>, condition: RenderableCondition<T>,
             vararg subCriteria: AndOrCriteriaGroup
         ): AndOrCriteriaGroup {
+            val initialCriterion = ColumnAndConditionCriterion(column,condition)
             return AndOrCriteriaGroup.Builder()
-                .withInitialCriterion(
-                    withColumn(column)
-                        .withCondition(condition)
-                        .build()
-                )
+                .withInitialCriterion(initialCriterion)
                 .withConnector("and") //$NON-NLS-1$
                 .withSubCriteria(listOf(*subCriteria))
                 .build()
@@ -455,8 +354,7 @@ interface SqlBuilder {
         fun and(existsPredicate: ExistsPredicate, vararg subCriteria: AndOrCriteriaGroup): AndOrCriteriaGroup {
             return AndOrCriteriaGroup.Builder()
                 .withInitialCriterion(
-                    ExistsCriterion.Builder()
-                        .withExistsPredicate(existsPredicate).build()
+                    ExistsCriterion(existsPredicate)
                 )
                 .withConnector("and")
                 .withSubCriteria(listOf(*subCriteria))
@@ -480,15 +378,10 @@ interface SqlBuilder {
                 .build()
         }
         @JvmStatic
-        // join support
-        fun <T> on(
-            joinColumn: BindableColumn<T>,
-            joinCondition: RenderableCondition<T>
-        ): ColumnAndConditionCriterion<T> {
-            return withColumn<T>(joinColumn)
-                .withCondition(joinCondition)
-                .build()
+        fun <T> on(joinColumn: BindableColumn<T>,joinCondition: RenderableCondition<T>): ColumnAndConditionCriterion<T> {
+            return ColumnAndConditionCriterion(joinColumn,joinCondition)
         }
+
         @JvmStatic
         // case expressions
         fun <T> case_(column: BindableColumn<T>): SimpleCaseDSL<T> {

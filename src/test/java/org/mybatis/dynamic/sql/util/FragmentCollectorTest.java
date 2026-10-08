@@ -18,7 +18,8 @@ package org.mybatis.dynamic.sql.util;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.entry;
 
-import java.util.stream.Collectors;
+import java.util.Collections;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -26,21 +27,10 @@ class FragmentCollectorTest {
 
     @Test
     void testWhereFragmentCollectorMerge() {
-        FragmentCollector fc1 = new FragmentCollector();
-        FragmentAndParameters fp1 = FragmentAndParameters.withFragment(":p1")
-                .withParameter("p1", 1)
-                .build();
-        fc1.add(fp1);
-
-        FragmentCollector fc2 = new FragmentCollector();
-        FragmentAndParameters fp2 = FragmentAndParameters.withFragment(":p2")
-                .withParameter("p2", 2)
-                .build();
-        fc2.add(fp2);
-
-        fc1.merge(fc2);
-
-        assertThat(fc1.collectFragments(Collectors.joining(","))).isEqualTo(":p1,:p2");
+        FragmentAndParameters fp1 = new FragmentAndParameters(":p1", Collections.singletonMap("p1", 1));
+        FragmentAndParameters fp2 = new FragmentAndParameters(":p2", Collections.singletonMap("p2", 2));
+        FragmentCollector fc1 =  CollectorExtKt.toFragmentCollector(List.of(fp1,fp2));
+        assertThat(fc1.collectFragments(",")).isEqualTo(":p1,:p2");
         assertThat(fc1.parameters()).containsOnly(entry("p1", 1), entry("p2", 2));
     }
 }

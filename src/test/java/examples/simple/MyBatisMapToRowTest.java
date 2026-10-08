@@ -151,7 +151,7 @@ class MyBatisMapToRowTest {
                     .render(RenderingStrategies.MYBATIS3);
 
             String expected = "insert into CompoundKey (id1, id2) values (22, #{row,jdbcType=INTEGER})";
-            assertThat(insertStatement.getInsertStatementSQL()).isEqualTo(expected);
+            assertThat(insertStatement.getInsertStatement()).isEqualTo(expected);
 
             insertStatement.insertStatements().forEach(mapper::insert);
 

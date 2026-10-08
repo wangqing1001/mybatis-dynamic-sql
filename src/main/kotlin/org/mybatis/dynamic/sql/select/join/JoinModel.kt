@@ -21,21 +21,16 @@ import java.util.ArrayList
 import java.util.Objects
 import java.util.stream.Stream
 
-/**
- * 连接模型,包含一组连接规格。
- */
-class JoinModel private constructor(joinSpecifications: List<JoinSpecification>) {
-
-    private val joinSpecifications: MutableList<JoinSpecification> = ArrayList()
+class JoinModel(
+    private val joinSpecifications: List<JoinSpecification> = emptyList()
+) {
 
     init {
-        Objects.requireNonNull(joinSpecifications)
         Validator.assertNotEmpty(joinSpecifications, "ERROR.15") //$NON-NLS-1$
-        this.joinSpecifications.addAll(joinSpecifications)
     }
 
-    fun joinSpecifications(): Stream<JoinSpecification> {
-        return joinSpecifications.stream()
+    fun joinSpecifications(): List<JoinSpecification> {
+        return joinSpecifications
     }
 
     fun containsSubQueries(): Boolean {
@@ -44,11 +39,4 @@ class JoinModel private constructor(joinSpecifications: List<JoinSpecification>)
             .anyMatch { tableExpression: TableExpression -> tableExpression.isSubQuery }
     }
 
-    companion object {
-
-        @JvmStatic
-        fun of(joinSpecifications: List<JoinSpecification>): JoinModel {
-            return JoinModel(joinSpecifications)
-        }
-    }
 }

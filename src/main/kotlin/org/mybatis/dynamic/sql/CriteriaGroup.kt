@@ -15,7 +15,6 @@
  */
 package org.mybatis.dynamic.sql
 
-import java.util.*
 
 /**
  * This class represents a criteria group without an AND or an OR connector. This is useful
@@ -26,13 +25,10 @@ import java.util.*
  *
  * @since 1.4.0
  */
-open class CriteriaGroup protected constructor(builder: AbstractGroupBuilder<*>) : SqlCriterion(builder) {
-
-    private val initialCriterion: SqlCriterion
-
-    init {
-        initialCriterion = builder.initialCriterion
-    }
+open class CriteriaGroup @JvmOverloads constructor(
+    private val initialCriterion: SqlCriterion,
+    subCriteria: List<AndOrCriteriaGroup> = emptyList()
+) : SqlCriterion(subCriteria) {
 
     fun initialCriterion(): SqlCriterion {
         return initialCriterion
@@ -42,25 +38,4 @@ open class CriteriaGroup protected constructor(builder: AbstractGroupBuilder<*>)
         return visitor.visit(this)
     }
 
-    abstract class AbstractGroupBuilder<T : AbstractGroupBuilder<T>> : AbstractBuilder<T>() {
-
-        lateinit var initialCriterion: SqlCriterion
-
-        fun withInitialCriterion(initialCriterion: SqlCriterion): T {
-            this.initialCriterion = initialCriterion
-            return self()
-        }
-
-    }
-
-    class Builder : AbstractGroupBuilder<Builder>() {
-
-        fun build(): CriteriaGroup {
-            return CriteriaGroup(this)
-        }
-
-        override fun self(): Builder {
-            return this
-        }
-    }
 }

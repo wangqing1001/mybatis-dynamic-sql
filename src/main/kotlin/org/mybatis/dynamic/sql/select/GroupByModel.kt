@@ -23,22 +23,21 @@ import java.util.stream.Stream
 /**
  * group by 子句模型。
  */
-class GroupByModel private constructor(columns: Collection<BasicColumn>) {
-    private val columns: MutableList<BasicColumn> = ArrayList()
+class GroupByModel(
+    private val columns: List<BasicColumn>
+) {
 
     init {
-        Objects.requireNonNull(columns)
         Validator.assertNotEmpty(columns, "ERROR.11") //$NON-NLS-1$
-        this.columns.addAll(columns)
     }
 
-    fun columns(): Stream<BasicColumn> {
-        return columns.stream()
+    fun columns(): List<BasicColumn> {
+        return columns
     }
 
     companion object {
         @JvmStatic
-        fun of(columns: Collection<BasicColumn>): GroupByModel {
+        fun of(columns: List<BasicColumn>): GroupByModel {
             return GroupByModel(columns)
         }
     }

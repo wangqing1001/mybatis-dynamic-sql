@@ -15,7 +15,6 @@
  */
 package org.mybatis.dynamic.sql.render
 
-import java.util.Objects
 
 /**
  * 渲染后的参数信息。包含参数映射键与渲染后的占位符。
@@ -23,9 +22,4 @@ import java.util.Objects
 data class RenderedParameterInfo(
     val parameterMapKey: String,
     val renderedPlaceHolder: String
-) {
-    init {
-        Objects.requireNonNull(parameterMapKey)
-        Objects.requireNonNull(renderedPlaceHolder)
-    }
-}
+)

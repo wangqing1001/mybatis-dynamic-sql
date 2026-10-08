@@ -21,12 +21,11 @@ import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.select.caseexpression.SearchedCaseModel
 import org.mybatis.dynamic.sql.select.caseexpression.SearchedCaseWhenCondition
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import org.mybatis.dynamic.sql.util.FragmentCollector
 import org.mybatis.dynamic.sql.util.Messages
+import org.mybatis.dynamic.sql.util.toFragmentCollector
 import java.util.Objects
 import java.util.Optional
-import java.util.stream.Collectors
-import java.util.stream.Stream
+
 
 /**
  * 搜索式 case 表达式渲染器。
@@ -44,38 +43,30 @@ class SearchedCaseRenderer(
     }
 
     fun render(): FragmentAndParameters {
-        val fc = FragmentCollector()
-        fc.add(renderCase())
-        fc.add(renderWhenConditions())
-        renderElse().ifPresent { fc.add(it) }
-        fc.add(renderEnd())
-        return fc.toFragmentAndParameters(Collectors.joining(" ")) //$NON-NLS-1$
+        val list = mutableListOf(renderCase(),renderWhenConditions())
+        renderElse().ifPresent { list.add(it) }
+        list.add(renderEnd())
+        return list.toFragmentCollector().toFragmentAndParameters(" ") //$NON-NLS-1$
     }
 
     private fun renderCase(): FragmentAndParameters {
-        return FragmentAndParameters.fromFragment("case") //$NON-NLS-1$
+        return FragmentAndParameters("case") //$NON-NLS-1$
     }
 
     private fun renderWhenConditions(): FragmentAndParameters {
-        return searchedCaseModel.whenConditions().map { whenCondition: SearchedCaseWhenCondition ->
-            renderWhenCondition(whenCondition)
-        }
-            .collect(FragmentCollector.collect())
-            .toFragmentAndParameters(Collectors.joining(" ")) //$NON-NLS-1$
+        return searchedCaseModel.whenConditions().map {
+            renderWhenCondition(it)
+        }.toFragmentCollector().toFragmentAndParameters(" ")
     }
 
     private fun renderWhenCondition(whenCondition: SearchedCaseWhenCondition): FragmentAndParameters {
-        return Stream.of(renderWhen(whenCondition), renderThen(whenCondition)).collect(FragmentCollector.collect())
-            .toFragmentAndParameters(Collectors.joining(" ")) //$NON-NLS-1$
+        return listOf(renderWhen(whenCondition), renderThen(whenCondition))
+            .toFragmentCollector().toFragmentAndParameters(" ")
     }
 
     private fun renderWhen(whenCondition: SearchedCaseWhenCondition): FragmentAndParameters {
-        val renderer = SearchedCaseWhenConditionRenderer.Builder(whenCondition)
-            .withRenderingContext(renderingContext)
-            .build()
-
-        return renderer.render()
-            .orElseThrow { InvalidSqlException(Messages.getString("ERROR.39")) } //$NON-NLS-1$
+        return  SearchedCaseWhenConditionRenderer(whenCondition,renderingContext).render()
+            ?: throw InvalidSqlException(Messages.getString("ERROR.39"))
     }
 
     private fun renderThen(whenCondition: SearchedCaseWhenCondition): FragmentAndParameters {
@@ -91,6 +82,6 @@ class SearchedCaseRenderer(
     }
 
     private fun renderEnd(): FragmentAndParameters {
-        return FragmentAndParameters.fromFragment("end") //$NON-NLS-1$
+        return FragmentAndParameters("end") //$NON-NLS-1$
     }
 }

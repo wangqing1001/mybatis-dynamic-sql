@@ -41,14 +41,7 @@ class Sum<T> private constructor(
         column,
         Function { rc: RenderingContext ->
             Validator.assertTrue(condition.shouldRender(rc), "ERROR.37", "sum") //$NON-NLS-1$ //$NON-NLS-2$
-
-            ColumnAndConditionRenderer.Builder<T>()
-                .withColumn(column)
-                .withCondition(condition)
-                .withRenderingContext(rc)
-                .build()
-                .render()
-                .mapFragment {  "sum($it)" }
+            return@Function ColumnAndConditionRenderer(column,condition,rc).render().mapFragment {  "sum($it)" }
         }
     )
 

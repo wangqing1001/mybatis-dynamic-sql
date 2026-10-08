@@ -36,10 +36,7 @@ class KSearchedCaseDSL : KElseDSL {
     fun `when`(dslCompleter: SearchedCaseCriteriaCollector.() -> Unit) =
         SearchedCaseCriteriaCollector().apply(dslCompleter).run {
             assertNotNull(thenValue, "ERROR.47") //$NON-NLS-1$
-            whenConditions.add(SearchedCaseWhenCondition.Builder().withInitialCriterion(initialCriterion)
-                .withSubCriteria(subCriteria)
-                .withThenValue(thenValue!!)
-                .build())
+            whenConditions.add(SearchedCaseWhenCondition(thenValue!!,initialCriterion,subCriteria))
         }
 
     override infix fun `else`(column: BasicColumn) {
@@ -68,10 +65,10 @@ class KSimpleCaseDSL<T : Any> : KElseDSL {
     internal val whenConditions = mutableListOf<SimpleCaseWhenCondition<T>>()
 
     fun `when`(vararg conditions: RenderableCondition<T>) =
-        SimpleCaseThenGatherer { whenConditions.add(ConditionBasedWhenCondition(conditions.asList(), it)) }
+        SimpleCaseThenGatherer { whenConditions.add(ConditionBasedWhenCondition(it,conditions.asList())) }
 
     fun `when`(vararg values: T) =
-        SimpleCaseThenGatherer { whenConditions.add(BasicWhenCondition(values.asList(), it)) }
+        SimpleCaseThenGatherer { whenConditions.add(BasicWhenCondition(it,values.asList())) }
 
     override infix fun `else`(column: BasicColumn) {
         this.elseValue = column

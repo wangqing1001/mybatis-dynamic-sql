@@ -52,13 +52,8 @@ abstract class AbstractJoinSupport<D : JoinOperations<F>, F : AbstractJoinSuppor
 
     abstract fun endJoin(): D
 
-    // 注意:Kotlin 中 protected 成员仅子类可访问(Java 中同包也可访问),
-    // 此处 buildJoinModel() 需要跨类调用,故改为 internal。
+
     internal fun toJoinSpecification(): JoinSpecification {
-        return JoinSpecification.withJoinTable(Objects.requireNonNull(joinTable))
-            .withJoinType(Objects.requireNonNull(joinType))
-            .withInitialCriterion(initialCriterion)
-            .withSubCriteria(subCriteria)
-            .build()
+        return JoinSpecification(joinTable,joinType,initialCriterion,subCriteria)
     }
 }

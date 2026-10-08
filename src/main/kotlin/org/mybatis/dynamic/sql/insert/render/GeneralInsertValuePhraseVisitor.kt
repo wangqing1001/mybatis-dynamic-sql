@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql.insert.render
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping
 import org.mybatis.dynamic.sql.util.ConstantMapping
+import org.mybatis.dynamic.sql.util.FieldAndValueAndParameters
 import org.mybatis.dynamic.sql.util.GeneralInsertMappingVisitor
 import org.mybatis.dynamic.sql.util.NullMapping
 import org.mybatis.dynamic.sql.util.StringConstantMapping
@@ -26,61 +27,53 @@ import org.mybatis.dynamic.sql.util.ValueMapping
 import org.mybatis.dynamic.sql.util.ValueOrNullMapping
 import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping
 import java.util.Objects
-import java.util.Optional
 
 /**
  * 通用 insert 值短语访问器。
  */
 class GeneralInsertValuePhraseVisitor(renderingContext: RenderingContext) :
-    GeneralInsertMappingVisitor<Optional<FieldAndValueAndParameters>>() {
+    GeneralInsertMappingVisitor<FieldAndValueAndParameters?>() {
 
     private val renderingContext: RenderingContext = Objects.requireNonNull(renderingContext)
 
-    override fun visit(mapping: NullMapping): Optional<FieldAndValueAndParameters> {
+    override fun visit(mapping: NullMapping): FieldAndValueAndParameters {
         return buildNullFragment(mapping)
     }
 
-    override fun visit(mapping: ConstantMapping): Optional<FieldAndValueAndParameters> {
-        return FieldAndValueAndParameters.withFieldName(mapping.columnName())
-            .withValuePhrase(mapping.constant())
-            .buildOptional()
+    override fun visit(mapping: ConstantMapping): FieldAndValueAndParameters {
+        return FieldAndValueAndParameters(mapping.columnName(), mapping.constant())
     }
 
-    override fun visit(mapping: StringConstantMapping): Optional<FieldAndValueAndParameters> {
-        return FieldAndValueAndParameters.withFieldName(mapping.columnName())
-            .withValuePhrase(StringUtilities.formatConstantForSQL(mapping.constant()))
-            .buildOptional()
+    override fun visit(mapping: StringConstantMapping): FieldAndValueAndParameters {
+        val valuePhrase = StringUtilities.formatConstantForSQL(mapping.constant())
+        return FieldAndValueAndParameters(mapping.columnName(), valuePhrase)
     }
 
-    override fun <T> visit(mapping: ValueMapping<T>): Optional<FieldAndValueAndParameters> {
+    override fun <T> visit(mapping: ValueMapping<T>): FieldAndValueAndParameters {
         return buildValueFragment(mapping, mapping.value())
     }
 
-    override fun <T> visit(mapping: ValueOrNullMapping<T>): Optional<FieldAndValueAndParameters> {
+    override fun <T> visit(mapping: ValueOrNullMapping<T>): FieldAndValueAndParameters? {
         return mapping.value().map { v: Any -> buildValueFragment(mapping, v) }
             .orElseGet { buildNullFragment(mapping) }
     }
 
-    override fun <T> visit(mapping: ValueWhenPresentMapping<T>): Optional<FieldAndValueAndParameters> {
-        return mapping.value().flatMap { v: Any -> buildValueFragment(mapping, v) }
+    override fun <T> visit(mapping: ValueWhenPresentMapping<T>): FieldAndValueAndParameters? {
+        val value = mapping.value() ?:return null
+        return buildValueFragment(mapping, value)
     }
 
-    private fun buildValueFragment(mapping: AbstractColumnMapping, value: Any?): Optional<FieldAndValueAndParameters> {
+    private fun buildValueFragment(mapping: AbstractColumnMapping, value: Any?): FieldAndValueAndParameters {
         return buildFragment(mapping, value)
     }
 
-    private fun buildNullFragment(mapping: AbstractColumnMapping): Optional<FieldAndValueAndParameters> {
-        return FieldAndValueAndParameters.withFieldName(mapping.columnName())
-            .withValuePhrase("null") //$NON-NLS-1$
-            .buildOptional()
+    private fun buildNullFragment(mapping: AbstractColumnMapping): FieldAndValueAndParameters {
+        return FieldAndValueAndParameters(mapping.columnName(), "null")
     }
 
-    private fun buildFragment(mapping: AbstractColumnMapping, value: Any?): Optional<FieldAndValueAndParameters> {
+    private fun buildFragment(mapping: AbstractColumnMapping, value: Any?): FieldAndValueAndParameters {
         val parameterInfo = renderingContext.calculateParameterInfo(mapping.column())
-
-        return FieldAndValueAndParameters.withFieldName(mapping.columnName())
-            .withValuePhrase(parameterInfo.renderedPlaceHolder)
-            .withParameter(parameterInfo.parameterMapKey, value)
-            .buildOptional()
+        val parameters = mapOf(parameterInfo.parameterMapKey to value)
+        return FieldAndValueAndParameters(mapping.columnName(), parameterInfo.renderedPlaceHolder, parameters)
     }
 }

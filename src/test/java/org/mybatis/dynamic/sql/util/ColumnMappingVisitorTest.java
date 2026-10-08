@@ -117,7 +117,7 @@ class ColumnMappingVisitorTest {
     void testThatInsertVisitorErrorsForValueWhenPresentMapping() {
         TestTable table = new TestTable();
         InsertVisitor tv = new InsertVisitor();
-        ValueWhenPresentMapping<Integer> mapping = ValueWhenPresentMapping.of(table.id, () -> 3);
+        ValueWhenPresentMapping<Integer> mapping = new ValueWhenPresentMapping<>(table.id, () -> 3);
 
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping))
                 .withMessage("Internal Error 7");
@@ -157,7 +157,7 @@ class ColumnMappingVisitorTest {
     void testThatMultiRowInsertVisitorErrorsForValueWhenPresentMapping() {
         TestTable table = new TestTable();
         MultiRowInsertVisitor tv = new MultiRowInsertVisitor();
-        ValueWhenPresentMapping<Integer> mapping = ValueWhenPresentMapping.of(table.id, () -> 3);
+        ValueWhenPresentMapping<Integer> mapping = new ValueWhenPresentMapping<>(table.id, () -> 3);
 
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping))
                 .withMessage("Internal Error 7");

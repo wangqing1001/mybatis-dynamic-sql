@@ -22,49 +22,19 @@ import java.util.Optional
 /**
  * 带父级表别名计算器。先查询子计算器,再回退到父计算器。
  */
-class TableAliasCalculatorWithParent private constructor(builder: Builder) : TableAliasCalculator {
-    private val parent: TableAliasCalculator
+class TableAliasCalculatorWithParent(
+    private val parent: TableAliasCalculator,
     private val child: TableAliasCalculator
+) : TableAliasCalculator {
 
-    init {
-        parent = Objects.requireNonNull(builder.parent)
-        child = Objects.requireNonNull(builder.child)
-    }
-
-    override fun aliasForColumn(table: SqlTable): Optional<String> {
+    override fun aliasForColumn(table: SqlTable): String? {
         val answer = child.aliasForColumn(table)
-        return if (answer.isPresent) {
-            answer
-        } else {
-            parent.aliasForColumn(table)
-        }
+        return answer ?: parent.aliasForColumn(table)
     }
 
-    override fun aliasForTable(table: SqlTable): Optional<String> {
+    override fun aliasForTable(table: SqlTable): String? {
         val answer = child.aliasForTable(table)
-        return if (answer.isPresent) {
-            answer
-        } else {
-            parent.aliasForTable(table)
-        }
+        return answer ?: parent.aliasForTable(table)
     }
 
-    class Builder {
-        lateinit var parent: TableAliasCalculator
-        lateinit var child: TableAliasCalculator
-
-        fun withParent(parent: TableAliasCalculator): Builder {
-            this.parent = parent
-            return this
-        }
-
-        fun withChild(child: TableAliasCalculator): Builder {
-            this.child = child
-            return this
-        }
-
-        fun build(): TableAliasCalculatorWithParent {
-            return TableAliasCalculatorWithParent(this)
-        }
-    }
 }

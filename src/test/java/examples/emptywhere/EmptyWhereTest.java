@@ -27,13 +27,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mybatis.dynamic.sql.dsl.DeleteDSL;
-import org.mybatis.dynamic.sql.delete.DeleteModel;
-import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
+import org.mybatis.dynamic.sql.delete.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.dsl.SelectDSL;
 import org.mybatis.dynamic.sql.dsl.UpdateDSL;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
-import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
+import org.mybatis.dynamic.sql.update.UpdateStatementProvider;
 
 class EmptyWhereTest {
     private static final String FIRST_NAME = "Fred";

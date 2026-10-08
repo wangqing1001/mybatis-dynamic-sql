@@ -26,10 +26,7 @@ import org.mybatis.dynamic.sql.util.FragmentAndParameters
  */
 interface CaseInsensitiveRenderableCondition<T> : RenderableCondition<T> {
 
-    override fun renderLeftColumn(
-        renderingContext: RenderingContext,
-        leftColumn: BindableColumn<T>
-    ): FragmentAndParameters? {
-        return super.renderLeftColumn(renderingContext, leftColumn)?.mapFragment { s: String -> "upper(" + s + ")" } //$NON-NLS-1$ //$NON-NLS-2$
+    override fun renderLeftColumn(renderingContext: RenderingContext,leftColumn: BindableColumn<T>): FragmentAndParameters {
+        return super.renderLeftColumn(renderingContext, leftColumn).mapFragment {  "upper($it)" }
     }
 }

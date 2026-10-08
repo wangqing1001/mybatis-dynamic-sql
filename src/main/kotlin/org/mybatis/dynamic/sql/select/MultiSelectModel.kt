@@ -15,7 +15,10 @@
  */
 package org.mybatis.dynamic.sql.select
 
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration
+import org.mybatis.dynamic.sql.order.OrderByModel
 import org.mybatis.dynamic.sql.render.RenderingStrategy
+import org.mybatis.dynamic.sql.select.paging.PagingModel
 import org.mybatis.dynamic.sql.select.render.MultiSelectRenderer
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
 import org.mybatis.dynamic.sql.util.Validator
@@ -25,13 +28,15 @@ import java.util.stream.Stream
 /**
  * 多 select 语句模型。包含初始 select 与多个 union 查询。
  */
-class MultiSelectModel private constructor(builder: Builder) : AbstractSelectModel(builder) {
-    private val initialSelect: SelectModel
-    private val unionQueries: List<UnionQuery>
+class MultiSelectModel @JvmOverloads constructor(
+    private val initialSelect: SelectModel,
+    private val unionQueries: List<UnionQuery>,
+    statementConfiguration: StatementConfiguration,
+    orderByModel: OrderByModel? = null,
+    pagingModel: PagingModel? = null,
+) : AbstractSelectModel(orderByModel,pagingModel,statementConfiguration) {
 
     init {
-        initialSelect = Objects.requireNonNull(builder.initialSelect!!)
-        unionQueries = builder.unionQueries
         Validator.assertNotEmpty(unionQueries, "ERROR.35") //$NON-NLS-1$
     }
 
@@ -39,38 +44,13 @@ class MultiSelectModel private constructor(builder: Builder) : AbstractSelectMod
         return initialSelect
     }
 
-    fun unionQueries(): Stream<UnionQuery> {
-        return unionQueries.stream()
+    fun unionQueries(): List<UnionQuery> {
+        return unionQueries
     }
 
     fun render(renderingStrategy: RenderingStrategy): SelectStatementProvider {
-        return MultiSelectRenderer.withMultiSelectModel(this)
-            .withRenderingStrategy(renderingStrategy)
-            .build()
-            .render()
+        return MultiSelectRenderer(this,renderingStrategy).render()
     }
 
-    class Builder : AbstractBuilder<Builder>() {
-        // 字段公开,以便外部类 MultiSelectModel 访问(Kotlin 嵌套类与 Java 不同,外部类无法访问嵌套类私有成员)
-        var initialSelect: SelectModel? = null
-        val unionQueries: MutableList<UnionQuery> = ArrayList()
 
-        fun withInitialSelect(initialSelect: SelectModel): Builder {
-            this.initialSelect = initialSelect
-            return this
-        }
-
-        fun withUnionQueries(unionQueries: List<UnionQuery>): Builder {
-            this.unionQueries.addAll(unionQueries)
-            return this
-        }
-
-        override fun getThis(): Builder {
-            return this
-        }
-
-        fun build(): MultiSelectModel {
-            return MultiSelectModel(this)
-        }
-    }
 }

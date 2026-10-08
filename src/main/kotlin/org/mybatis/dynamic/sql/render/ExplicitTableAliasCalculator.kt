@@ -23,37 +23,21 @@ import java.util.Optional
 /**
  * 显式表别名计算器。基于显式指定的别名映射计算别名。
  */
-open class ExplicitTableAliasCalculator protected constructor(aliases: Map<SqlTable, String>) : TableAliasCalculator {
-    private val aliases: Map<SqlTable, String> = Objects.requireNonNull(aliases)
+open class ExplicitTableAliasCalculator(
+    private val aliases: Map<SqlTable, String>
+) : TableAliasCalculator {
 
-    override fun aliasForColumn(table: SqlTable): Optional<String> {
+    override fun aliasForColumn(table: SqlTable): String? {
         return explicitAliasOrTableAlias(table)
     }
 
-    override fun aliasForTable(table: SqlTable): Optional<String> {
+    override fun aliasForTable(table: SqlTable): String? {
         return explicitAliasOrTableAlias(table)
     }
 
-    private fun explicitAliasOrTableAlias(table: SqlTable): Optional<String> {
+    private fun explicitAliasOrTableAlias(table: SqlTable): String? {
         val alias = aliases[table]
-        return if (alias == null) {
-            table.tableAlias()
-        } else {
-            Optional.of(alias)
-        }
+        return alias ?: table.tableAlias()
     }
 
-    companion object {
-        @JvmStatic
-        fun of(table: SqlTable, alias: String): TableAliasCalculator {
-            val tableAliases = HashMap<SqlTable, String>()
-            tableAliases[table] = alias
-            return of(tableAliases)
-        }
-
-        @JvmStatic
-        fun of(aliases: Map<SqlTable, String>): TableAliasCalculator {
-            return ExplicitTableAliasCalculator(aliases)
-        }
-    }
 }

@@ -21,6 +21,7 @@ import org.mybatis.dynamic.sql.util.Buildable
  * limit 与 offset 操作接口。
  */
 interface LimitAndOffsetOperations<T, M> {
+
     fun limit(limit: Long): LimitFinisher<T, M> {
         return limitWhenPresent(limit)
     }
@@ -40,22 +41,28 @@ interface LimitAndOffsetOperations<T, M> {
     fun fetchFirstWhenPresent(fetchFirstRows: Long?): FetchFirstFinisher<T>
 
     interface OffsetFirstFinisher<T, M> : ForAndWaitOperations<T>, OrderByOperations<T>, Buildable<M> {
+
         fun fetchFirst(fetchFirstRows: Long): FetchFirstFinisher<T> {
             return fetchFirstWhenPresent(fetchFirstRows)
         }
 
         fun fetchFirstWhenPresent(fetchFirstRows: Long?): FetchFirstFinisher<T>
+
     }
 
     interface LimitFinisher<T, M> : ForAndWaitOperations<T>, OrderByOperations<T>, Buildable<M> {
+
         fun offset(offset: Long): T {
             return offsetWhenPresent(offset)
         }
 
         fun offsetWhenPresent(offset: Long?): T
+
     }
 
     interface FetchFirstFinisher<T> {
+
         fun rowsOnly(): T
+
     }
 }

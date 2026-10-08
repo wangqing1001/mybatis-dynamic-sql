@@ -45,10 +45,9 @@ class CriterionRendererTest {
                 .withCondition(condition)
                 .build();
 
-        RenderingContext renderingContext = RenderingContext
-                .withRenderingStrategy(RenderingStrategies.MYBATIS3)
-                .withStatementConfiguration(new StatementConfiguration())
-                .build();
+        RenderingContext renderingContext = new RenderingContext(RenderingStrategies.MYBATIS3,new StatementConfiguration());
+
+
 
         CriterionRenderer renderer = new CriterionRenderer(renderingContext);
 
@@ -71,11 +70,10 @@ class CriterionRendererTest {
         Map<SqlTable, String> tableAliases = new HashMap<>();
         tableAliases.put(table, "a");
 
-        RenderingContext renderingContext = RenderingContext
-                .withRenderingStrategy(RenderingStrategies.MYBATIS3)
-                .withTableAliasCalculator(ExplicitTableAliasCalculator.of(tableAliases))
-                .withStatementConfiguration(new StatementConfiguration())
-                .build();
+
+        RenderingContext renderingContext = new RenderingContext(RenderingStrategies.MYBATIS3,new StatementConfiguration(),new ExplicitTableAliasCalculator(tableAliases));
+
+
 
         CriterionRenderer renderer = new CriterionRenderer(renderingContext);
 

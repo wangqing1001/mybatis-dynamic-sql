@@ -41,7 +41,7 @@ public class CountAll implements BasicColumn {
     private String alias;
 
     @Override
-    public FragmentAndParameters render(RenderingContext renderingContext) {
+    public FragmentAndParameters render(RenderingContext renderingContext) {FragmentAndParameters("count(*)")
         return FragmentAndParameters.fromFragment("count(*)"); //$NON-NLS-1$
     }
 

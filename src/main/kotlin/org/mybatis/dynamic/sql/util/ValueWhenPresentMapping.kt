@@ -23,34 +23,24 @@ import java.util.function.Supplier
 /**
  * 表示将列映射到值、且仅在值存在时渲染的映射。
  */
-class ValueWhenPresentMapping<T> private constructor(
+class ValueWhenPresentMapping<T>(
     column: SqlColumn<T>,
     private val valueSupplier: Supplier<T?>
 ) : AbstractColumnMapping(column) {
-    // 保留对列的引用,以免丢失类型
-    private val localColumn: SqlColumn<T>
 
-    init {
-        Objects.requireNonNull(valueSupplier)
-        localColumn = Objects.requireNonNull(column)
+    private val localColumn: SqlColumn<T> = column
+
+    fun value(): Any? {
+        val value = valueSupplier.get()?:return null
+        return convert(value)
     }
 
-    fun value(): Optional<Any> {
-        return Optional.ofNullable(valueSupplier.get()).flatMap { convert(it) }
-    }
-
-    private fun convert(value: T): Optional<Any> {
-        return Optional.ofNullable(localColumn.convertParameterType(value))
+    private fun convert(value: T): Any? {
+        return localColumn.convertParameterType(value)
     }
 
     override fun <R> accept(visitor: ColumnMappingVisitor<R>): R {
         return visitor.visit(this)
     }
 
-    companion object {
-        @JvmStatic
-        fun <T> of(column: SqlColumn<T>, valueSupplier: Supplier<T?>): ValueWhenPresentMapping<T> {
-            return ValueWhenPresentMapping(column, valueSupplier)
-        }
-    }
 }

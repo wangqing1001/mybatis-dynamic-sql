@@ -1,22 +1,8 @@
-/*
- *    Copyright 2016-2025 the original author or authors.
- *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *       https://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
- */
-package org.mybatis.dynamic.sql.insert
+package org.mybatis.dynamic.sql.dsl
 
 import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.SqlTable
+import org.mybatis.dynamic.sql.insert.BatchInsertModel
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping
 import org.mybatis.dynamic.sql.util.Buildable
 import org.mybatis.dynamic.sql.util.ConstantMapping
@@ -25,15 +11,13 @@ import org.mybatis.dynamic.sql.util.NullMapping
 import org.mybatis.dynamic.sql.util.PropertyMapping
 import org.mybatis.dynamic.sql.util.RowMapping
 import org.mybatis.dynamic.sql.util.StringConstantMapping
-import java.util.ArrayList
-import java.util.Arrays
 import java.util.Objects
 
 /**
  * 批量 insert DSL。
  */
 class BatchInsertDSL<T> private constructor(builder: AbstractBuilder<T, *>) : Buildable<BatchInsertModel<T>> {
-    private val records: Collection<T>
+    private val records: List<T>
     private val table: SqlTable
     private val columnMappings: MutableList<AbstractColumnMapping>
 
@@ -53,17 +37,14 @@ class BatchInsertDSL<T> private constructor(builder: AbstractBuilder<T, *>) : Bu
     }
 
     override fun build(): BatchInsertModel<T> {
-        return BatchInsertModel.withRecords(records)
-            .withTable(table)
-            .withColumnMappings(columnMappings)
-            .build()
+        return BatchInsertModel(table, records, columnMappings)
     }
 
     companion object {
         @JvmStatic
         @SafeVarargs
         fun <T> insert(vararg records: T): IntoGatherer<T> {
-            return insert(Arrays.asList(*records))
+            return insert(listOf(*records))
         }
 
         @JvmStatic
@@ -108,9 +89,9 @@ class BatchInsertDSL<T> private constructor(builder: AbstractBuilder<T, *>) : Bu
 
     abstract class AbstractBuilder<T, B : AbstractBuilder<T, B>> {
         // 字段公开,以便外部类访问(Kotlin 外部类不能访问嵌套类私有成员)
-        val records: MutableCollection<T> = ArrayList()
+        val records: MutableList<T> = mutableListOf()
         lateinit var table: SqlTable
-        val columnMappings: MutableList<AbstractColumnMapping> = ArrayList()
+        val columnMappings: MutableList<AbstractColumnMapping> =  mutableListOf()
 
         fun withRecords(records: Collection<T>): B {
             this.records.addAll(records)

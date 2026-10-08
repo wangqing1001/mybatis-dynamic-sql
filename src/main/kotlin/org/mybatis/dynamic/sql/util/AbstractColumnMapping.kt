@@ -21,14 +21,12 @@ import java.util.Objects
 /**
  * 列映射抽象基类。
  */
-abstract class AbstractColumnMapping protected constructor(column: SqlColumn<*>) {
-    protected val column: SqlColumn<*> = Objects.requireNonNull(column)
+abstract class AbstractColumnMapping protected constructor(protected val column: SqlColumn<*>) {
 
     fun columnName(): String {
         return column.name()
     }
 
-    @Suppress("java:S1452")
     fun column(): SqlColumn<*> {
         return column
     }

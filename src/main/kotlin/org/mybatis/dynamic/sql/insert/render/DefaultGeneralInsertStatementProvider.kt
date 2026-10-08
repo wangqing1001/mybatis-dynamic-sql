@@ -15,47 +15,8 @@
  */
 package org.mybatis.dynamic.sql.insert.render
 
-import java.util.Objects
 
-/**
- * 默认通用 insert 语句提供者。
- */
-class DefaultGeneralInsertStatementProvider private constructor(builder: Builder) :
-    GeneralInsertStatementProvider, InsertSelectStatementProvider {
-    override val insertStatement: String
+class DefaultGeneralInsertStatementProvider(
+    override val insertStatement: String,
     override val parameters: Map<String, Any?>
-
-    init {
-        insertStatement = Objects.requireNonNull(builder.insertStatement)
-        parameters = builder.parameters
-    }
-
-
-
-    companion object {
-        @JvmStatic
-        fun withInsertStatement(insertStatement: String): Builder {
-            return Builder().withInsertStatement(insertStatement)
-        }
-    }
-
-    class Builder {
-        // 字段公开,以便外部类访问(Kotlin 外部类不能访问嵌套类私有成员)
-        lateinit var insertStatement: String
-        val parameters: MutableMap<String, Any?> = HashMap()
-
-        fun withInsertStatement(insertStatement: String): Builder {
-            this.insertStatement = insertStatement
-            return this
-        }
-
-        fun withParameters(parameters: Map<String, Any?>): Builder {
-            this.parameters.putAll(parameters)
-            return this
-        }
-
-        fun build(): DefaultGeneralInsertStatementProvider {
-            return DefaultGeneralInsertStatementProvider(this)
-        }
-    }
-}
+) : GeneralInsertStatementProvider, InsertSelectStatementProvider

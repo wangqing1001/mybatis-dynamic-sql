@@ -15,35 +15,13 @@
  */
 package org.mybatis.dynamic.sql
 
-import java.util.*
 
-abstract class SqlCriterion {
-
-    private val subCriteria: MutableList<AndOrCriteriaGroup> = mutableListOf()
-
-    protected constructor()
-
-    protected constructor(builder: AbstractBuilder<*>) {
-        subCriteria.addAll(builder.subCriteria)
-    }
+abstract class SqlCriterion(private val subCriteria: List<AndOrCriteriaGroup> = emptyList()) {
 
     abstract fun <R> accept(visitor: SqlCriterionVisitor<R>): R
 
-
-    fun subCriteria(): MutableList<AndOrCriteriaGroup?> {
-        return Collections.unmodifiableList<AndOrCriteriaGroup?>(subCriteria)
+    fun subCriteria(): List<AndOrCriteriaGroup> {
+        return subCriteria
     }
 
-
-    abstract class AbstractBuilder<T : AbstractBuilder<T>> {
-
-        val subCriteria: MutableList<AndOrCriteriaGroup> = mutableListOf()
-
-        fun withSubCriteria(subCriteria: List<AndOrCriteriaGroup>): T {
-            this.subCriteria.addAll(subCriteria)
-            return self()
-        }
-
-        protected abstract fun self():T
-    }
 }

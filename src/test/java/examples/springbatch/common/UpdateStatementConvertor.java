@@ -22,7 +22,7 @@ import java.util.Objects;
 
 import org.mybatis.dynamic.sql.dsl.UpdateDSL;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
-import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider;
+import org.mybatis.dynamic.sql.update.UpdateStatementProvider;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 

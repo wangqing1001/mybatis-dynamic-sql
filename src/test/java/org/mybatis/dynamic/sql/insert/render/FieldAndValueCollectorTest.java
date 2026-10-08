@@ -18,21 +18,18 @@ package org.mybatis.dynamic.sql.insert.render;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
+import org.mybatis.dynamic.sql.util.FieldAndValueAndParameters;
+import org.mybatis.dynamic.sql.util.FieldAndValueCollector;
+
+import java.util.List;
 
 class FieldAndValueCollectorTest {
 
     @Test
     void testMerge() {
-        FieldAndValueCollector collector1 = new FieldAndValueCollector();
-        FieldAndValueAndParameters fvp1 = FieldAndValueAndParameters.withFieldName("f1").withValuePhrase("3").build();
-        collector1.add(fvp1);
-
-        FieldAndValueCollector collector2 = new FieldAndValueCollector();
-        FieldAndValueAndParameters fvp2 = FieldAndValueAndParameters.withFieldName("f2").withValuePhrase("4").build();
-        collector2.add(fvp2);
-
-        collector1.merge(collector2);
-
+        FieldAndValueAndParameters fvp1 = new FieldAndValueAndParameters("f1","3");
+        FieldAndValueAndParameters fvp2 = new FieldAndValueAndParameters("f2","4");
+        FieldAndValueCollector collector1 = new FieldAndValueCollector(List.of(fvp1,fvp2));
         assertThat(collector1.columnsPhrase()).isEqualTo("(f1, f2)");
         assertThat(collector1.valuesPhrase()).isEqualTo("values (3, 4)");
     }

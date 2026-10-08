@@ -18,7 +18,6 @@ package org.mybatis.dynamic.sql.dsl
 import org.mybatis.dynamic.sql.SortSpecification
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.util.Buildable
-import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils
 import java.util.function.Function
 
 /**

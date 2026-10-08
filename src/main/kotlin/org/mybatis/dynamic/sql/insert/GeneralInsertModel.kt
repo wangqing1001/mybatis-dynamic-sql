@@ -22,27 +22,22 @@ import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider
 import org.mybatis.dynamic.sql.render.RenderingStrategy
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping
 import org.mybatis.dynamic.sql.util.Validator
-import java.util.ArrayList
-import java.util.Objects
-import java.util.stream.Stream
 
 /**
  * 通用 insert 模型。
  */
-class GeneralInsertModel private constructor(builder: Builder) {
-    private val table: SqlTable
-    private val insertMappings: List<AbstractColumnMapping>
-    private val statementConfiguration: StatementConfiguration
+class GeneralInsertModel @JvmOverloads constructor(
+    private val table: SqlTable,
+    private val statementConfiguration: StatementConfiguration,
+    private val insertMappings: List<AbstractColumnMapping> = emptyList(),
+) {
 
     init {
-        table = Objects.requireNonNull(builder.table)
-        Validator.assertNotEmpty(builder.insertMappings, "ERROR.6") //$NON-NLS-1$
-        insertMappings = builder.insertMappings
-        statementConfiguration = Objects.requireNonNull(builder.statementConfiguration)
+        Validator.assertNotEmpty(insertMappings, "ERROR.6") //$NON-NLS-1$
     }
 
-    fun columnMappings(): Stream<AbstractColumnMapping> {
-        return insertMappings.stream()
+    fun columnMappings(): List<AbstractColumnMapping> {
+        return insertMappings
     }
 
     fun table(): SqlTable {
@@ -54,35 +49,7 @@ class GeneralInsertModel private constructor(builder: Builder) {
     }
 
     fun render(renderingStrategy: RenderingStrategy): GeneralInsertStatementProvider {
-        return GeneralInsertRenderer.withInsertModel(this)
-            .withRenderingStrategy(renderingStrategy)
-            .build()
-            .render()
+        return GeneralInsertRenderer(this,renderingStrategy).render()
     }
 
-    class Builder {
-        // 字段公开,以便外部类访问(Kotlin 外部类不能访问嵌套类私有成员)
-        lateinit var table: SqlTable
-        val insertMappings: MutableList<AbstractColumnMapping> = ArrayList()
-        lateinit var statementConfiguration: StatementConfiguration
-
-        fun withTable(table: SqlTable): Builder {
-            this.table = table
-            return this
-        }
-
-        fun withInsertMappings(insertMappings: List<AbstractColumnMapping>): Builder {
-            this.insertMappings.addAll(insertMappings)
-            return this
-        }
-
-        fun withStatementConfiguration(statementConfiguration: StatementConfiguration): Builder {
-            this.statementConfiguration = statementConfiguration
-            return this
-        }
-
-        fun build(): GeneralInsertModel {
-            return GeneralInsertModel(this)
-        }
-    }
 }

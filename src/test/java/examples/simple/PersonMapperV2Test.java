@@ -49,7 +49,7 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.*;
-import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider;
+import org.mybatis.dynamic.sql.delete.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.dsl.CountDSL;
 import org.mybatis.dynamic.sql.dsl.CountDSLCompleter;
 import org.mybatis.dynamic.sql.dsl.DeleteDSL;
@@ -60,7 +60,7 @@ import org.mybatis.dynamic.sql.dsl.UpdateDSL;
 import org.mybatis.dynamic.sql.exception.NonRenderingWhereClauseException;
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
-import org.mybatis.dynamic.sql.select.HavingApplier;
+import org.mybatis.dynamic.sql.select.having.HavingApplier;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
 import org.mybatis.dynamic.sql.where.WhereApplier;
@@ -1410,11 +1410,7 @@ class PersonMapperV2Test {
         List<AndOrCriteriaGroup> groups = List.of(
                 new AndOrCriteriaGroup.Builder()
                         .withConnector("and")
-                        .withInitialCriterion(new ColumnAndConditionCriterion.Builder<Integer>()
-                                .withColumn(id)
-                                .withCondition(isGreaterThan(25))
-                                .build()
-                        ).build()
+                        .withInitialCriterion(new ColumnAndConditionCriterion<>(id,isGreaterThan(25))).build()
         );
 
         var selectStatement = SelectDSL.select(id, lastName)

@@ -30,7 +30,7 @@ class IsIn<T> private constructor(values: Collection<T>) : AbstractListValueCond
     AbstractListValueCondition.Filterable<T>, AbstractListValueCondition.Mappable<T> {
 
     override fun shouldRender(renderingContext: RenderingContext): Boolean {
-        Validator.assertNotEmpty(values, "ERROR.44", "IsIn") //$NON-NLS-1$ //$NON-NLS-2$
+        Validator.assertNotEmpty(values(), "ERROR.44", "IsIn") //$NON-NLS-1$ //$NON-NLS-2$
         return true
     }
 
@@ -38,11 +38,11 @@ class IsIn<T> private constructor(values: Collection<T>) : AbstractListValueCond
         return "in" //$NON-NLS-1$
     }
 
-    override fun filter(predicate: Predicate<in T>): IsIn<T> {
+    override fun filter(predicate: (T) -> Boolean): AbstractListValueCondition<T> {
         return filterSupport(predicate, { IsIn(it) }, this, { empty() })
     }
 
-    override fun <R> map(mapper: Function<in T, out R>): IsIn<R> {
+    override fun <R> map(mapper: (T) -> R): AbstractListValueCondition<R> {
         return mapSupport(mapper, { IsIn(it) }, { empty() })
     }
 

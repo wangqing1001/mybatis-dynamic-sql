@@ -15,15 +15,10 @@
  */
 package org.mybatis.dynamic.sql
 
-import java.util.*
-
-class ExistsCriterion private constructor(builder: Builder) : SqlCriterion(builder) {
-
-    private val existsPredicate: ExistsPredicate
-
-    init {
-        this.existsPredicate = Objects.requireNonNull(builder.existsPredicate)
-    }
+class ExistsCriterion @JvmOverloads constructor(
+    private val existsPredicate: ExistsPredicate,
+    subCriteria: List<AndOrCriteriaGroup> = emptyList()
+) : SqlCriterion(subCriteria) {
 
     fun existsPredicate(): ExistsPredicate {
         return existsPredicate
@@ -33,21 +28,4 @@ class ExistsCriterion private constructor(builder: Builder) : SqlCriterion(build
         return visitor.visit(this)
     }
 
-    class Builder : AbstractBuilder<Builder>() {
-
-        lateinit var existsPredicate: ExistsPredicate
-
-        fun withExistsPredicate(existsPredicate: ExistsPredicate): Builder {
-            this.existsPredicate = existsPredicate
-            return this
-        }
-
-        fun build(): ExistsCriterion {
-            return ExistsCriterion(this)
-        }
-
-        override fun self(): Builder {
-            return this
-        }
-    }
 }

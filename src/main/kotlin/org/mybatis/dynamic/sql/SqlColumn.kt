@@ -206,15 +206,14 @@ open class SqlColumn<T> protected constructor(builder: AbstractBuilder<T, *>) : 
     }
 
     override fun renderForOrderBy(renderingContext: RenderingContext): FragmentAndParameters {
-        return FragmentAndParameters.fromFragment((alias() ?: name) + descendingPhrase)
+        return FragmentAndParameters((alias() ?: name) + descendingPhrase)
     }
 
     override fun render(renderingContext: RenderingContext): FragmentAndParameters {
         if (tableQualifier == null) {
-            return FragmentAndParameters.fromFragment(renderingContext.aliasedColumnName<T>(this))
-        } else {
-            return FragmentAndParameters.fromFragment(renderingContext.aliasedColumnName<T>(this, tableQualifier))
+            return FragmentAndParameters(renderingContext.aliasedColumnName<T>(this))
         }
+        return FragmentAndParameters(renderingContext.aliasedColumnName<T>(this,tableQualifier))
     }
 
     override fun renderingStrategy(): RenderingStrategy? {

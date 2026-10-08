@@ -21,39 +21,32 @@ import java.util.stream.Collector
 /**
  * 片段收集器。用于收集渲染过程中的 SQL 片段与参数。
  */
-class FragmentCollector {
-    private val fragments: MutableList<String> = mutableListOf()
-    private val parameters: MutableMap<String, Any?> = mutableMapOf()
+class FragmentCollector(
+    private val fragments: List<String> = listOf(),
+    private val parameters: Map<String, Any?> = mapOf()
+) {
 
-    constructor()
-
-    private constructor(initialFragment: FragmentAndParameters) {
-        add(initialFragment)
-    }
-
-    fun add(fragmentAndParameters: FragmentAndParameters) {
-        fragments.add(fragmentAndParameters.fragment())
-        parameters.putAll(fragmentAndParameters.parameters())
-    }
-
-    fun merge(other: FragmentCollector): FragmentCollector {
-        fragments.addAll(other.fragments)
-        parameters.putAll(other.parameters)
-        return this
-    }
-
-    fun firstFragment(): Optional<String> {
-        return fragments.stream().findFirst()
+    fun firstFragment(): String? {
+        return fragments.firstOrNull()
     }
 
     fun collectFragments(fragmentCollector: Collector<CharSequence, *, String>): String {
         return fragments.stream().collect(fragmentCollector)
     }
 
+    @JvmOverloads
+    fun collectFragments(separator: CharSequence, prefix: CharSequence = "", postfix: CharSequence = ""): String {
+        return this.fragments.joinToString(separator, prefix, postfix )
+    }
+
+
     fun toFragmentAndParameters(fragmentCollector: Collector<CharSequence, *, String>): FragmentAndParameters {
-        return FragmentAndParameters.withFragment(collectFragments(fragmentCollector))
-            .withParameters(parameters())
-            .build()
+        return FragmentAndParameters(collectFragments(fragmentCollector), parameters())
+    }
+
+    fun toFragmentAndParameters(separator: CharSequence, prefix: CharSequence = "", postfix: CharSequence = ""): FragmentAndParameters {
+        val fragments = collectFragments(separator, prefix, postfix )
+        return FragmentAndParameters(fragments, parameters())
     }
 
     fun parameters(): Map<String, Any?> {
@@ -68,23 +61,4 @@ class FragmentCollector {
         return fragments.isEmpty()
     }
 
-    companion object {
-        @JvmStatic
-        fun collect(): Collector<FragmentAndParameters, FragmentCollector, FragmentCollector> {
-            return Collector.of(
-                { FragmentCollector() },
-                { fc: FragmentCollector, fp: FragmentAndParameters -> fc.add(fp) },
-                { fc1: FragmentCollector, fc2: FragmentCollector -> fc1.merge(fc2) }
-            )
-        }
-
-        @JvmStatic
-        fun collect(initialFragment: FragmentAndParameters): Collector<FragmentAndParameters, FragmentCollector, FragmentCollector> {
-            return Collector.of(
-                { FragmentCollector(initialFragment) },
-                { fc: FragmentCollector, fp: FragmentAndParameters -> fc.add(fp) },
-                { fc1: FragmentCollector, fc2: FragmentCollector -> fc1.merge(fc2) }
-            )
-        }
-    }
 }

@@ -35,52 +35,32 @@ import java.util.Arrays
  */
 interface WhereOperations<F : BooleanOperations<F>> {
 
-    fun <T: Any> where(column: BindableColumn<T>,condition: RenderableCondition<T>,vararg subCriteria: AndOrCriteriaGroup): F {
+    fun <T> where(column: BindableColumn<T>,condition: RenderableCondition<T>,vararg subCriteria: AndOrCriteriaGroup): F {
         return where(column, condition, listOf(*subCriteria))
     }
 
-    fun <T: Any> where(column: BindableColumn<T>, condition: RenderableCondition<T>, subCriteria: List<AndOrCriteriaGroup>): F {
-        val sqlCriterion = ColumnAndConditionCriterion.withColumn(column)
-            .withCondition(condition)
-            .withSubCriteria(subCriteria)
-            .build()
-
-        return where(sqlCriterion)
+    fun <T> where(column: BindableColumn<T>, condition: RenderableCondition<T>, subCriteria: List<AndOrCriteriaGroup>): F {
+        return where(ColumnAndConditionCriterion(column,condition,subCriteria))
     }
 
     fun where(existsPredicate: ExistsPredicate, vararg subCriteria: AndOrCriteriaGroup): F {
-        return where(existsPredicate, Arrays.asList(*subCriteria))
+        return where(existsPredicate, listOf(*subCriteria))
     }
 
     fun where(existsPredicate: ExistsPredicate, subCriteria: List<AndOrCriteriaGroup>): F {
-        val sqlCriterion = ExistsCriterion.Builder()
-            .withExistsPredicate(existsPredicate)
-            .withSubCriteria(subCriteria)
-            .build()
-
-        return where(sqlCriterion)
+        return where(ExistsCriterion(existsPredicate,subCriteria))
     }
 
     fun where(initialCriterion: SqlCriterion, vararg subCriteria: AndOrCriteriaGroup): F {
-        return where(initialCriterion, Arrays.asList(*subCriteria))
+        return where(initialCriterion, listOf(*subCriteria))
     }
 
     fun where(initialCriterion: SqlCriterion, subCriteria: List<AndOrCriteriaGroup>): F {
-        val sqlCriterion = CriteriaGroup.Builder()
-            .withInitialCriterion(initialCriterion)
-            .withSubCriteria(subCriteria)
-            .build()
-
-        return where(sqlCriterion)
+        return where(CriteriaGroup(initialCriterion,subCriteria))
     }
 
     fun where(subCriteria: List<AndOrCriteriaGroup>): F {
-        val sqlCriterion = CriteriaGroup.Builder()
-            .withInitialCriterion(NullCriterion())
-            .withSubCriteria(subCriteria)
-            .build()
-
-        return where(sqlCriterion)
+        return where(CriteriaGroup(NullCriterion(),subCriteria))
     }
 
     fun where(): F

@@ -16,7 +16,7 @@
 package org.mybatis.dynamic.sql.util.spring
 
 import org.mybatis.dynamic.sql.delete.DeleteModel
-import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider
+import org.mybatis.dynamic.sql.delete.DeleteStatementProvider
 import org.mybatis.dynamic.sql.insert.BatchInsertModel
 import org.mybatis.dynamic.sql.insert.GeneralInsertModel
 import org.mybatis.dynamic.sql.insert.InsertModel
@@ -29,7 +29,7 @@ import org.mybatis.dynamic.sql.render.RenderingStrategies
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
 import org.mybatis.dynamic.sql.update.UpdateModel
-import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider
+import org.mybatis.dynamic.sql.update.UpdateStatementProvider
 import org.mybatis.dynamic.sql.util.Buildable
 import org.mybatis.dynamic.sql.util.Utilities
 import org.springframework.dao.EmptyResultDataAccessException
@@ -118,7 +118,7 @@ class NamedParameterJdbcTemplateExtensions(template: NamedParameterJdbcTemplate)
 
     fun <T> insertBatch(insertStatement: BatchInsert<T>): IntArray {
         return template.batchUpdate(
-            insertStatement.insertStatementSQL,
+            insertStatement.insertStatement,
             BatchInsertUtility.createBatch(insertStatement.records)
         )
     }

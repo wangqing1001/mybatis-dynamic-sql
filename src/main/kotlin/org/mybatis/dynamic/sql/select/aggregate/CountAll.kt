@@ -28,7 +28,7 @@ class CountAll : AbstractCount {
     constructor(alias: String?):super(alias)
 
     override fun render(renderingContext: RenderingContext): FragmentAndParameters {
-        return FragmentAndParameters.fromFragment("count(*)") //$NON-NLS-1$
+        return FragmentAndParameters("count(*)") //$NON-NLS-1$
     }
 
     override fun `as`(alias: String): CountAll {

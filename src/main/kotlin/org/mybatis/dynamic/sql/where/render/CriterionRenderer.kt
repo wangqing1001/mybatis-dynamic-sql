@@ -28,6 +28,7 @@ import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.select.render.SubQueryRenderer
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.FragmentCollector
+import org.mybatis.dynamic.sql.util.toFragmentCollector
 import java.util.Objects
 import java.util.Optional
 import java.util.function.Function
@@ -47,131 +48,97 @@ import java.util.stream.Collectors
  *
  * <p>如果所有条件和子条件都无法渲染,最终结果也可能为空。
  */
-class CriterionRenderer(private val renderingContext: RenderingContext) : SqlCriterionVisitor<Optional<RenderedCriterion>> {
+class CriterionRenderer(private val renderingContext: RenderingContext) : SqlCriterionVisitor<RenderedCriterion?> {
 
-
-    override fun <T> visit(criterion: ColumnAndConditionCriterion<T>): Optional<RenderedCriterion> {
+    override fun <T> visit(criterion: ColumnAndConditionCriterion<T>): RenderedCriterion? {
         val initialCriterion = renderColumnAndCondition(criterion)
         val renderedSubCriteria = renderSubCriteria(criterion.subCriteria())
-
-        return initialCriterion.map { fp: FragmentAndParameters ->
-            calculateRenderedCriterion(fp, renderedSubCriteria, ::calculateFragment)
-        }.orElseGet { calculateRenderedCriterion(renderedSubCriteria, ::calculateFragment) }
+        return initialCriterion ?.let {
+            calculateRenderedCriterion(it, renderedSubCriteria, ::calculateFragment)
+        } ?: calculateRenderedCriterion(renderedSubCriteria, ::calculateFragment)
     }
 
-    override fun visit(criterion: ExistsCriterion): Optional<RenderedCriterion> {
+    override fun visit(criterion: ExistsCriterion): RenderedCriterion {
         val initialCriterion = renderExists(criterion)
         val renderedSubCriteria = renderSubCriteria(criterion.subCriteria())
-
         return calculateRenderedCriterion(initialCriterion, renderedSubCriteria, ::calculateFragment)
     }
 
-    override fun visit(criterion: CriteriaGroup): Optional<RenderedCriterion> {
+    override fun visit(criterion: CriteriaGroup): RenderedCriterion? {
         return renderCriteriaGroup(criterion, ::calculateFragment)
     }
 
-    override fun visit(criterion: NotCriterion): Optional<RenderedCriterion> {
+    override fun visit(criterion: NotCriterion): RenderedCriterion? {
         return renderCriteriaGroup(criterion, ::calculateNotFragment)
     }
 
-    override fun visit(criterion: NullCriterion): Optional<RenderedCriterion> {
-        return Optional.empty()
+    override fun visit(criterion: NullCriterion): RenderedCriterion? {
+        return null
     }
 
     private fun renderCriteriaGroup(
         criterion: CriteriaGroup,
         fragmentCalculator: Function<FragmentCollector, String>
-    ): Optional<RenderedCriterion> {
+    ): RenderedCriterion? {
         return render(criterion.initialCriterion(), criterion.subCriteria(), fragmentCalculator)
     }
 
-    fun render(
-        initialCriterion: SqlCriterion,
-        subCriteria: List<AndOrCriteriaGroup?>,
-        fragmentCalculator: Function<FragmentCollector, String>
-    ): Optional<RenderedCriterion> {
-        val fragmentAndParameters = initialCriterion.accept(this)
-            .map { it.fragmentAndParameters() }
+    fun render(initialCriterion: SqlCriterion,subCriteria: List<AndOrCriteriaGroup>,calculator: Function<FragmentCollector, String>): RenderedCriterion? {
+        val fragmentAndParameters = initialCriterion.accept(this)?.fragmentAndParameters()
         val renderedSubCriteria = renderSubCriteria(subCriteria)
-
-        return fragmentAndParameters.map { fp: FragmentAndParameters ->
-            calculateRenderedCriterion(fp, renderedSubCriteria, fragmentCalculator)
-        }.orElseGet { calculateRenderedCriterion(renderedSubCriteria, fragmentCalculator) }
+        return fragmentAndParameters?. let {
+            calculateRenderedCriterion(it, renderedSubCriteria, calculator)
+        } ?: calculateRenderedCriterion(renderedSubCriteria, calculator)
     }
 
-    private fun <T > renderColumnAndCondition(criterion: ColumnAndConditionCriterion<T>): Optional<FragmentAndParameters> {
-        return if (criterion.condition().shouldRender(renderingContext)) {
-            Optional.of(renderCondition(criterion))
-        } else {
-            criterion.condition().renderingSkipped()
-            Optional.empty()
+    private fun <T > renderColumnAndCondition(criterion: ColumnAndConditionCriterion<T>): FragmentAndParameters? {
+        if (criterion.condition().shouldRender(renderingContext)) {
+            return renderCondition(criterion)
         }
+        criterion.condition().renderingSkipped()
+        return null
     }
 
     private fun renderExists(criterion: ExistsCriterion): FragmentAndParameters {
         val existsPredicate = criterion.existsPredicate()
-        return SubQueryRenderer.withSelectModel(existsPredicate.selectModelBuilder().build())
-            .withRenderingContext(renderingContext)
-            .withPrefix(existsPredicate.operator() + " (") //$NON-NLS-1$
-            .withSuffix(")") //$NON-NLS-1$
-            .build()
-            .render()
+        val selectModel = existsPredicate.selectModelBuilder().build()
+        val prefix = "${existsPredicate.operator()} ("
+        return SubQueryRenderer(selectModel,renderingContext,prefix,")").render()
     }
 
-    private fun renderSubCriteria(subCriteria: List<AndOrCriteriaGroup?>): List<RenderedCriterion> {
-        return subCriteria.filterNotNull().stream()
-            .map { renderAndOrCriteriaGroup(it) }
-            .flatMap { it.stream() }
-            .toList()
+    private fun renderSubCriteria(subCriteria: List<AndOrCriteriaGroup>): List<RenderedCriterion> {
+        return subCriteria.mapNotNull { renderAndOrCriteriaGroup(it) }
     }
 
-    private fun renderAndOrCriteriaGroup(criterion: AndOrCriteriaGroup): Optional<RenderedCriterion> {
-        return render(criterion.initialCriterion(), criterion.subCriteria(), ::calculateFragment)
-            .map { rc: RenderedCriterion -> rc.withConnector(criterion.connector()) }
+    private fun renderAndOrCriteriaGroup(criterion: AndOrCriteriaGroup): RenderedCriterion? {
+        return render(criterion.initialCriterion(), criterion.subCriteria(), ::calculateFragment)?.withConnector(criterion.connector())
     }
 
     private fun calculateRenderedCriterion(
         initialCriterion: FragmentAndParameters,
         renderedSubCriteria: List<RenderedCriterion>,
-        fragmentCalculator: Function<FragmentCollector, String>
-    ): Optional<RenderedCriterion> {
-        return Optional.of(
-            calculateRenderedCriterion(
-                collectSqlFragments(initialCriterion, renderedSubCriteria),
-                fragmentCalculator
-            )
-        )
+        calculator: Function<FragmentCollector, String>
+    ): RenderedCriterion {
+        val fragmentCollector = collectSqlFragments(initialCriterion, renderedSubCriteria)
+        return calculateRenderedCriterion(fragmentCollector,calculator )
     }
 
-    private fun calculateRenderedCriterion(
-        fragmentCollector: FragmentCollector,
-        fragmentCalculator: Function<FragmentCollector, String>
-    ): RenderedCriterion {
-        val fragmentAndParameters = FragmentAndParameters
-            .withFragment(fragmentCalculator.apply(fragmentCollector))
-            .withParameters(fragmentCollector.parameters())
-            .build()
-
-        return RenderedCriterion.Builder()
-            .withFragmentAndParameters(fragmentAndParameters)
-            .build()
+    private fun calculateRenderedCriterion(fragmentCollector: FragmentCollector,calculator: Function<FragmentCollector, String>): RenderedCriterion {
+        val fragment = calculator.apply(fragmentCollector)
+        val fragmentAndParameters = FragmentAndParameters(fragment,fragmentCollector.parameters())
+        return RenderedCriterion(null,fragmentAndParameters)
     }
 
     private fun calculateRenderedCriterion(
         renderedSubCriteria: List<RenderedCriterion>,
-        fragmentCalculator: Function<FragmentCollector, String>
-    ): Optional<RenderedCriterion> {
-        return collectSqlFragments(renderedSubCriteria)
-            .map { fc: FragmentCollector -> calculateRenderedCriterion(fc, fragmentCalculator) }
+        calculator: Function<FragmentCollector, String>
+    ): RenderedCriterion? {
+
+        return collectSqlFragments(renderedSubCriteria)?.let { calculateRenderedCriterion(it,calculator) }
     }
 
     private fun <T > renderCondition(criterion: ColumnAndConditionCriterion<T>): FragmentAndParameters {
-        return ColumnAndConditionRenderer.Builder<T>()
-            .withColumn(criterion.column())
-            .withCondition(criterion.condition())
-            .withRenderingContext(renderingContext)
-            .build()
-            .render()
+        return ColumnAndConditionRenderer(criterion.column(),criterion.condition(),renderingContext).render()
     }
 
     /**
@@ -183,13 +150,9 @@ class CriterionRenderer(private val renderingContext: RenderingContext) : SqlCri
      * @return 片段收集器,其片段表示最终计算出的片段和参数列表。
      *     片段收集器可用于计算单个组合片段 - 无论是作为 where 子句,还是在递归调用中作为有效的渲染子条件
      */
-    private fun collectSqlFragments(
-        initialCondition: FragmentAndParameters,
-        renderedSubCriteria: List<RenderedCriterion>
-    ): FragmentCollector {
-        return renderedSubCriteria.stream()
-            .map { it.fragmentAndParametersWithConnector() }
-            .collect(FragmentCollector.collect(initialCondition))
+    private fun collectSqlFragments(initialCondition: FragmentAndParameters,renderedSubCriteria: List<RenderedCriterion>): FragmentCollector {
+        return renderedSubCriteria.map { it.fragmentAndParametersWithConnector() }
+            .toFragmentCollector(initialCondition)
     }
 
     /**
@@ -202,38 +165,28 @@ class CriterionRenderer(private val renderingContext: RenderingContext) : SqlCri
      * @return 片段收集器,其片段表示最终计算出的片段和参数列表。
      *     片段收集器可用于计算单个组合片段 - 无论是作为 where 子句,还是在递归调用中作为有效的渲染子条件
      */
-    private fun collectSqlFragments(renderedSubCriteria: List<RenderedCriterion>): Optional<FragmentCollector> {
+    private fun collectSqlFragments(renderedSubCriteria: List<RenderedCriterion>): FragmentCollector? {
         if (renderedSubCriteria.isEmpty()) {
-            return Optional.empty()
+            return null
         }
-
         val firstCondition = renderedSubCriteria[0].fragmentAndParameters()
-
-        val fc = renderedSubCriteria.stream()
-            .skip(1)
-            .map { it.fragmentAndParametersWithConnector() }
-            .collect(FragmentCollector.collect(firstCondition))
-
-        return Optional.of(fc)
+        return renderedSubCriteria.slice(1 until renderedSubCriteria.size)
+            .map { it.fragmentAndParametersWithConnector() }.toFragmentCollector(firstCondition)
     }
 
     private fun calculateFragment(collector: FragmentCollector): String {
         return if (collector.hasMultipleFragments()) {
-            collector.collectFragments(
-                Collectors.joining(" ", "(", ")") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            )
+            collector.collectFragments(" ", "(", ")" )
         } else {
-            collector.firstFragment().orElse("") //$NON-NLS-1$
+            collector.firstFragment() ?: ""
         }
     }
 
     private fun calculateNotFragment(collector: FragmentCollector): String {
         return if (collector.hasMultipleFragments()) {
-            collector.collectFragments(
-                Collectors.joining(" ", "not (", ")") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            )
+            collector.collectFragments(" ", "not (", ")")
         } else {
-            collector.firstFragment().map { s: String -> "not " + s }.orElse("") //$NON-NLS-1$ //$NON-NLS-2$
+            collector.firstFragment()?.let { "not $it" } ?: ""
         }
     }
 }

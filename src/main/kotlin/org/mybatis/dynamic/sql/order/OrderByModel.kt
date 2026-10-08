@@ -13,12 +13,10 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.common
+package org.mybatis.dynamic.sql.order
 
 import org.mybatis.dynamic.sql.SortSpecification
 import org.mybatis.dynamic.sql.util.Validator
-import java.util.Objects
-import java.util.stream.Stream
 
 /**
  * order by 子句模型。
@@ -31,8 +29,8 @@ class OrderByModel private constructor(columns: Collection<SortSpecification>) {
         this.columns.addAll(columns)
     }
 
-    fun columns(): Stream<SortSpecification> {
-        return columns.stream()
+    fun columns(): Collection<SortSpecification> {
+        return columns
     }
 
     companion object {

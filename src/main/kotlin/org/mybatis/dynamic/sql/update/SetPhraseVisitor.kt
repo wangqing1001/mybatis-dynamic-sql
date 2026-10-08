@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.update.render
+package org.mybatis.dynamic.sql.update
 
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.select.render.SubQueryRenderer
@@ -46,15 +46,13 @@ class SetPhraseVisitor(renderingContext: RenderingContext) :
 
     override fun visit(mapping: ConstantMapping): Optional<FragmentAndParameters> {
         val fragment = renderingContext.aliasedColumnName(mapping.column())  + " = " + mapping.constant() //$NON-NLS-1$
-        return FragmentAndParameters.withFragment(fragment)
-            .buildOptional()
+        return Optional.of(FragmentAndParameters(fragment))
     }
 
     override fun visit(mapping: StringConstantMapping): Optional<FragmentAndParameters> {
         val fragment = renderingContext.aliasedColumnName(mapping.column()) + " = " + StringUtilities.formatConstantForSQL(mapping.constant())
 
-        return FragmentAndParameters.withFragment(fragment)
-            .buildOptional()
+        return Optional.of(FragmentAndParameters(fragment))
     }
 
     override fun <T> visit(mapping: ValueMapping<T>): Optional<FragmentAndParameters> {
@@ -68,19 +66,13 @@ class SetPhraseVisitor(renderingContext: RenderingContext) :
     }
 
     override fun <T> visit(mapping: ValueWhenPresentMapping<T>): Optional<FragmentAndParameters> {
-        return mapping.value().flatMap { v: Any -> buildValueFragment(mapping, v) }
+        val value = mapping.value()?:return Optional.empty()
+        return buildValueFragment(mapping, value)
     }
 
     override fun visit(mapping: SelectMapping): Optional<FragmentAndParameters> {
         val prefix = renderingContext.aliasedColumnName(mapping.column()) + " = (" //$NON-NLS-1$
-
-        val fragmentAndParameters = SubQueryRenderer.withSelectModel(mapping.selectModel())
-            .withRenderingContext(renderingContext)
-            .withPrefix(prefix)
-            .withSuffix(")") //$NON-NLS-1$
-            .build()
-            .render()
-
+        val fragmentAndParameters = SubQueryRenderer(mapping.selectModel(),renderingContext,prefix,")").render()
         return Optional.of(fragmentAndParameters)
     }
 
@@ -94,14 +86,12 @@ class SetPhraseVisitor(renderingContext: RenderingContext) :
         val parameterInfo = renderingContext.calculateParameterInfo(mapping.column())
         val setPhrase = renderingContext.aliasedColumnName(mapping.column()) + " = "  + parameterInfo.renderedPlaceHolder
 
-        return FragmentAndParameters.withFragment(setPhrase)
-            .withParameter(parameterInfo.parameterMapKey, value)
-            .buildOptional()
+        return Optional.of(FragmentAndParameters(setPhrase, mapOf(parameterInfo.parameterMapKey to value)))
     }
 
     private fun buildNullFragment(mapping: AbstractColumnMapping): Optional<FragmentAndParameters> {
-        return FragmentAndParameters
-            .withFragment(renderingContext.aliasedColumnName(mapping.column()) + " = null") //$NON-NLS-1$
-            .buildOptional()
+        return Optional.of(
+            FragmentAndParameters(renderingContext.aliasedColumnName(mapping.column()) + " = null") //$NON-NLS-1$
+        )
     }
 }

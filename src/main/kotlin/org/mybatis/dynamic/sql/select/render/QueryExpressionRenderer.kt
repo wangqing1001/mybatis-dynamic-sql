@@ -16,41 +16,36 @@
 package org.mybatis.dynamic.sql.select.render
 
 import org.mybatis.dynamic.sql.BasicColumn
-import org.mybatis.dynamic.sql.TableExpression
 import org.mybatis.dynamic.sql.render.ExplicitTableAliasCalculator
 import org.mybatis.dynamic.sql.render.GuaranteedTableAliasCalculator
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.render.TableAliasCalculator
 import org.mybatis.dynamic.sql.select.GroupByModel
-import org.mybatis.dynamic.sql.select.HavingModel
+import org.mybatis.dynamic.sql.select.having.HavingModel
 import org.mybatis.dynamic.sql.select.QueryExpressionModel
+import org.mybatis.dynamic.sql.select.having.HavingRenderer
 import org.mybatis.dynamic.sql.select.join.JoinModel
+import org.mybatis.dynamic.sql.select.join.JoinRenderer
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import org.mybatis.dynamic.sql.util.FragmentCollector
 import org.mybatis.dynamic.sql.util.StringUtilities
-import org.mybatis.dynamic.sql.where.WhereModel
+import org.mybatis.dynamic.sql.util.toFragmentCollector
 import java.util.Objects
-import java.util.Optional
-import java.util.stream.Collectors
 
 /**
  * 查询表达式渲染器。
  */
-class QueryExpressionRenderer private constructor(builder: Builder) {
-    private val queryExpression: QueryExpressionModel
+class QueryExpressionRenderer(
+    private val queryExpression: QueryExpressionModel,
+    renderingContext: RenderingContext
+) {
+
     private val tableExpressionRenderer: TableExpressionRenderer
     private val renderingContext: RenderingContext
 
     init {
-        queryExpression = Objects.requireNonNull(builder.queryExpression!!)
         val childTableAliasCalculator = calculateChildTableAliasCalculator(queryExpression)
-
-        renderingContext = Objects.requireNonNull(builder.renderingContext!!)
-            .withChildTableAliasCalculator(childTableAliasCalculator)
-
-        tableExpressionRenderer = TableExpressionRenderer.Builder()
-            .withRenderingContext(renderingContext)
-            .build()
+        this.renderingContext = renderingContext.withChildTableAliasCalculator(childTableAliasCalculator)
+        tableExpressionRenderer = TableExpressionRenderer(renderingContext)
     }
 
     /**
@@ -73,147 +68,93 @@ class QueryExpressionRenderer private constructor(builder: Builder) {
      * @return 适合此上下文的表别名计算器
      */
     private fun calculateChildTableAliasCalculator(queryExpression: QueryExpressionModel): TableAliasCalculator {
-        return queryExpression.joinModel()
-            .map { joinModel: JoinModel -> joinModel.containsSubQueries() }
-            .map { hasSubQueries: Boolean -> calculateTableAliasCalculatorWithJoins(hasSubQueries) }
-            .orElseGet { explicitTableAliasCalculator() }
+        return queryExpression.joinModel()?.containsSubQueries()?.let { calculateTableAliasCalculatorWithJoins(it) }
+            ?:explicitTableAliasCalculator()
     }
 
     private fun calculateTableAliasCalculatorWithJoins(hasSubQueries: Boolean): TableAliasCalculator {
         return if (hasSubQueries) {
-            // 如果有子查询,我们不能自动使用表名,因此必须指定所有别名
             explicitTableAliasCalculator()
         } else {
-            // 没有子查询时,我们可以自动使用表名作为别名
             guaranteedTableAliasCalculator()
         }
     }
 
     private fun explicitTableAliasCalculator(): TableAliasCalculator {
-        return ExplicitTableAliasCalculator.of(queryExpression.tableAliases())
+        return ExplicitTableAliasCalculator(queryExpression.tableAliases())
     }
 
     private fun guaranteedTableAliasCalculator(): TableAliasCalculator {
-        return GuaranteedTableAliasCalculator.of(queryExpression.tableAliases())
+        return GuaranteedTableAliasCalculator(queryExpression.tableAliases())
     }
 
     fun render(): FragmentAndParameters {
-        val fragmentCollector = FragmentCollector()
-
-        fragmentCollector.add(calculateQueryExpressionStart())
-        calculateJoinClause().ifPresent { fragmentCollector.add(it) }
-        calculateWhereClause().ifPresent { fragmentCollector.add(it) }
-        calculateGroupByClause().ifPresent { fragmentCollector.add(it) }
-        calculateHavingClause().ifPresent { fragmentCollector.add(it) }
-
-        return fragmentCollector.toFragmentAndParameters(Collectors.joining(" ")) //$NON-NLS-1$
-    }
-
-    private fun calculateQueryExpressionStart(): FragmentAndParameters {
-        val columnList = calculateColumnList()
-        var start = queryExpression.connector().map { connector: String -> StringUtilities.spaceAfter(connector) }
-            .orElse("") + "select " + (if (queryExpression.isDistinct()) "distinct " else "") + columnList.fragment()+ " from "
-
-        val renderedTable = renderTableExpression(queryExpression.table())
-        start += renderedTable.fragment()
-
-        return FragmentAndParameters.withFragment(start)
-            .withParameters(renderedTable.parameters())
-            .withParameters(columnList.parameters())
-            .build()
-    }
-
-    private fun calculateColumnList(): FragmentAndParameters {
-        return queryExpression.columns()
-            .map { selectListItem: BasicColumn -> renderColumnAndAlias(selectListItem) }
-            .collect(FragmentCollector.collect())
-            .toFragmentAndParameters(Collectors.joining(", ")) //$NON-NLS-1$
-    }
-
-    private fun renderColumnAndAlias(selectListItem: BasicColumn): FragmentAndParameters {
-        val renderedColumn = selectListItem.render(renderingContext)
-        val alias = selectListItem.alias()
-        if (alias == null) {
-            return renderedColumn
+        val list = mutableListOf(renderQueryExpressionStart())
+        val joinClause = calculateJoinClause()
+        if(joinClause!=null) {
+            list.add(joinClause)
         }
-        return renderedColumn.mapFragment { f: String -> "$f as $alias" }
+        val whereClause = calculateWhereClause()
+        if(whereClause!=null) {
+            list.add(whereClause)
+        }
+        val groupByClause = calculateGroupByClause()
+        if(groupByClause!=null) {
+            list.add(groupByClause)
+        }
+        val havingClause = calculateHavingClause()
+        if(havingClause!=null) {
+            list.add(havingClause)
+        }
+        return list.toFragmentCollector().toFragmentAndParameters(" ")
     }
 
-    private fun renderTableExpression(table: TableExpression): FragmentAndParameters {
-        return table.accept(tableExpressionRenderer)
+    private fun renderQueryExpressionStart(): FragmentAndParameters {
+        val columns = renderColumns()
+        val table = renderTableExpression()
+        val start = queryExpression.connector()?.let { StringUtilities.spaceAfter(it) } ?: ""
+        val distinct = if(queryExpression.isDistinct()) "distinct " else ""
+        val startSQL = start + "select " + distinct + columns.fragment()+ " from " + table.fragment()
+        val parameters = table.parameters() + columns.parameters()
+        return FragmentAndParameters(startSQL,parameters)
     }
 
-    private fun calculateJoinClause(): Optional<FragmentAndParameters> {
-        return queryExpression.joinModel().map { joinModel: JoinModel -> renderJoin(joinModel) }
-    }
-
-    private fun renderJoin(joinModel: JoinModel): FragmentAndParameters {
-        return JoinRenderer.withJoinModel(joinModel)
-            .withTableExpressionRenderer(tableExpressionRenderer)
-            .withRenderingContext(renderingContext)
-            .build()
-            .render()
-    }
-
-    private fun calculateWhereClause(): Optional<FragmentAndParameters> {
-        return queryExpression.whereModel().flatMap { whereModel: WhereModel -> renderWhereClause(whereModel) }
-    }
-
-    private fun renderWhereClause(whereModel: WhereModel): Optional<FragmentAndParameters> {
-        return whereModel.render(renderingContext)
-    }
-
-    private fun calculateGroupByClause(): Optional<FragmentAndParameters> {
-        return queryExpression.groupByModel().map { groupByModel: GroupByModel -> renderGroupBy(groupByModel) }
-    }
-
-    private fun renderGroupBy(groupByModel: GroupByModel): FragmentAndParameters {
-        return groupByModel.columns()
-            .map { column: BasicColumn -> renderColumn(column) }
-            .collect(FragmentCollector.collect())
-            .toFragmentAndParameters(
-                Collectors.joining(", ", "group by ", "")) //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    private fun renderColumns(): FragmentAndParameters {
+        return queryExpression.columns().map { renderColumn(it) }
+            .toFragmentCollector()
+            .toFragmentAndParameters(", ")
     }
 
     private fun renderColumn(column: BasicColumn): FragmentAndParameters {
-        return column.render(renderingContext)
+        val renderedColumn = column.render(renderingContext)
+        val alias = column.alias() ?: return renderedColumn
+        return renderedColumn.mapFragment {  "$it as $alias" }
     }
 
-    private fun calculateHavingClause(): Optional<FragmentAndParameters> {
-        return queryExpression.havingModel().flatMap { havingModel: HavingModel -> renderHavingClause(havingModel) }
+    private fun renderTableExpression(): FragmentAndParameters {
+        return queryExpression.table().accept(tableExpressionRenderer)
     }
 
-    private fun renderHavingClause(havingModel: HavingModel): Optional<FragmentAndParameters> {
-        return HavingRenderer.withHavingModel(havingModel)
-            .withRenderingContext(renderingContext)
-            .build()
-            .render()
+    private fun calculateJoinClause(): FragmentAndParameters? {
+        val joinModel = queryExpression.joinModel() ?: return null
+        return JoinRenderer(joinModel, tableExpressionRenderer, renderingContext).render()
     }
 
-    companion object {
-        @JvmStatic
-        fun withQueryExpression(model: QueryExpressionModel): Builder {
-            return Builder().withQueryExpression(model)
-        }
+    private fun calculateWhereClause(): FragmentAndParameters? {
+        return queryExpression.whereModel()?.render(renderingContext)
     }
 
-    class Builder {
-        // 字段公开,以便外部类访问(Kotlin 外部类不能访问嵌套类私有成员)
-        var queryExpression: QueryExpressionModel? = null
-        var renderingContext: RenderingContext? = null
-
-        fun withRenderingContext(renderingContext: RenderingContext): Builder {
-            this.renderingContext = renderingContext
-            return this
-        }
-
-        fun withQueryExpression(queryExpression: QueryExpressionModel): Builder {
-            this.queryExpression = queryExpression
-            return this
-        }
-
-        fun build(): QueryExpressionRenderer {
-            return QueryExpressionRenderer(this)
-        }
+    private fun calculateGroupByClause(): FragmentAndParameters? {
+        val groupByModel = queryExpression.groupByModel() ?:return null
+        return groupByModel.columns()
+            .map { it.render(renderingContext) }
+            .toFragmentCollector()
+            .toFragmentAndParameters(", ", "group by ", "")
     }
+
+    private fun calculateHavingClause(): FragmentAndParameters? {
+        val havingModel = queryExpression.havingModel() ?: return null
+        return HavingRenderer(havingModel, renderingContext).render()
+    }
+
 }

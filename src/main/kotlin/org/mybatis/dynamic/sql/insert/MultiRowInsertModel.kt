@@ -15,42 +15,29 @@
  */
 package org.mybatis.dynamic.sql.insert
 
+import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.util.Validator
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertRenderer
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider
 import org.mybatis.dynamic.sql.render.RenderingStrategy
+import org.mybatis.dynamic.sql.util.AbstractColumnMapping
 
 /**
  * 多行 insert 模型。
  */
-class MultiRowInsertModel<T> private constructor(builder: Builder<T>) : AbstractMultiRowInsertModel<T>(builder) {
+class MultiRowInsertModel<T> @JvmOverloads constructor(
+    table: SqlTable,
+    records: List<T> = emptyList(),
+    columnMappings: List<AbstractColumnMapping> = emptyList()
+) : AbstractMultiRowInsertModel<T>(table,records,columnMappings) {
 
     init {
         Validator.assertNotEmpty(records(), "ERROR.20") //$NON-NLS-1$
-        Validator.assertNotEmpty(columnMappings, "ERROR.8") //$NON-NLS-1$
+        Validator.assertNotEmpty(columnMappings(), "ERROR.8") //$NON-NLS-1$
     }
 
     fun render(renderingStrategy: RenderingStrategy): MultiRowInsertStatementProvider<T> {
-        return MultiRowInsertRenderer.withMultiRowInsertModel(this)
-            .withRenderingStrategy(renderingStrategy)
-            .build()
-            .render()
+        return MultiRowInsertRenderer(this,renderingStrategy).render()
     }
 
-    companion object {
-        @JvmStatic
-        fun <T> withRecords(records: Collection<T>): Builder<T> {
-            return Builder<T>().withRecords(records)
-        }
-    }
-
-    class Builder<T> : AbstractBuilder<T, Builder<T>>() {
-        override fun getThis(): Builder<T> {
-            return this
-        }
-
-        fun build(): MultiRowInsertModel<T> {
-            return MultiRowInsertModel(this)
-        }
-    }
 }

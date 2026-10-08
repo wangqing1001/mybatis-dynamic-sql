@@ -33,11 +33,11 @@ open class IsNotInCaseInsensitiveWhenPresent<T> private constructor(values: Coll
         return "not in"
     }
 
-    override fun filter(predicate: Predicate<in T>): IsNotInCaseInsensitiveWhenPresent<T> {
+    override fun filter(predicate: (T) -> Boolean): AbstractListValueCondition<T> {
         return filterSupport(predicate, { IsNotInCaseInsensitiveWhenPresent(it) }, this, { empty() })
     }
 
-    override fun <R> map(mapper: Function<in T, out R>): IsNotInCaseInsensitiveWhenPresent<R> {
+    override fun <R> map(mapper: (T) -> R): AbstractListValueCondition<R> {
         return mapSupport(mapper, { of(it) }, { empty() })
     }
 

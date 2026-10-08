@@ -1,23 +1,10 @@
-/*
- *    Copyright 2016-2025 the original author or authors.
- *
- *    Licensed under the Apache License, Version 2.0 (the "License");
- *    you may not use this file except in compliance with the License.
- *    You may obtain a copy of the License at
- *
- *       https://www.apache.org/licenses/LICENSE-2.0
- *
- *    Unless required by applicable law or agreed to in writing, software
- *    distributed under the License is distributed on an "AS IS" BASIS,
- *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *    See the License for the specific language governing permissions and
- *    limitations under the License.
- */
-package org.mybatis.dynamic.sql.insert
+package org.mybatis.dynamic.sql.dsl
 
 import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration
+import org.mybatis.dynamic.sql.insert.InsertColumnListModel
+import org.mybatis.dynamic.sql.insert.InsertSelectModel
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.util.Buildable
 import org.mybatis.dynamic.sql.util.ConfigurableStatement
@@ -48,11 +35,7 @@ class InsertSelectDSL private constructor(
     private constructor(table: SqlTable, selectModel: SelectModel) : this(table, null, selectModel)
 
     override fun build(): InsertSelectModel {
-        return InsertSelectModel.withTable(table)
-            .withColumnList(columnList)
-            .withSelectModel(selectModel)
-            .withStatementConfiguration(statementConfiguration)
-            .build()
+        return InsertSelectModel(table,selectModel,statementConfiguration,columnList)
     }
 
     override fun configureStatement(consumer: Consumer<StatementConfiguration>): InsertSelectDSL {
@@ -70,7 +53,7 @@ class InsertSelectDSL private constructor(
     class InsertColumnGatherer(private val table: SqlTable) {
 
         fun withColumnList(vararg columns: SqlColumn<*>): SelectGatherer {
-            return withColumnList(Arrays.asList(*columns))
+            return withColumnList(listOf(*columns))
         }
 
         fun withColumnList(columns: List<SqlColumn<*>>): SelectGatherer {
@@ -86,7 +69,7 @@ class InsertSelectDSL private constructor(
         private val table: SqlTable,
         columns: List<SqlColumn<*>>
     ) {
-        private val columnList: InsertColumnListModel = InsertColumnListModel.of(columns)
+        private val columnList: InsertColumnListModel = InsertColumnListModel(columns)
 
         fun withSelectStatement(selectModelBuilder: Buildable<SelectModel>): InsertSelectDSL {
             return InsertSelectDSL(table, columnList, selectModelBuilder.build())

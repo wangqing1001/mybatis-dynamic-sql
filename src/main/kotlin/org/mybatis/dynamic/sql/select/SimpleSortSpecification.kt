@@ -41,7 +41,7 @@ class SimpleSortSpecification private constructor(
     }
 
     override fun renderForOrderBy(renderingContext: RenderingContext): FragmentAndParameters {
-        return FragmentAndParameters.fromFragment(name + descendingPhrase)
+        return FragmentAndParameters(name + descendingPhrase)
     }
 
     companion object {

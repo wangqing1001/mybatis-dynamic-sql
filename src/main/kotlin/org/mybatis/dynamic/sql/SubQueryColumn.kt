@@ -36,12 +36,7 @@ class SubQueryColumn private constructor(private val selectModel: SelectModel) :
     }
 
     override fun render(renderingContext: RenderingContext): FragmentAndParameters {
-        return SubQueryRenderer.withSelectModel(selectModel)
-            .withRenderingContext(renderingContext)
-            .withPrefix("(") //$NON-NLS-1$
-            .withSuffix(")") //$NON-NLS-1$
-            .build()
-            .render()
+        return SubQueryRenderer(selectModel,renderingContext,"(",")").render()
     }
 
     companion object {

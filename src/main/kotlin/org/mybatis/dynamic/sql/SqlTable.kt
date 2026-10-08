@@ -16,7 +16,6 @@
 package org.mybatis.dynamic.sql
 
 import java.sql.JDBCType
-import java.util.*
 
 open class SqlTable protected constructor(protected var tableName: String) : TableExpression {
 
@@ -44,8 +43,8 @@ open class SqlTable protected constructor(protected var tableName: String) : Tab
         return visitor.visit(this)
     }
 
-    open fun tableAlias(): Optional<String> {
-        return Optional.empty<String>()
+    open fun tableAlias(): String? {
+        return null
     }
 
     companion object {

@@ -98,7 +98,7 @@ open class SpringKotlinMapToRowTest {
         }
 
         val expected = "insert into CompoundKey (id1, id2) values (22, :row)"
-        assertThat(insertStatement.insertStatementSQL).isEqualTo(expected)
+        assertThat(insertStatement.insertStatement).isEqualTo(expected)
 
         val rowCounts = template.insertBatch(insertStatement)
         assertThat(rowCounts).hasSize(3)

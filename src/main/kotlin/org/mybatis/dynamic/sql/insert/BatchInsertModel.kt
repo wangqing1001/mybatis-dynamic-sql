@@ -15,42 +15,29 @@
  */
 package org.mybatis.dynamic.sql.insert
 
+import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.util.Validator
 import org.mybatis.dynamic.sql.insert.render.BatchInsert
 import org.mybatis.dynamic.sql.insert.render.BatchInsertRenderer
 import org.mybatis.dynamic.sql.render.RenderingStrategy
+import org.mybatis.dynamic.sql.util.AbstractColumnMapping
 
 /**
  * 批量 insert 模型。
  */
-class BatchInsertModel<T> private constructor(builder: Builder<T>) : AbstractMultiRowInsertModel<T>(builder) {
+class BatchInsertModel<T> @JvmOverloads constructor(
+    table: SqlTable,
+    records: List<T> = emptyList(),
+    columnMappings: List<AbstractColumnMapping> = emptyList()
+) : AbstractMultiRowInsertModel<T>(table,records,columnMappings) {
 
     init {
         Validator.assertNotEmpty(records(), "ERROR.19") //$NON-NLS-1$
-        Validator.assertNotEmpty(columnMappings, "ERROR.5") //$NON-NLS-1$
+        Validator.assertNotEmpty(columnMappings(), "ERROR.5") //$NON-NLS-1$
     }
 
     fun render(renderingStrategy: RenderingStrategy): BatchInsert<T> {
-        return BatchInsertRenderer.withBatchInsertModel(this)
-            .withRenderingStrategy(renderingStrategy)
-            .build()
-            .render()
+        return BatchInsertRenderer(this,renderingStrategy).render()
     }
 
-    companion object {
-        @JvmStatic
-        fun <T> withRecords(records: Collection<T>): Builder<T> {
-            return Builder<T>().withRecords(records)
-        }
-    }
-
-    class Builder<T> : AbstractBuilder<T, Builder<T>>() {
-        override fun getThis(): Builder<T> {
-            return this
-        }
-
-        fun build(): BatchInsertModel<T> {
-            return BatchInsertModel(this)
-        }
-    }
 }

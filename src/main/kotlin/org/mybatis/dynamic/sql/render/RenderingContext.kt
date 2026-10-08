@@ -29,19 +29,12 @@ import java.util.concurrent.atomic.AtomicInteger
  * @since 1.5.1
  * @author Jeff Butler
  */
-class RenderingContext private constructor(builder: Builder) {
-    private val renderingStrategy: RenderingStrategy
-    private val sequence: AtomicInteger
-    private val tableAliasCalculator: TableAliasCalculator
-    private val statementConfiguration: StatementConfiguration
-
-    init {
-        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy)
-        tableAliasCalculator = Objects.requireNonNull(builder.tableAliasCalculator)
-        statementConfiguration = Objects.requireNonNull(builder.statementConfiguration)
-        sequence = builder.sequence ?: AtomicInteger(1)
-    }
-
+class RenderingContext @JvmOverloads constructor(
+    private val renderingStrategy: RenderingStrategy,
+    private val statementConfiguration: StatementConfiguration,
+    private val tableAliasCalculator: TableAliasCalculator = TableAliasCalculator.empty(),
+    private val sequence: AtomicInteger = AtomicInteger(1),
+) {
     private fun nextMapKey(): String {
         return renderingStrategy.formatParameterMapKey(sequence)
     }
@@ -85,82 +78,30 @@ class RenderingContext private constructor(builder: Builder) {
 
     fun <T> aliasedColumnName(column: SqlColumn<T>): String {
         return tableAliasCalculator.aliasForColumn(column.table())
-            .map { alias -> aliasedColumnName(column, alias) }
-            .orElseGet { column.name() }
+            ?.let { aliasedColumnName(column, it) } ?: column.name()
     }
 
     fun <T> aliasedColumnName(column: SqlColumn<T>, explicitAlias: String): String {
-        return explicitAlias + "." + column.name() //$NON-NLS-1$
+        return explicitAlias + "." + column.name()
     }
 
     fun aliasedTableName(table: SqlTable): String {
         return tableAliasCalculator.aliasForTable(table)
-            .map { a -> table.tableName() + StringUtilities.spaceBefore(a) }
-            .orElseGet { table.tableName() }
+            ?.let { table.tableName() + StringUtilities.spaceBefore(it) }?:table.tableName()
     }
 
     fun isNonRenderingClauseAllowed(): Boolean {
         return statementConfiguration.nonRenderingWhereClauseAllowed()
     }
 
-    /**
-     * 基于此创建一个新的渲染上下文,表别名计算器被修改为包含指定的子表别名计算器。
-     * 当查询表达式渲染器在渲染过程中别名计算器可能改变时,使用此方法。
-     *
-     * @param childTableAliasCalculator 子表别名计算器
-     * @return 新的渲染上下文,其表别名计算器由原计算器作为父级和新的子计算器组合而成
-     */
     fun withChildTableAliasCalculator(childTableAliasCalculator: TableAliasCalculator): RenderingContext {
-        val tac = TableAliasCalculatorWithParent.Builder()
-            .withParent(tableAliasCalculator)
-            .withChild(childTableAliasCalculator)
-            .build()
-
-        return Builder()
-            .withRenderingStrategy(this.renderingStrategy)
-            .withSequence(this.sequence)
-            .withTableAliasCalculator(tac)
-            .withStatementConfiguration(statementConfiguration)
-            .build()
-    }
-
-    class Builder {
-        lateinit var renderingStrategy: RenderingStrategy
-        var sequence: AtomicInteger? = null
-        var tableAliasCalculator: TableAliasCalculator = TableAliasCalculator.empty()
-        lateinit var statementConfiguration: StatementConfiguration
-
-        fun withRenderingStrategy(renderingStrategy: RenderingStrategy): Builder {
-            this.renderingStrategy = renderingStrategy
-            return this
-        }
-
-        fun withSequence(sequence: AtomicInteger): Builder {
-            this.sequence = sequence
-            return this
-        }
-
-        fun withTableAliasCalculator(tableAliasCalculator: TableAliasCalculator): Builder {
-            this.tableAliasCalculator = tableAliasCalculator
-            return this
-        }
-
-        fun withStatementConfiguration(statementConfiguration: StatementConfiguration): Builder {
-            this.statementConfiguration = statementConfiguration
-            return this
-        }
-
-        fun build(): RenderingContext {
-            return RenderingContext(this)
-        }
+        val tac = TableAliasCalculatorWithParent(tableAliasCalculator,childTableAliasCalculator)
+        return RenderingContext(this.renderingStrategy,this.statementConfiguration,tac,this.sequence)
     }
 
     companion object {
         private const val PARAMETER_NAME = RenderingStrategy.DEFAULT_PARAMETER_PREFIX
 
-        @JvmStatic
-        fun withRenderingStrategy(renderingStrategy: RenderingStrategy): Builder {
-            return Builder().withRenderingStrategy(renderingStrategy)
-        }
+
     }
 }

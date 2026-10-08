@@ -22,15 +22,13 @@ import java.util.stream.Stream
 /**
  * 基本值 when 条件,包含一组直接值。
  */
-class BasicWhenCondition<T>(conditions: List<T>, thenValue: BasicColumn) : SimpleCaseWhenCondition<T>(thenValue) {
-    private val conditions: MutableList<T> = ArrayList()
+class BasicWhenCondition<T>(
+    thenValue: BasicColumn,
+    private val conditions: List<T> = emptyList(),
+) : SimpleCaseWhenCondition<T>(thenValue) {
 
-    init {
-        this.conditions.addAll(conditions)
-    }
-
-    fun conditions(): Stream<T> {
-        return conditions.stream()
+    fun conditions(): Collection<T> {
+        return conditions
     }
 
     override fun <R> accept(visitor: SimpleCaseWhenConditionVisitor<T, R>): R {

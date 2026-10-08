@@ -18,14 +18,14 @@ package org.mybatis.dynamic.sql.util.kotlin.spring
 
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SqlTable
-import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider
+import org.mybatis.dynamic.sql.delete.DeleteStatementProvider
 import org.mybatis.dynamic.sql.insert.render.BatchInsert
 import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider
 import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
 import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
-import org.mybatis.dynamic.sql.update.render.UpdateStatementProvider
+import org.mybatis.dynamic.sql.update.UpdateStatementProvider
 import org.mybatis.dynamic.sql.util.kotlin.CountCompleter
 import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
 import org.mybatis.dynamic.sql.util.kotlin.GeneralInsertCompleter
@@ -66,7 +66,7 @@ fun NamedParameterJdbcTemplate.deleteFrom(table: SqlTable, completer: DeleteComp
 
 // batch insert
 fun <T : Any> NamedParameterJdbcTemplate.insertBatch(insertStatement: BatchInsert<T>): IntArray =
-    batchUpdate(insertStatement.insertStatementSQL, BatchInsertUtility.createBatch(insertStatement.records))
+    batchUpdate(insertStatement.insertStatement, BatchInsertUtility.createBatch(insertStatement.records))
 
 fun <T : Any> NamedParameterJdbcTemplate.insertBatch(
     vararg records: T,

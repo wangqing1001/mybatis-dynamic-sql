@@ -15,92 +15,49 @@
  */
 package org.mybatis.dynamic.sql.select
 
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration
+import org.mybatis.dynamic.sql.order.OrderByModel
 import org.mybatis.dynamic.sql.render.RenderingStrategy
+import org.mybatis.dynamic.sql.select.paging.PagingModel
 import org.mybatis.dynamic.sql.select.render.SelectRenderer
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
 import org.mybatis.dynamic.sql.util.Validator
-import java.util.Objects
-import java.util.Optional
 import java.util.function.Function
-import java.util.stream.Stream
 
 /**
  * select 语句模型。
  */
-class SelectModel private constructor(builder: Builder) : AbstractSelectModel(builder) {
-    private val queryExpressions: List<QueryExpressionModel>
-    private val forClause: String?
-    private val waitClause: String?
+class SelectModel @JvmOverloads constructor(
+    private val queryExpressions: List<QueryExpressionModel>,
+    statementConfiguration: StatementConfiguration,
+    private val forClause: String? = null,
+    private val waitClause: String? = null,
+    orderByModel: OrderByModel? = null,
+    pagingModel: PagingModel? = null,
+) : AbstractSelectModel(orderByModel,pagingModel,statementConfiguration) {
 
     init {
-        queryExpressions = Objects.requireNonNull(builder.queryExpressions)
         Validator.assertNotEmpty(queryExpressions, "ERROR.14") //$NON-NLS-1$
-        forClause = builder.forClause
-        waitClause = builder.waitClause
     }
 
-    fun queryExpressions(): Stream<QueryExpressionModel> {
-        return queryExpressions.stream()
+    fun queryExpressions(): List<QueryExpressionModel> {
+        return queryExpressions
     }
 
-    fun forClause(): Optional<String> {
-        return Optional.ofNullable(forClause)
+    fun forClause(): String? {
+        return forClause
     }
 
-    fun waitClause(): Optional<String> {
-        return Optional.ofNullable(waitClause)
+    fun waitClause(): String? {
+        return waitClause
     }
 
     fun render(renderingStrategy: RenderingStrategy): SelectStatementProvider {
-        return SelectRenderer.withSelectModel(this)
-            .withRenderingStrategy(renderingStrategy)
-            .build()
-            .render()
+        return SelectRenderer(this,renderingStrategy).render()
     }
 
     fun <R> map(mapper: Function<SelectModel, R>): R {
         return mapper.apply(this)
     }
 
-    companion object {
-        @JvmStatic
-        fun withQueryExpressions(queryExpressions: List<QueryExpressionModel>): Builder {
-            return Builder().withQueryExpressions(queryExpressions)
-        }
-    }
-
-    class Builder : AbstractBuilder<Builder>() {
-        // 字段公开,以便外部类 SelectModel 访问(Kotlin 嵌套类与 Java 不同,外部类无法访问嵌套类私有成员)
-        val queryExpressions: MutableList<QueryExpressionModel> = ArrayList()
-        var forClause: String? = null
-        var waitClause: String? = null
-
-        fun withQueryExpression(queryExpression: QueryExpressionModel): Builder {
-            this.queryExpressions.add(queryExpression)
-            return this
-        }
-
-        fun withQueryExpressions(queryExpressions: List<QueryExpressionModel>): Builder {
-            this.queryExpressions.addAll(queryExpressions)
-            return this
-        }
-
-        fun withForClause(forClause: String?): Builder {
-            this.forClause = forClause
-            return this
-        }
-
-        fun withWaitClause(waitClause: String?): Builder {
-            this.waitClause = waitClause
-            return this
-        }
-
-        override fun getThis(): Builder {
-            return this
-        }
-
-        fun build(): SelectModel {
-            return SelectModel(this)
-        }
-    }
 }

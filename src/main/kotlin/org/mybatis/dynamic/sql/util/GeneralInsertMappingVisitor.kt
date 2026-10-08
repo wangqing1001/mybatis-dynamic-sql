@@ -39,11 +39,11 @@ abstract class GeneralInsertMappingVisitor<R> : ColumnMappingVisitor<R> {
         throw UnsupportedOperationException(Messages.getInternalErrorString(InternalError.INTERNAL_ERROR_14))
     }
 
-    open override fun visit(mapping: MappedColumnMapping): R {
+    override fun visit(mapping: MappedColumnMapping): R {
         throw UnsupportedOperationException(Messages.getInternalErrorString(InternalError.INTERNAL_ERROR_16))
     }
 
-    open override fun visit(mapping: MappedColumnWhenPresentMapping): R {
+    override fun visit(mapping: MappedColumnWhenPresentMapping): R {
         throw UnsupportedOperationException(Messages.getInternalErrorString(InternalError.INTERNAL_ERROR_17))
     }
 }

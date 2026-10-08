@@ -19,7 +19,7 @@ import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import org.mybatis.dynamic.sql.util.FragmentCollector
+import org.mybatis.dynamic.sql.util.toFragmentCollector
 import java.util.ArrayList
 import java.util.Arrays
 import java.util.Objects
@@ -52,13 +52,11 @@ open class OperatorFunction<T>(
     }
 
     override fun render(renderingContext: RenderingContext): FragmentAndParameters {
-        val paddedOperator = " $operator " //$NON-NLS-1$ //$NON-NLS-2$
-
-        return Stream.of(Stream.of(column, secondColumn), subsequentColumns.stream())
-            .flatMap(Function.identity())
-            .map { column: BasicColumn -> column.render(renderingContext) }
-            .collect(FragmentCollector.collect())
-            .toFragmentAndParameters(Collectors.joining(paddedOperator, "(", ")")) //$NON-NLS-1$ //$NON-NLS-2$
+        val paddedOperator = " $operator "
+        listOf(column, secondColumn)
+        return listOf(listOf(column, secondColumn), subsequentColumns).flatten().map {
+            it.render(renderingContext)
+        }.toFragmentCollector().toFragmentAndParameters(paddedOperator, "(", ")")
     }
 
     companion object {

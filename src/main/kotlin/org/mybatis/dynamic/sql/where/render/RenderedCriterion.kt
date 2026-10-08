@@ -22,56 +22,24 @@ import java.util.Objects
 /**
  * 渲染后的条件。包含可选的连接符(and/or)与片段参数。
  */
-class RenderedCriterion private constructor(builder: Builder) {
-    private val connector: String?
+class RenderedCriterion @JvmOverloads constructor(
+    private val connector: String? = null,
     private val fragmentAndParameters: FragmentAndParameters
-
-    init {
-        connector = builder.connector
-        fragmentAndParameters = Objects.requireNonNull(builder.fragmentAndParameters!!)
-    }
+) {
 
     fun fragmentAndParameters(): FragmentAndParameters {
         return fragmentAndParameters
     }
 
     fun fragmentAndParametersWithConnector(): FragmentAndParameters {
-        return if (connector == null) {
-            fragmentAndParameters
-        } else {
-            prependFragment(fragmentAndParameters, connector)
+        if (connector == null) {
+            return fragmentAndParameters
         }
+        return fragmentAndParameters.mapFragment { connector + StringUtilities.spaceBefore(it) }
     }
 
     fun withConnector(connector: String): RenderedCriterion {
-        return Builder()
-            .withFragmentAndParameters(fragmentAndParameters)
-            .withConnector(connector)
-            .build()
+        return RenderedCriterion(connector, fragmentAndParameters)
     }
 
-    private fun prependFragment(fragmentAndParameters: FragmentAndParameters, connector: String): FragmentAndParameters {
-        return fragmentAndParameters.mapFragment { s: String -> connector + StringUtilities.spaceBefore(s) }
-    }
-
-    class Builder {
-        var connector: String? = null
-            private set
-        var fragmentAndParameters: FragmentAndParameters? = null
-            private set
-
-        fun withConnector(connector: String): Builder {
-            this.connector = connector
-            return this
-        }
-
-        fun withFragmentAndParameters(fragmentAndParameters: FragmentAndParameters): Builder {
-            this.fragmentAndParameters = fragmentAndParameters
-            return this
-        }
-
-        fun build(): RenderedCriterion {
-            return RenderedCriterion(this)
-        }
-    }
 }

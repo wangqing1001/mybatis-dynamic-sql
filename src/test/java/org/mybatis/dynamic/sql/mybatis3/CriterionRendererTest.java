@@ -38,19 +38,13 @@ import org.mybatis.dynamic.sql.where.render.CriterionRenderer;
 class CriterionRendererTest {
     @Test
     void testAliasWithIgnore() {
+
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER);
-
         IsEqualTo<Integer> condition = SqlBuilder.isEqualTo(() -> 3);
-        ColumnAndConditionCriterion<Integer> criterion = ColumnAndConditionCriterion.withColumn(column)
-                .withCondition(condition)
-                .build();
-
-        RenderingContext renderingContext =RenderingContext.withRenderingStrategy(RenderingStrategies.MYBATIS3)
-                .withStatementConfiguration(new StatementConfiguration()).build();
-
+        ColumnAndConditionCriterion<Integer> criterion = new ColumnAndConditionCriterion<>(column,condition);
+        RenderingContext renderingContext = new RenderingContext(RenderingStrategies.MYBATIS3,new StatementConfiguration());
         CriterionRenderer renderer = new CriterionRenderer(renderingContext);
-
         assertThat(criterion.accept(renderer)).hasValueSatisfying(rc -> {
             FragmentAndParameters fp = rc.fragmentAndParametersWithConnector();
             assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}");
@@ -63,20 +57,13 @@ class CriterionRendererTest {
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER);
         IsEqualTo<Integer> condition = SqlBuilder.isEqualTo(() -> 3);
-        ColumnAndConditionCriterion<Integer> criterion = ColumnAndConditionCriterion.withColumn(column)
-                .withCondition(condition)
-                .build();
+
+        ColumnAndConditionCriterion<Integer> criterion = new ColumnAndConditionCriterion<>(column,condition);
         Map<SqlTable, String> tableAliases = new HashMap<>();
         tableAliases.put(table, "a");
 
-        RenderingContext renderingContext = RenderingContext
-                .withRenderingStrategy(RenderingStrategies.MYBATIS3)
-                .withTableAliasCalculator(ExplicitTableAliasCalculator.of(tableAliases))
-                .withStatementConfiguration(new StatementConfiguration())
-                .build();
-
+        RenderingContext renderingContext = new RenderingContext(RenderingStrategies.MYBATIS3,new StatementConfiguration(),new ExplicitTableAliasCalculator(tableAliases));
         CriterionRenderer renderer = new CriterionRenderer(renderingContext);
-
         assertThat(criterion.accept(renderer)).hasValueSatisfying(rc -> {
             FragmentAndParameters fp = rc.fragmentAndParametersWithConnector();
             assertThat(fp.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER}");
@@ -94,14 +81,10 @@ class CriterionRendererTest {
                 .withTypeHandler("foo.Bar")
                 .build();
         IsEqualTo<Date> condition = SqlBuilder.isEqualTo(new Date());
-        ColumnAndConditionCriterion<Date> criterion = ColumnAndConditionCriterion.withColumn(column)
-                .withCondition(condition)
-                .build();
+        ColumnAndConditionCriterion<Date> criterion = new ColumnAndConditionCriterion<>(column,condition);
 
-        RenderingContext renderingContext = RenderingContext
-                .withRenderingStrategy(RenderingStrategies.MYBATIS3)
-                .withStatementConfiguration(new StatementConfiguration())
-                .build();
+        RenderingContext renderingContext = new RenderingContext(RenderingStrategies.MYBATIS3,new StatementConfiguration());
+
 
         CriterionRenderer renderer = new CriterionRenderer(renderingContext);
 
@@ -117,17 +100,13 @@ class CriterionRendererTest {
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER, "foo.Bar");
         IsEqualTo<Integer> condition = SqlBuilder.isEqualTo(() -> 3);
-        ColumnAndConditionCriterion<Integer> criterion = ColumnAndConditionCriterion.withColumn(column)
-                .withCondition(condition)
-                .build();
+        ColumnAndConditionCriterion<Integer> criterion = new ColumnAndConditionCriterion<>(column,condition);
         Map<SqlTable, String> tableAliases = new HashMap<>();
         tableAliases.put(table, "a");
 
-        RenderingContext renderingContext = RenderingContext
-                .withRenderingStrategy(RenderingStrategies.MYBATIS3)
-                .withTableAliasCalculator(ExplicitTableAliasCalculator.of(tableAliases))
-                .withStatementConfiguration(new StatementConfiguration())
-                .build();
+        RenderingContext renderingContext = new RenderingContext(RenderingStrategies.MYBATIS3,new StatementConfiguration(),new ExplicitTableAliasCalculator(tableAliases));
+
+
 
         CriterionRenderer renderer = new CriterionRenderer(renderingContext);
 

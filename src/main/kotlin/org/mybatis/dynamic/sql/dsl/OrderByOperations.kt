@@ -21,9 +21,11 @@ import org.mybatis.dynamic.sql.SortSpecification
  * order by 操作接口。
  */
 interface OrderByOperations<T> {
+
     fun orderBy(vararg columns: SortSpecification): T {
         return orderBy(listOf(*columns))
     }
 
     fun orderBy(columns: Collection<SortSpecification>): T
+
 }

@@ -43,7 +43,7 @@ import org.mybatis.dynamic.sql.dsl.DeleteDSLCompleter;
 import org.mybatis.dynamic.sql.dsl.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.dsl.UpdateDSL;
 import org.mybatis.dynamic.sql.dsl.UpdateDSLCompleter;
-import org.mybatis.dynamic.sql.insert.GeneralInsertDSL;
+import org.mybatis.dynamic.sql.dsl.GeneralInsertDSL;
 import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonCountMapper;

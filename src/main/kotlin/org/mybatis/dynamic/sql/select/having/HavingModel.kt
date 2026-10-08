@@ -13,24 +13,24 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.common
+package org.mybatis.dynamic.sql.select.having
 
+import org.mybatis.dynamic.sql.AndOrCriteriaGroup
+import org.mybatis.dynamic.sql.SqlCriterion
+import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionModel
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import org.mybatis.dynamic.sql.util.FragmentCollector
-import java.util.Objects
-import java.util.stream.Collectors
 
 /**
- * order by 子句渲染器。
+ * having 子句模型。
  */
-class OrderByRenderer(private val  renderingContext: RenderingContext) {
+class HavingModel(
+    initialCriterion: SqlCriterion,
+    subCriteria: List<AndOrCriteriaGroup> = mutableListOf()
+) : AbstractBooleanExpressionModel(initialCriterion,subCriteria) {
 
-    fun render(orderByModel: OrderByModel): FragmentAndParameters {
-        return orderByModel.columns().map { c -> c.renderForOrderBy(renderingContext) }
-            .collect(FragmentCollector.collect())
-            .toFragmentAndParameters(
-                Collectors.joining(", ", "order by ", "") //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-            )
+    fun render(renderingContext: RenderingContext): FragmentAndParameters? {
+        return HavingRenderer(this,renderingContext).render()
     }
+
 }

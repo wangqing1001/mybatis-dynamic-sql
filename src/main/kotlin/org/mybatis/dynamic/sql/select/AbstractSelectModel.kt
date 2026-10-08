@@ -15,58 +15,30 @@
  */
 package org.mybatis.dynamic.sql.select
 
-import org.mybatis.dynamic.sql.common.OrderByModel
+import org.mybatis.dynamic.sql.order.OrderByModel
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration
-import java.util.Objects
+import org.mybatis.dynamic.sql.select.paging.PagingModel
 import java.util.Optional
 
 /**
  * select 模型基类。封装 order by、分页和语句配置。
  */
-abstract class AbstractSelectModel protected constructor(builder: AbstractBuilder<*>) {
-    private val orderByModel: OrderByModel?
-    private val pagingModel: PagingModel?
-    protected val statementConfiguration: StatementConfiguration
+abstract class AbstractSelectModel protected constructor(
+    private val orderByModel: OrderByModel? = null,
+    private val pagingModel: PagingModel? = null,
+    private val statementConfiguration: StatementConfiguration
+) {
 
-    init {
-        orderByModel = builder.orderByModel
-        pagingModel = builder.pagingModel
-        statementConfiguration = Objects.requireNonNull(builder.statementConfiguration!!)
+    fun orderByModel(): OrderByModel? {
+        return orderByModel
     }
 
-    fun orderByModel(): Optional<OrderByModel> {
-        return Optional.ofNullable(orderByModel)
-    }
-
-    fun pagingModel(): Optional<PagingModel> {
-        return Optional.ofNullable(pagingModel)
+    fun pagingModel(): PagingModel? {
+        return pagingModel
     }
 
     fun statementConfiguration(): StatementConfiguration {
         return statementConfiguration
     }
 
-    abstract class AbstractBuilder<T : AbstractBuilder<T>> {
-        // 字段公开,以便外部抽象类访问(Kotlin 嵌套类与 Java 不同,外部类无法访问嵌套类私有成员)
-        var orderByModel: OrderByModel? = null
-        var pagingModel: PagingModel? = null
-        var statementConfiguration: StatementConfiguration? = null
-
-        fun withOrderByModel(orderByModel: OrderByModel?): T {
-            this.orderByModel = orderByModel
-            return getThis()
-        }
-
-        fun withPagingModel(pagingModel: PagingModel?): T {
-            this.pagingModel = pagingModel
-            return getThis()
-        }
-
-        fun withStatementConfiguration(statementConfiguration: StatementConfiguration): T {
-            this.statementConfiguration = statementConfiguration
-            return getThis()
-        }
-
-        protected abstract fun getThis(): T
-    }
 }

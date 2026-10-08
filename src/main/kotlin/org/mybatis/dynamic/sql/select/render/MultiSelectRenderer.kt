@@ -15,118 +15,61 @@
  */
 package org.mybatis.dynamic.sql.select.render
 
-import org.mybatis.dynamic.sql.common.OrderByModel
-import org.mybatis.dynamic.sql.common.OrderByRenderer
+import org.mybatis.dynamic.sql.order.OrderByRenderer
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.render.RenderingStrategy
 import org.mybatis.dynamic.sql.select.MultiSelectModel
-import org.mybatis.dynamic.sql.select.PagingModel
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.select.UnionQuery
+import org.mybatis.dynamic.sql.select.paging.PagingModelRenderer
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.FragmentCollector
-import java.util.Objects
-import java.util.Optional
-import java.util.stream.Collectors
+import org.mybatis.dynamic.sql.util.toFragmentCollector
 
-/**
- * 多 select 渲染器,渲染 union 查询。
- */
-class MultiSelectRenderer private constructor(builder: Builder) {
-    private val multiSelectModel: MultiSelectModel
-    private val renderingContext: RenderingContext
+class MultiSelectRenderer(
+    private val multiSelectModel: MultiSelectModel,
+    renderingStrategy: RenderingStrategy
+) {
 
-    init {
-        multiSelectModel = Objects.requireNonNull(builder.multiSelectModel!!)
-        renderingContext = RenderingContext
-            .withRenderingStrategy(Objects.requireNonNull(builder.renderingStrategy!!))
-            .withStatementConfiguration(multiSelectModel.statementConfiguration())
-            .build()
-    }
+    private val renderingContext: RenderingContext = RenderingContext(renderingStrategy,multiSelectModel.statementConfiguration())
 
     fun render(): SelectStatementProvider {
         val initialSelect = renderSelect(multiSelectModel.initialSelect())
-
-        val fragmentCollector = multiSelectModel
-            .unionQueries()
-            .map { unionQuery: UnionQuery -> renderSelect(unionQuery) }
-            .collect(FragmentCollector.collect(initialSelect))
-
-        renderOrderBy().ifPresent { fragmentCollector.add(it) }
-        renderPagingModel().ifPresent { fragmentCollector.add(it) }
-
-        return toSelectStatementProvider(fragmentCollector)
+        val list = multiSelectModel.unionQueries().map { renderSelect(it) }.toMutableList()
+        val orderBy = renderOrderBy()
+        if(orderBy != null) {
+            list.add(orderBy)
+        }
+        val paging = renderPagingModel()
+        if(paging != null) {
+            list.add(paging)
+        }
+        return toSelectStatementProvider(list.toFragmentCollector(initialSelect))
     }
 
     private fun toSelectStatementProvider(fragmentCollector: FragmentCollector): SelectStatementProvider {
         return DefaultSelectStatementProvider
-            .withSelectStatement(fragmentCollector.collectFragments(Collectors.joining(" "))) //$NON-NLS-1$
+            .withSelectStatement(fragmentCollector.collectFragments(" "))
             .withParameters(fragmentCollector.parameters())
             .build()
     }
 
     private fun renderSelect(selectModel: SelectModel): FragmentAndParameters {
-        return SubQueryRenderer.withSelectModel(selectModel)
-            .withRenderingContext(renderingContext)
-            .withPrefix("(") //$NON-NLS-1$
-            .withSuffix(")") //$NON-NLS-1$
-            .build()
-            .render()
+        return SubQueryRenderer(selectModel,renderingContext,"(",")").render()
     }
 
     private fun renderSelect(unionQuery: UnionQuery): FragmentAndParameters {
-        return SubQueryRenderer.withSelectModel(unionQuery.selectModel)
-            .withRenderingContext(renderingContext)
-            .withPrefix(unionQuery.connector+ " (") //$NON-NLS-1$
-            .withSuffix(")") //$NON-NLS-1$
-            .build()
-            .render()
+        return SubQueryRenderer(unionQuery.selectModel,renderingContext,"${unionQuery.connector} (",")").render()
     }
 
-    private fun renderOrderBy(): Optional<FragmentAndParameters> {
-        return multiSelectModel.orderByModel().map { orderByModel: OrderByModel -> renderOrderBy(orderByModel) }
-    }
-
-    private fun renderOrderBy(orderByModel: OrderByModel): FragmentAndParameters {
+    private fun renderOrderBy(): FragmentAndParameters? {
+        val orderByModel = multiSelectModel.orderByModel()?:return null
         return OrderByRenderer(renderingContext).render(orderByModel)
     }
 
-    private fun renderPagingModel(): Optional<FragmentAndParameters> {
-        return multiSelectModel.pagingModel().map { pagingModel: PagingModel -> renderPagingModel(pagingModel) }
+    private fun renderPagingModel(): FragmentAndParameters? {
+        val pagingModel = multiSelectModel.pagingModel()?:return null
+        return PagingModelRenderer(pagingModel,renderingContext).render()
     }
 
-    private fun renderPagingModel(pagingModel: PagingModel): FragmentAndParameters {
-        return PagingModelRenderer.Builder()
-            .withPagingModel(pagingModel)
-            .withRenderingContext(renderingContext)
-            .build()
-            .render()
-    }
-
-    companion object {
-        @JvmStatic
-        fun withMultiSelectModel(multiSelectModel: MultiSelectModel): Builder {
-            return Builder().withMultiSelectModel(multiSelectModel)
-        }
-    }
-
-    class Builder {
-        // 字段公开,以便外部类访问(Kotlin 外部类不能访问嵌套类私有成员)
-        var renderingStrategy: RenderingStrategy? = null
-        var multiSelectModel: MultiSelectModel? = null
-
-        fun withRenderingStrategy(renderingStrategy: RenderingStrategy): Builder {
-            this.renderingStrategy = renderingStrategy
-            return this
-        }
-
-        fun withMultiSelectModel(multiSelectModel: MultiSelectModel): Builder {
-            this.multiSelectModel = multiSelectModel
-            return this
-        }
-
-        fun build(): MultiSelectRenderer {
-            return MultiSelectRenderer(this)
-        }
-    }
 }

@@ -16,55 +16,42 @@
 package org.mybatis.dynamic.sql.delete
 
 import org.mybatis.dynamic.sql.SqlTable
-import org.mybatis.dynamic.sql.common.CommonBuilder
-import org.mybatis.dynamic.sql.common.OrderByModel
+import org.mybatis.dynamic.sql.order.OrderByModel
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration
-import org.mybatis.dynamic.sql.delete.render.DeleteRenderer
-import org.mybatis.dynamic.sql.delete.render.DeleteStatementProvider
 import org.mybatis.dynamic.sql.render.RenderingStrategy
 import org.mybatis.dynamic.sql.where.WhereModel
-import java.util.Objects
-import java.util.Optional
 import java.util.function.Function
 
 /**
  * delete 模型。
  */
-class DeleteModel private constructor(builder: Builder) {
-    private val table: SqlTable
-    private val tableAlias: String?
-    private val whereModel: WhereModel?
-    private val limit: Long?
-    private val orderByModel: OrderByModel?
-    private val statementConfiguration: StatementConfiguration
-
-    init {
-        table = builder.table()
-        statementConfiguration = builder.statementConfiguration()
-        whereModel = builder.whereModel()
-        tableAlias = builder.tableAlias()
-        limit = builder.limit()
-        orderByModel = builder.orderByModel()
-    }
+class DeleteModel @JvmOverloads constructor(
+    private val table: SqlTable,
+    private val statementConfiguration: StatementConfiguration,
+    private val tableAlias: String? = null,
+    private val whereModel: WhereModel? = null,
+    private val limit: Long? = null,
+    private val orderByModel: OrderByModel? = null,
+) {
 
     fun table(): SqlTable {
         return table
     }
 
-    fun tableAlias(): Optional<String> {
-        return Optional.ofNullable(tableAlias)
+    fun tableAlias(): String? {
+        return tableAlias
     }
 
-    fun whereModel(): Optional<WhereModel> {
-        return Optional.ofNullable(whereModel)
+    fun whereModel(): WhereModel? {
+        return whereModel
     }
 
-    fun limit(): Optional<Long> {
-        return Optional.ofNullable(limit)
+    fun limit(): Long? {
+        return limit
     }
 
-    fun orderByModel(): Optional<OrderByModel> {
-        return Optional.ofNullable(orderByModel)
+    fun orderByModel(): OrderByModel? {
+        return orderByModel
     }
 
     fun statementConfiguration(): StatementConfiguration {
@@ -72,32 +59,11 @@ class DeleteModel private constructor(builder: Builder) {
     }
 
     fun render(renderingStrategy: RenderingStrategy): DeleteStatementProvider {
-        return DeleteRenderer.withDeleteModel(this)
-            .withRenderingStrategy(renderingStrategy)
-            .build()
-            .render()
+        return DeleteRenderer(this, renderingStrategy).render()
     }
 
     fun <R> map(adapterFunction: Function<DeleteModel, R>): R {
         return adapterFunction.apply(this)
     }
 
-    companion object {
-        @JvmStatic
-        fun withTable(table: SqlTable): Builder {
-            return Builder().withTable(table)
-        }
-    }
-
-    class Builder : CommonBuilder<Builder>() {
-
-        override fun self(): Builder {
-            return this
-        }
-
-        fun build(): DeleteModel {
-            return DeleteModel(this)
-        }
-
-    }
 }

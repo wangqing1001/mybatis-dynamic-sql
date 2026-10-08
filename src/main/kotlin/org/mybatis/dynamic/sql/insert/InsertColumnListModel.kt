@@ -24,23 +24,14 @@ import java.util.stream.Stream
 /**
  * insert 语句的列清单模型。
  */
-class InsertColumnListModel private constructor(columns: List<SqlColumn<*>>) {
-    private val columns: MutableList<SqlColumn<*>> = ArrayList()
+class InsertColumnListModel(private val columns: List<SqlColumn<*>>) {
 
     init {
-        Objects.requireNonNull(columns)
         Validator.assertNotEmpty(columns, "ERROR.4") //$NON-NLS-1$
-        this.columns.addAll(columns)
     }
 
-    fun columns(): Stream<SqlColumn<*>> {
-        return columns.stream()
+    fun columns(): List<SqlColumn<*>> {
+        return columns
     }
 
-    companion object {
-        @JvmStatic
-        fun of(columns: List<SqlColumn<*>>): InsertColumnListModel {
-            return InsertColumnListModel(columns)
-        }
-    }
 }

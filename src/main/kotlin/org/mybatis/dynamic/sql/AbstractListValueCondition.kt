@@ -17,127 +17,71 @@ package org.mybatis.dynamic.sql
 
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import org.mybatis.dynamic.sql.util.FragmentAndParameters.Companion.withFragment
 import org.mybatis.dynamic.sql.util.FragmentCollector
-import java.util.*
+import org.mybatis.dynamic.sql.util.toFragmentCollector
 import java.util.function.Function
 import java.util.function.Predicate
 import java.util.function.Supplier
 import java.util.stream.Collectors
 import java.util.stream.Stream
 
-abstract class AbstractListValueCondition<T>(val values: Collection<T>) : RenderableCondition<T> {
+abstract class AbstractListValueCondition<T>(private val values: Collection<T>) : RenderableCondition<T> {
 
-    fun values(): Stream<T> {
-        return values.stream()
+    fun values(): Collection<T> {
+        return values
     }
 
     override fun isEmpty(): Boolean {
         return values.isEmpty()
     }
 
-    private fun <R> applyMapper(mapper: Function<in T, out R>): MutableCollection<R> {
-        return values().map(mapper).collect(Collectors.toList())
+    private fun <R> applyMapper(mapper: (T) -> R): Collection<R> {
+        return values.map(mapper)
     }
 
-    private fun applyFilter(predicate: Predicate<in T>): MutableCollection<T> {
-        return values().filter(predicate).toList()
+    private fun applyFilter(predicate: (T) -> Boolean): Collection<T> {
+        return values.filter(predicate)
     }
 
-    protected fun <S : AbstractListValueCondition<T>> filterSupport(
-        predicate: Predicate<in T>,
-        constructor: Function<Collection<T>, S>, self: S, emptySupplier: Supplier<S>
-    ): S {
+    protected fun <S : AbstractListValueCondition<T>> filterSupport(predicate:(T) -> Boolean,constructor: (Collection<T>)->S,self: S,emptySupplier: ()->S): S {
         if (isEmpty()) {
             return self
-        } else {
-            val filtered: MutableCollection<T> = applyFilter(predicate)
-            return if (filtered.isEmpty()) emptySupplier.get() else constructor.apply(filtered)
         }
+        val filtered: Collection<T> = applyFilter(predicate)
+        return if (filtered.isEmpty()) emptySupplier() else constructor(filtered)
     }
 
-    protected fun <R, S : AbstractListValueCondition<R>> mapSupport(
-        mapper: Function<in T, out R>,
-        constructor: Function<MutableCollection<R>, S>, emptySupplier: Supplier<S>
-    ): S {
-        return if (isEmpty()) {
-            emptySupplier.get()
-        } else {
-            constructor.apply(applyMapper<R>(mapper))
+    protected fun <R, S : AbstractListValueCondition<R>> mapSupport(mapper: (T) -> R,constructor: (Collection<R>)->S, emptySupplier: ()->S): S {
+        if (isEmpty()) {
+            return emptySupplier()
         }
+        return constructor(applyMapper(mapper))
     }
 
-    abstract fun operator(): String?
+    abstract fun operator(): String
 
     override fun renderCondition(renderingContext: RenderingContext,leftColumn: BindableColumn<T>): FragmentAndParameters {
-        return values().map{ v: T ->
-            toFragmentAndParameters(
-                v,
-                renderingContext,
-                leftColumn
-            )
-        }.collect(FragmentCollector.collect())
-            .toFragmentAndParameters(Collectors.joining(",", operator() + " (", ")"))
+        return values.map{ toFragmentAndParameters(it, renderingContext,leftColumn) }
+            .toFragmentCollector().toFragmentAndParameters(",","${operator()} (", ")")
     }
 
     private fun toFragmentAndParameters(value: T,renderingContext: RenderingContext,leftColumn: BindableColumn<T>): FragmentAndParameters{
         val parameterInfo = renderingContext.calculateParameterInfo(leftColumn)
-        return withFragment(parameterInfo.renderedPlaceHolder)
-            .withParameter(parameterInfo.parameterMapKey, leftColumn.convertParameterType(value))
-            .build()
+        val parameters = mapOf(parameterInfo.parameterMapKey to leftColumn.convertParameterType(value))
+        return FragmentAndParameters(parameterInfo.renderedPlaceHolder,parameters)
     }
 
-    /**
-     * Conditions may implement Filterable to add optionality to rendering.
-     *
-     *
-     * If a condition is Filterable, then a user may add a filter to the usage of the condition that makes a decision
-     * whether to render the condition at runtime. Conditions that fail the filter will be dropped from the
-     * rendered SQL.
-     *
-     *
-     * Implementations of Filterable may call
-     * [filterSupport] as
-     * a common implementation of the filtering algorithm.
-     *
-     * @param <T> the Java type related to the database column type
-    </T> */
+
     interface Filterable<T> {
-        /**
-         * If renderable and the value matches the predicate, returns this condition. Else returns a condition
-         * that will not render.
-         *
-         * @param predicate predicate applied to the value, if renderable
-         * @return this condition if renderable and the value matches the predicate, otherwise a condition
-         * that will not render.
-         */
-        fun filter(predicate: Predicate<in T>): AbstractListValueCondition<T>
+
+        fun filter(predicate: (T) -> Boolean): AbstractListValueCondition<T>
+
     }
 
-    /**
-     * Conditions may implement Mappable to alter condition values or types during rendering.
-     *
-     *
-     * If a condition is Mappable, then a user may add a mapper to the usage of the condition that can alter the
-     * values of a condition, or change that datatype.
-     *
-     *
-     * Implementations of Mappable may call
-     * [mapSupport] as
-     * a common implementation of the mapping algorithm.
-     *
-     * @param <T> the Java type related to the database column type
-    </T> */
     interface Mappable<T> {
-        /**
-         * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a
-         * condition that will not render (this).
-         *
-         * @param mapper a mapping function to apply to the value, if renderable
-         * @param <R> type of the new condition
-         * @return a new condition with the result of applying the mapper to the value of this condition,
-         * if renderable, otherwise a condition that will not render.
-        </R> */
-        fun <R> map(mapper: Function<in T, out R>): AbstractListValueCondition<R>
+
+        fun <R> map(mapper: (T) -> R): AbstractListValueCondition<R>
+
     }
+
 }

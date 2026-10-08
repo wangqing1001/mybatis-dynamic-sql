@@ -15,6 +15,8 @@
  */
 package org.mybatis.dynamic.sql.where
 
+import org.mybatis.dynamic.sql.AndOrCriteriaGroup
+import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionModel
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
@@ -24,23 +26,13 @@ import java.util.Optional
 /**
  * where 子句模型。
  */
-class WhereModel private constructor(builder: Builder) : AbstractBooleanExpressionModel(builder) {
+class WhereModel(
+    initialCriterion: SqlCriterion,
+    subCriteria: List<AndOrCriteriaGroup> = mutableListOf()
+) : AbstractBooleanExpressionModel(initialCriterion,subCriteria) {
 
-    fun render(renderingContext: RenderingContext): Optional<FragmentAndParameters> {
-        return WhereRenderer.withWhereModel(this)
-            .withRenderingContext(renderingContext)
-            .build()
-            .render()
+    fun render(renderingContext: RenderingContext): FragmentAndParameters? {
+        return WhereRenderer(this,renderingContext).render()
     }
 
-    class Builder : AbstractBuilder<Builder>() {
-
-        fun build(): WhereModel {
-            return WhereModel(this)
-        }
-
-        override fun self(): Builder {
-            return this
-        }
-    }
 }

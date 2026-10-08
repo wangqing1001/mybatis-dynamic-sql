@@ -59,7 +59,7 @@ class DerivedColumn<T> protected constructor(builder: Builder<T>) : BindableColu
 
     override fun render(renderingContext: RenderingContext): FragmentAndParameters {
         val fragment = if (tableQualifier == null) name else "$tableQualifier.$name" //$NON-NLS-1$
-        return FragmentAndParameters.fromFragment(fragment)
+        return FragmentAndParameters(fragment)
     }
 
     override fun `as`(alias: String): DerivedColumn<T> {

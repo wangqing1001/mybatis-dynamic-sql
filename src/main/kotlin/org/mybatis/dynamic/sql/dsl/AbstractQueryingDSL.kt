@@ -43,16 +43,11 @@ abstract class AbstractQueryingDSL {
     }
 
     private fun buildSubQuery(selectModel: Buildable<SelectModel>): SubQuery {
-        return SubQuery.Builder()
-            .withSelectModel(selectModel.build())
-            .build()
+        return SubQuery(selectModel.build())
     }
 
     private fun buildSubQuery(selectModel: Buildable<SelectModel>, alias: String?): SubQuery {
-        return SubQuery.Builder()
-            .withSelectModel(selectModel.build())
-            .withAlias(alias)
-            .build()
+        return SubQuery(selectModel.build(),alias)
     }
 
     protected fun tableAliases(): Map<SqlTable, String> {
@@ -93,7 +88,7 @@ abstract class AbstractQueryingDSL {
         if (joinSpecifications.isEmpty()) {
             return null
         }
-        return JoinModel.of(joinSpecifications.map { it.toJoinSpecification() })
+        return JoinModel(joinSpecifications.map { it.toJoinSpecification() })
     }
 
     companion object {

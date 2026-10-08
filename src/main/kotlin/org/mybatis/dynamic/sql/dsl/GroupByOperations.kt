@@ -21,6 +21,7 @@ import org.mybatis.dynamic.sql.BasicColumn
  * group by 操作接口。
  */
 interface GroupByOperations<T> {
+
     fun groupBy(vararg columns: BasicColumn): T {
         return groupBy(listOf(*columns))
     }

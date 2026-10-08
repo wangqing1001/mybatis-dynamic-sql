@@ -22,11 +22,10 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.MissingResourceException;
-import java.util.Optional;
 
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
-import org.mybatis.dynamic.sql.common.OrderByModel;
+import org.mybatis.dynamic.sql.order.OrderByModel;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.exception.InvalidSqlException;
 import org.mybatis.dynamic.sql.insert.BatchInsertModel;
@@ -37,13 +36,12 @@ import org.mybatis.dynamic.sql.insert.MultiRowInsertModel;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.GroupByModel;
-import org.mybatis.dynamic.sql.select.PagingModel;
+import org.mybatis.dynamic.sql.select.paging.PagingModel;
 import org.mybatis.dynamic.sql.select.QueryExpressionModel;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
-import org.mybatis.dynamic.sql.select.join.JoinType;
-import org.mybatis.dynamic.sql.select.render.FetchFirstPagingModelRenderer;
+import org.mybatis.dynamic.sql.select.paging.FetchFirstPagingModelRenderer;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.InternalError;
 import org.mybatis.dynamic.sql.util.Messages;
@@ -55,10 +53,7 @@ class InvalidSQLTest {
 
     @Test
     void testInvalidGeneralInsertStatement() {
-        GeneralInsertModel.Builder builder = new GeneralInsertModel.Builder()
-                .withTable(person);
-
-        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(builder::build)
+        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(()->new GeneralInsertModel(person,new StatementConfiguration()))
                 .withMessage(Messages.getString("ERROR.6"));
     }
 
@@ -75,11 +70,7 @@ class InvalidSQLTest {
 
     @Test
     void testInvalidInsertStatement() {
-        InsertModel.Builder<TestRow> builder = new InsertModel.Builder<TestRow>()
-                .withTable(person)
-                .withRow(new TestRow());
-
-        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(builder::build)
+        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(()->new InsertModel<>(person,new TestRow()))
                 .withMessage(Messages.getString("ERROR.7"));
     }
 
@@ -99,96 +90,63 @@ class InvalidSQLTest {
 
     @Test
     void testInvalidMultipleInsertStatementNoRecords() {
-        MultiRowInsertModel.Builder<TestRow> builder = new MultiRowInsertModel.Builder<TestRow>()
-                .withTable(person);
-
-        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(builder::build)
+        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(()->new MultiRowInsertModel<>(person))
                 .withMessage(Messages.getString("ERROR.20"));
     }
 
     @Test
     void testInvalidMultipleInsertStatementNoMappings() {
         List<TestRow> records = List.of(new TestRow());
-
-        MultiRowInsertModel.Builder<TestRow> builder = new MultiRowInsertModel.Builder<TestRow>()
-                .withRecords(records)
-                .withTable(person);
-
-        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(builder::build)
+        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(()-> new MultiRowInsertModel<>(person,records))
                 .withMessage(Messages.getString("ERROR.8"));
     }
 
     @Test
     void testInvalidBatchInsertStatementNoRecords() {
-        BatchInsertModel.Builder<TestRow> builder = new BatchInsertModel.Builder<TestRow>()
-                .withTable(person);
-
-        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(builder::build)
+        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(()->new BatchInsertModel<TestRow>(person))
                 .withMessage(Messages.getString("ERROR.19"));
     }
 
     @Test
     void testInvalidBatchInsertStatementNoMappings() {
         List<TestRow> records = List.of(new TestRow());
-
-        BatchInsertModel.Builder<TestRow> builder = new BatchInsertModel.Builder<TestRow>()
-                .withRecords(records)
-                .withTable(person);
-
-        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(builder::build)
+        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(()->new BatchInsertModel<>(person,records))
                 .withMessage(Messages.getString("ERROR.5"));
     }
 
     @Test
     void testInvalidEmptyInsertColumnList() {
         List<SqlColumn<?>> list = Collections.emptyList();
-        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(() -> InsertColumnListModel.of(list))
+        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(() -> new InsertColumnListModel(list))
                 .withMessage(Messages.getString("ERROR.4"));
     }
 
     @Test
-    void testInvalidNullInsertColumnList() {
-        assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> InsertColumnListModel.of(null));
-    }
-
-    @Test
     void testInvalidSelectStatementWithoutQueryExpressions() {
-        SelectModel.Builder builder =
-                new SelectModel.Builder().withStatementConfiguration(new StatementConfiguration());
-
-        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(builder::build)
+        assertThatExceptionOfType(InvalidSqlException.class)
+                .isThrownBy(()->new SelectModel(Collections.emptyList(),new StatementConfiguration()))
                 .withMessage(Messages.getString("ERROR.14"));
     }
 
     @Test
     void testInvalidSelectStatementWithoutColumnList() {
-        QueryExpressionModel.Builder builder = new QueryExpressionModel.Builder()
-                .withTable(person);
-
-        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(builder::build)
+        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(()->new QueryExpressionModel(person))
                 .withMessage(Messages.getString("ERROR.13"));
     }
 
     @Test
     void testInvalidSelectStatementEmptyJoinModel() {
         List<JoinSpecification> list = Collections.emptyList();
-        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(() -> JoinModel.of(list))
+        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(() -> new JoinModel(list))
                 .withMessage(Messages.getString("ERROR.15"));
     }
 
     @Test
     void testInvalidSelectStatementNullJoinModel() {
-        assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> JoinModel.of(null));
+        assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> new JoinModel(Collections.emptyList()));
     }
 
-    @Test
-    void testInvalidSelectStatementJoinSpecification() {
-        JoinSpecification.Builder builder = new JoinSpecification.Builder()
-                .withJoinTable(person)
-                .withJoinType(JoinType.LEFT);
 
-        assertThatExceptionOfType(NullPointerException.class).isThrownBy(builder::build);
-    }
     @Test
     void testInvalidSelectStatementWithEmptyOrderByList() {
         List<SortSpecification> list = Collections.emptyList();
@@ -201,15 +159,6 @@ class InvalidSQLTest {
         List<BasicColumn> list = Collections.emptyList();
         assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(() -> GroupByModel.of(list))
                 .withMessage(Messages.getString("ERROR.11"));
-    }
-
-    @Test
-    void testInvalidUpdateStatement() {
-        UpdateModel.Builder builder = new UpdateModel.Builder()
-                .withTable(person);
-
-        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(builder::build)
-                .withMessage(Messages.getString("ERROR.17"));
     }
 
     @Test
@@ -231,20 +180,18 @@ class InvalidSQLTest {
 
     @Test
     void testInvalidPagingModel() {
-        Optional<PagingModel> pagingModel = new PagingModel.Builder().withLimit(22L).build();
 
-        RenderingContext renderingContext = RenderingContext
-                .withRenderingStrategy(RenderingStrategies.MYBATIS3)
-                .withStatementConfiguration(new StatementConfiguration())
-                .build();
 
-        assertThat(pagingModel).hasValueSatisfying(pm -> {
-            FetchFirstPagingModelRenderer renderer = new FetchFirstPagingModelRenderer(renderingContext, pm);
 
-            assertThatExceptionOfType(InvalidSqlException.class)
-                    .isThrownBy(renderer::render)
-                    .withMessage(Messages.getInternalErrorString(InternalError.INTERNAL_ERROR_13));
-        });
+        PagingModel pagingModel = new PagingModel(22L);
+
+        RenderingContext renderingContext = new RenderingContext(RenderingStrategies.MYBATIS3,new StatementConfiguration());
+
+        FetchFirstPagingModelRenderer renderer = new FetchFirstPagingModelRenderer(renderingContext, pagingModel);
+        assertThatExceptionOfType(InvalidSqlException.class)
+                .isThrownBy(renderer::render)
+                .withMessage(Messages.getInternalErrorString(InternalError.INTERNAL_ERROR_13));
+
     }
 
     @Test

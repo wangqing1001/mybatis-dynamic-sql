@@ -19,40 +19,17 @@ import org.mybatis.dynamic.sql.AndOrCriteriaGroup
 import org.mybatis.dynamic.sql.SqlCriterion
 import java.util.*
 
-abstract class AbstractBooleanExpressionModel protected constructor(builder: AbstractBuilder<*>) {
-
-    private val initialCriterion: SqlCriterion
-    private val subCriteria: MutableList<AndOrCriteriaGroup>
-
-    init {
-        initialCriterion = builder.initialCriterion
-        subCriteria = builder.subCriteria
-    }
+abstract class AbstractBooleanExpressionModel protected constructor(
+    private val initialCriterion: SqlCriterion,
+    private val subCriteria: List<AndOrCriteriaGroup> = mutableListOf(),
+) {
 
     fun initialCriterion(): SqlCriterion {
         return initialCriterion
     }
 
-    fun subCriteria(): MutableList<AndOrCriteriaGroup> {
-        return Collections.unmodifiableList(subCriteria)
+    fun subCriteria(): List<AndOrCriteriaGroup> {
+        return subCriteria
     }
 
-    abstract class AbstractBuilder<T : AbstractBuilder<T>> {
-
-        lateinit var initialCriterion: SqlCriterion
-
-        val subCriteria: MutableList<AndOrCriteriaGroup> = mutableListOf()
-
-        fun withInitialCriterion(initialCriterion: SqlCriterion): T {
-            this.initialCriterion = initialCriterion
-            return self()
-        }
-
-        fun withSubCriteria(subCriteria: List<AndOrCriteriaGroup>): T {
-            this.subCriteria.addAll(subCriteria)
-            return self()
-        }
-
-        protected abstract fun self(): T
-    }
 }

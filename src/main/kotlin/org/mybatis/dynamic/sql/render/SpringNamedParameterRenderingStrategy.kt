@@ -27,14 +27,14 @@ class SpringNamedParameterRenderingStrategy : RenderingStrategy() {
     }
 
     override fun getFormattedJdbcPlaceholder(prefix: String, parameterName: String): String {
-        return ":" + parameterName //$NON-NLS-1$
+        return ":$parameterName"
     }
 
     override fun getRecordBasedInsertBinding(column: BindableColumn<*>, prefix: String, parameterName: String): String {
-        return ":" + prefix + "." + parameterName //$NON-NLS-1$ //$NON-NLS-2$
+        return ":$prefix.$parameterName"
     }
 
     override fun getRecordBasedInsertBinding(column: BindableColumn<*>, parameterName: String): String {
-        return ":" + parameterName //$NON-NLS-1$
+        return ":$parameterName"
     }
 }

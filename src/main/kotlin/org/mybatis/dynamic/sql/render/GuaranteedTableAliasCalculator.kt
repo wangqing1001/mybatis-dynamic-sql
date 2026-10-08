@@ -24,22 +24,13 @@ import java.util.Optional
  *
  * @author Jeff Butler
  */
-class GuaranteedTableAliasCalculator private constructor(aliases: Map<SqlTable, String>) :
+class GuaranteedTableAliasCalculator(aliases: Map<SqlTable, String>) :
     ExplicitTableAliasCalculator(aliases) {
 
-    override fun aliasForColumn(table: SqlTable): Optional<String> {
+    override fun aliasForColumn(table: SqlTable): String {
         val alias = super.aliasForColumn(table)
-        return if (alias.isPresent) {
-            alias
-        } else {
-            Optional.of(table.tableName())
-        }
+        return alias ?: table.tableName()
     }
 
-    companion object {
-        @JvmStatic
-        fun of(aliases: Map<SqlTable, String>): TableAliasCalculator {
-            return GuaranteedTableAliasCalculator(aliases)
-        }
-    }
+
 }

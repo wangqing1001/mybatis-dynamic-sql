@@ -41,8 +41,8 @@ class SearchedCaseModel private constructor(builder: Builder) : BasicColumn, Sor
         Validator.assertNotEmpty(whenConditions, "ERROR.40") //$NON-NLS-1$
     }
 
-    fun whenConditions(): Stream<SearchedCaseWhenCondition> {
-        return whenConditions.stream()
+    fun whenConditions(): Collection<SearchedCaseWhenCondition> {
+        return whenConditions
     }
 
     fun elseValue(): Optional<BasicColumn> {

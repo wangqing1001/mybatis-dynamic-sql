@@ -15,14 +15,8 @@
  */
 package org.mybatis.dynamic.sql.select
 
-import java.util.Objects
 
 /**
  * 联合查询(union)记录。connector 为 "union" 或 "union all"。
  */
-data class UnionQuery(val connector: String, val selectModel: SelectModel) {
-    init {
-        Objects.requireNonNull(connector)
-        Objects.requireNonNull(selectModel)
-    }
-}
+data class UnionQuery(val connector: String, val selectModel: SelectModel)

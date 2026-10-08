@@ -80,7 +80,7 @@ class SimpleCaseDSL<T> private constructor(column: BindableColumn<T>) : ElseDSL<
         }
 
         override fun then(column: BasicColumn): SimpleCaseDSL<T> {
-            whenConditions.add(ConditionBasedWhenCondition(conditions, column))
+            whenConditions.add(ConditionBasedWhenCondition(column,conditions))
             return this@SimpleCaseDSL
         }
     }
@@ -97,7 +97,7 @@ class SimpleCaseDSL<T> private constructor(column: BindableColumn<T>) : ElseDSL<
         }
 
         override fun then(column: BasicColumn): SimpleCaseDSL<T> {
-            whenConditions.add(BasicWhenCondition(values, column))
+            whenConditions.add(BasicWhenCondition(column,values))
             return this@SimpleCaseDSL
         }
     }

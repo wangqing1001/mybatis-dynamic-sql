@@ -115,7 +115,7 @@ class MapToRowTest {
                 .render(RenderingStrategies.MYBATIS3);
 
         String expected = "insert into foo (id1, id2) values (22, #{row.id2,jdbcType=INTEGER})";
-        assertThat(batchInsert.getInsertStatementSQL()).isEqualTo(expected);
+        assertThat(batchInsert.getInsertStatement()).isEqualTo(expected);
     }
 
     @Test
@@ -133,7 +133,7 @@ class MapToRowTest {
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 
         String expected = "insert into foo (id1, id2) values (22, :row.id2)";
-        assertThat(batchInsert.getInsertStatementSQL()).isEqualTo(expected);
+        assertThat(batchInsert.getInsertStatement()).isEqualTo(expected);
     }
 
     @Test
@@ -148,7 +148,7 @@ class MapToRowTest {
                 .render(RenderingStrategies.MYBATIS3);
 
         String expected = "insert into foo (id1, id2) values (22, #{row,jdbcType=INTEGER})";
-        assertThat(batchInsert.getInsertStatementSQL()).isEqualTo(expected);
+        assertThat(batchInsert.getInsertStatement()).isEqualTo(expected);
     }
 
     @Test
@@ -163,7 +163,7 @@ class MapToRowTest {
                 .render(RenderingStrategies.SPRING_NAMED_PARAMETER);
 
         String expected = "insert into foo (id1, id2) values (22, :row)";
-        assertThat(batchInsert.getInsertStatementSQL()).isEqualTo(expected);
+        assertThat(batchInsert.getInsertStatement()).isEqualTo(expected);
     }
 
     record IdRecord(Integer id1, Integer id2) { }

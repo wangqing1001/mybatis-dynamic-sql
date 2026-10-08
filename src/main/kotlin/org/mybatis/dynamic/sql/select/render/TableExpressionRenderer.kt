@@ -20,45 +20,25 @@ import org.mybatis.dynamic.sql.TableExpressionVisitor
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.select.SubQuery
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import java.util.Objects
 
 /**
  * 表表达式渲染器,实现 TableExpressionVisitor 访问者模式。
  */
-class TableExpressionRenderer private constructor(builder: Builder) : TableExpressionVisitor<FragmentAndParameters> {
+class TableExpressionRenderer(
     private val renderingContext: RenderingContext
-
-    init {
-        renderingContext = Objects.requireNonNull(builder.renderingContext!!)
-    }
+) : TableExpressionVisitor<FragmentAndParameters> {
 
     override fun visit(table: SqlTable): FragmentAndParameters {
-        return FragmentAndParameters.fromFragment(renderingContext.aliasedTableName(table))
+        return FragmentAndParameters(renderingContext.aliasedTableName(table))
     }
 
     override fun visit(subQuery: SubQuery): FragmentAndParameters {
-        val suffix = subQuery.alias().map { a: String -> ") $a" } //$NON-NLS-1$
-            .orElse(")") //$NON-NLS-1$
-
-        return SubQueryRenderer.withSelectModel(subQuery.selectModel())
-            .withRenderingContext(renderingContext)
-            .withPrefix("(") //$NON-NLS-1$
-            .withSuffix(suffix)
-            .build()
-            .render()
+        var suffix = ")"
+        val alias = subQuery.alias()
+        if(alias != null) {
+            suffix = "$suffix $alias"
+        }
+        return SubQueryRenderer(subQuery.selectModel(),renderingContext,"(",suffix).render()
     }
 
-    class Builder {
-        // 字段公开,以便外部类访问(Kotlin 外部类不能访问嵌套类私有成员)
-        var renderingContext: RenderingContext? = null
-
-        fun withRenderingContext(renderingContext: RenderingContext): Builder {
-            this.renderingContext = renderingContext
-            return this
-        }
-
-        fun build(): TableExpressionRenderer {
-            return TableExpressionRenderer(this)
-        }
-    }
 }

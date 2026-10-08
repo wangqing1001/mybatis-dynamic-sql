@@ -15,25 +15,15 @@
  */
 package org.mybatis.dynamic.sql.select.render
 
+import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionModel
 import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionRenderer
+import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.select.caseexpression.SearchedCaseWhenCondition
 
 /**
  * 搜索式 case when 条件渲染器。
  */
-class SearchedCaseWhenConditionRenderer (builder: Builder) :
-    AbstractBooleanExpressionRenderer("when", builder) { //$NON-NLS-1$
-
-    class Builder(model: SearchedCaseWhenCondition) :
-        AbstractBuilder<Builder>(model) {
-
-        fun build(): SearchedCaseWhenConditionRenderer {
-            return SearchedCaseWhenConditionRenderer(this)
-        }
-
-        override fun self(): Builder {
-            return this
-        }
-
-    }
-}
+class SearchedCaseWhenConditionRenderer (
+    model: AbstractBooleanExpressionModel,
+    renderingContext: RenderingContext
+) : AbstractBooleanExpressionRenderer("when", model,renderingContext)

@@ -18,64 +18,31 @@ package org.mybatis.dynamic.sql.insert.render
 import org.mybatis.dynamic.sql.insert.GeneralInsertModel
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.render.RenderingStrategy
+import org.mybatis.dynamic.sql.util.FieldAndValueCollector
 import org.mybatis.dynamic.sql.util.Validator
-import java.util.Objects
-import java.util.Optional
+import org.mybatis.dynamic.sql.util.toFieldAndValueCollector
 
 /**
  * 通用 insert 渲染器。
  */
-class GeneralInsertRenderer private constructor(builder: Builder) {
-    private val model: GeneralInsertModel = builder.model
+class GeneralInsertRenderer(
+    private val model: GeneralInsertModel,
+    renderingStrategy: RenderingStrategy
+) {
+
     private val visitor: GeneralInsertValuePhraseVisitor
 
     init {
-        val renderingContext = RenderingContext
-            .withRenderingStrategy(builder.renderingStrategy)
-            .withStatementConfiguration(model.statementConfiguration())
-            .build()
+        val statementConfiguration = model.statementConfiguration()
+        val renderingContext = RenderingContext(renderingStrategy,statementConfiguration)
         visitor = GeneralInsertValuePhraseVisitor(renderingContext)
     }
 
     fun render(): GeneralInsertStatementProvider {
-        val collector = model.columnMappings()
-            .map { m -> m.accept(visitor) }
-            .flatMap { optional: Optional<FieldAndValueAndParameters> -> optional.stream() }
-            .collect(FieldAndValueCollector.collect())
-
-        Validator.assertFalse(collector.isEmpty(), "ERROR.9") //$NON-NLS-1$
-
+        val collector =  model.columnMappings().mapNotNull {  it.accept(visitor) }.toFieldAndValueCollector()
+        Validator.assertFalse(collector.isEmpty(), "ERROR.9")
         val insertStatement = InsertRenderingUtilities.calculateInsertStatement(model.table(), collector)
-
-        return DefaultGeneralInsertStatementProvider.withInsertStatement(insertStatement)
-            .withParameters(collector.parameters())
-            .build()
+        return DefaultGeneralInsertStatementProvider(insertStatement,collector.parameters())
     }
 
-    companion object {
-        @JvmStatic
-        fun withInsertModel(model: GeneralInsertModel): Builder {
-            return Builder().withInsertModel(model)
-        }
-    }
-
-    class Builder {
-        // 字段公开,以便外部类访问(Kotlin 外部类不能访问嵌套类私有成员)
-        lateinit var model: GeneralInsertModel
-        lateinit var renderingStrategy: RenderingStrategy
-
-        fun withInsertModel(model: GeneralInsertModel): Builder {
-            this.model = model
-            return this
-        }
-
-        fun withRenderingStrategy(renderingStrategy: RenderingStrategy): Builder {
-            this.renderingStrategy = renderingStrategy
-            return this
-        }
-
-        fun build(): GeneralInsertRenderer {
-            return GeneralInsertRenderer(this)
-        }
-    }
 }

@@ -18,60 +18,19 @@ package org.mybatis.dynamic.sql.select.render
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.render.RenderingStrategy
 import org.mybatis.dynamic.sql.select.SelectModel
-import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import java.util.Objects
 
-/**
- * select 语句渲染器。
- */
-class SelectRenderer private constructor(builder: Builder) {
-    private val selectModel: SelectModel
+class SelectRenderer(
+    private val selectModel: SelectModel,
     private val renderingStrategy: RenderingStrategy
-
-    init {
-        selectModel = Objects.requireNonNull(builder.selectModel!!)
-        renderingStrategy = Objects.requireNonNull(builder.renderingStrategy!!)
-    }
+) {
 
     fun render(): SelectStatementProvider {
-        val renderingContext = RenderingContext.withRenderingStrategy(renderingStrategy)
-            .withStatementConfiguration(selectModel.statementConfiguration())
-            .build()
-
-        val fragmentAndParameters = SubQueryRenderer.withSelectModel(selectModel)
-            .withRenderingContext(renderingContext)
-            .build()
-            .render()
-
+        val statementConfiguration = selectModel.statementConfiguration()
+        val renderingContext = RenderingContext(renderingStrategy,statementConfiguration)
+        val fragmentAndParameters = SubQueryRenderer(selectModel,renderingContext).render()
         return DefaultSelectStatementProvider.withSelectStatement(fragmentAndParameters.fragment())
             .withParameters(fragmentAndParameters.parameters())
             .build()
     }
 
-    companion object {
-        @JvmStatic
-        fun withSelectModel(selectModel: SelectModel): Builder {
-            return Builder().withSelectModel(selectModel)
-        }
-    }
-
-    class Builder {
-        // 字段公开,以便外部类访问(Kotlin 外部类不能访问嵌套类私有成员)
-        var selectModel: SelectModel? = null
-        var renderingStrategy: RenderingStrategy? = null
-
-        fun withRenderingStrategy(renderingStrategy: RenderingStrategy): Builder {
-            this.renderingStrategy = renderingStrategy
-            return this
-        }
-
-        fun withSelectModel(selectModel: SelectModel): Builder {
-            this.selectModel = selectModel
-            return this
-        }
-
-        fun build(): SelectRenderer {
-            return SelectRenderer(this)
-        }
-    }
 }

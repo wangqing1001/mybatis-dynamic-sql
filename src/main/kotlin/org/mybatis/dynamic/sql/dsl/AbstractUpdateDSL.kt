@@ -22,7 +22,7 @@ import org.mybatis.dynamic.sql.SortSpecification
 import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.SqlTable
-import org.mybatis.dynamic.sql.common.OrderByModel
+import org.mybatis.dynamic.sql.order.OrderByModel
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.update.UpdateModel
@@ -41,7 +41,6 @@ import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping
 import org.mybatis.dynamic.sql.where.WhereApplier
 import org.mybatis.dynamic.sql.where.WhereModel
 import java.util.ArrayList
-import java.util.Arrays
 import java.util.Objects
 import java.util.function.Consumer
 import java.util.function.Supplier
@@ -50,25 +49,15 @@ import java.util.function.Supplier
  * update 语句 DSL 的抽象基类。
  */
 abstract class AbstractUpdateDSL<M, D : AbstractUpdateDSL<M, D>> protected constructor(
-    table: SqlTable,
-    tableAlias: String?
-) : WhereOperations<AbstractUpdateDSL<M, D>.UpdateWhereBuilder>,
-    OrderByOperations<D>,
-    ConfigurableStatement<D>,
-    Buildable<M> {
+    private val table: SqlTable,
+    private val tableAlias: String?
+) : WhereOperations<AbstractUpdateDSL<M, D>.UpdateWhereBuilder>,OrderByOperations<D>,ConfigurableStatement<D>,Buildable<M> {
 
     private val columnMappings: MutableList<AbstractColumnMapping> = ArrayList()
-    private val table: SqlTable
-    private val tableAlias: String?
     private var whereBuilder: UpdateWhereBuilder? = null
     private val statementConfiguration: StatementConfiguration = StatementConfiguration()
     private var limit: Long? = null
     private var orderByModel: OrderByModel? = null
-
-    init {
-        this.table = Objects.requireNonNull(table)
-        this.tableAlias = tableAlias
-    }
 
     fun <T : Any> set(column: SqlColumn<T>): SetClauseFinisher<T> {
         return SetClauseFinisher(column)
@@ -105,20 +94,9 @@ abstract class AbstractUpdateDSL<M, D : AbstractUpdateDSL<M, D>> protected const
         return getThis()
     }
 
-    /**
-     * 警告!调用此方法可能生成更新表中所有行的 update 语句。
-     *
-     * @return update 模型
-     */
     protected fun buildUpdateModel(): UpdateModel {
-        return UpdateModel.withTable(table)
-            .withTableAlias(tableAlias)
-            .withColumnMappings(columnMappings)
-            .withLimit(limit)
-            .withOrderByModel(orderByModel)
-            .withWhereModel(if (whereBuilder == null) null else whereBuilder!!.buildWhereModel())
-            .withStatementConfiguration(statementConfiguration)
-            .build()
+        val whereModel = whereBuilder?.buildWhereModel()
+        return UpdateModel(table,columnMappings,statementConfiguration,tableAlias,whereModel,orderByModel,limit)
     }
 
     override fun configureStatement(consumer: Consumer<StatementConfiguration>): D {
@@ -178,7 +156,7 @@ abstract class AbstractUpdateDSL<M, D : AbstractUpdateDSL<M, D>> protected const
         }
 
         fun equalToWhenPresent(valueSupplier: Supplier<T?>): D {
-            columnMappings.add(ValueWhenPresentMapping.of(column, valueSupplier))
+            columnMappings.add(ValueWhenPresentMapping(column, valueSupplier))
             return this@AbstractUpdateDSL.getThis()
         }
     }
@@ -230,10 +208,7 @@ abstract class AbstractUpdateDSL<M, D : AbstractUpdateDSL<M, D>> protected const
         }
 
         fun buildWhereModel(): WhereModel {
-            return WhereModel.Builder()
-                .withInitialCriterion(initialCriterion)
-                .withSubCriteria(subCriteria)
-                .build()
+            return WhereModel(initialCriterion,subCriteria)
         }
     }
 }

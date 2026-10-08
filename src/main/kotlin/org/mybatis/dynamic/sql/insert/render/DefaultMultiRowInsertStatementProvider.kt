@@ -20,29 +20,7 @@ package org.mybatis.dynamic.sql.insert.render
 /**
  * 默认多行 insert 语句提供者。
  */
-class DefaultMultiRowInsertStatementProvider<T> private constructor(builder: Builder<T>) :
-    MultiRowInsertStatementProvider<T> {
-    override val records: List<T> = builder.records
-    override val insertStatement: String = builder.insertStatement
-
-
-    class Builder<T> {
-        // 字段公开,以便外部类访问(Kotlin 外部类不能访问嵌套类私有成员)
-        val records: MutableList<T> = mutableListOf()
-        lateinit var insertStatement: String
-
-        fun withRecords(records: List<T>): Builder<T> {
-            this.records.addAll(records)
-            return this
-        }
-
-        fun withInsertStatement(insertStatement: String): Builder<T> {
-            this.insertStatement = insertStatement
-            return this
-        }
-
-        fun build(): DefaultMultiRowInsertStatementProvider<T> {
-            return DefaultMultiRowInsertStatementProvider(this)
-        }
-    }
-}
+class DefaultMultiRowInsertStatementProvider<T>(
+    override val insertStatement: String,
+    override val records: List<T>,
+) : MultiRowInsertStatementProvider<T>

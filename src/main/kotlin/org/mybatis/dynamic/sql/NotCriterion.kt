@@ -22,19 +22,13 @@ package org.mybatis.dynamic.sql
  *
  * @since 1.4.0
  */
-class NotCriterion private constructor(builder: Builder) : CriteriaGroup(builder) {
+class NotCriterion @JvmOverloads constructor(
+    initialCriterion: SqlCriterion,
+    subCriteria: List<AndOrCriteriaGroup> = emptyList()
+) : CriteriaGroup(initialCriterion, subCriteria) {
 
     override fun <R> accept(visitor: SqlCriterionVisitor<R>): R {
         return visitor.visit(this)
     }
 
-    class Builder : AbstractGroupBuilder<Builder>() {
-        fun build(): NotCriterion {
-            return NotCriterion(this)
-        }
-
-        override fun self(): Builder {
-            return this
-        }
-    }
 }

@@ -18,40 +18,24 @@ package org.mybatis.dynamic.sql.where.render
 import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionModel
 import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionRenderer
 import org.mybatis.dynamic.sql.exception.NonRenderingWhereClauseException
+import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import java.util.Optional
 
 /**
  * where 子句渲染器。
  */
-class WhereRenderer private constructor(builder: Builder) : AbstractBooleanExpressionRenderer("where", builder) { //$NON-NLS-1$
+class WhereRenderer(
+    model: AbstractBooleanExpressionModel,
+    renderingContext: RenderingContext
+) : AbstractBooleanExpressionRenderer("where", model,renderingContext) {
 
-    override fun render(): Optional<FragmentAndParameters> {
+    override fun render(): FragmentAndParameters? {
         val whereClause = super.render()
-
-        return if (whereClause.isPresent || renderingContext.isNonRenderingClauseAllowed()) {
-            whereClause
-        } else {
-            throw NonRenderingWhereClauseException()
+        if (whereClause!=null || renderingContext.isNonRenderingClauseAllowed()) {
+            return whereClause
         }
+        throw NonRenderingWhereClauseException()
     }
 
-    class Builder(whereModel: AbstractBooleanExpressionModel) : AbstractBuilder<Builder>(whereModel) {
-
-
-        override fun self(): Builder {
-            return this
-        }
-
-        fun build(): WhereRenderer {
-            return WhereRenderer(this)
-        }
-    }
-
-    companion object {
-        @JvmStatic
-        fun withWhereModel(whereModel: AbstractBooleanExpressionModel): Builder {
-            return Builder(whereModel)
-        }
-    }
 }

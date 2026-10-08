@@ -17,61 +17,27 @@ package org.mybatis.dynamic.sql.insert.render
 
 import org.mybatis.dynamic.sql.insert.InsertModel
 import org.mybatis.dynamic.sql.render.RenderingStrategy
+import org.mybatis.dynamic.sql.util.FieldAndValueAndParameters
+import org.mybatis.dynamic.sql.util.FieldAndValueCollector
 import org.mybatis.dynamic.sql.util.Validator
-import java.util.Objects
+import org.mybatis.dynamic.sql.util.toFieldAndValueCollector
 import java.util.Optional
 
 /**
  * 单行 insert 渲染器。
  */
-class InsertRenderer<T> private constructor(builder: Builder<T>) {
-    private val model: InsertModel<T>
-    private val visitor: ValuePhraseVisitor
+class InsertRenderer<T>(
+    private val model: InsertModel<T>,
+    renderingStrategy: RenderingStrategy
+) {
 
-    init {
-        model = builder.model
-        visitor = ValuePhraseVisitor(builder.renderingStrategy)
-    }
+    private val visitor: ValuePhraseVisitor = ValuePhraseVisitor(renderingStrategy)
 
     fun render(): InsertStatementProvider<T> {
-        val collector = model.columnMappings()
-            .map { m -> m.accept(visitor) }
-            .flatMap { optional: Optional<FieldAndValueAndParameters> -> optional.stream() }
-            .collect(FieldAndValueCollector.collect())
-
-        Validator.assertFalse(collector.isEmpty(), "ERROR.10") //$NON-NLS-1$
-
+        val collector = model.columnMappings().mapNotNull { m -> m.accept(visitor) }.toFieldAndValueCollector()
+        Validator.assertFalse(collector.isEmpty(), "ERROR.10")
         val insertStatement = InsertRenderingUtilities.calculateInsertStatement(model.table(), collector)
-
-        return DefaultInsertStatementProvider.withRow(model.row())
-            .withInsertStatement(insertStatement)
-            .build()
+        return DefaultInsertStatementProvider(insertStatement,model.row())
     }
 
-    companion object {
-        @JvmStatic
-        fun <T> withInsertModel(model: InsertModel<T>): Builder<T> {
-            return Builder<T>().withInsertModel(model)
-        }
-    }
-
-    class Builder<T> {
-        // 字段公开,以便外部类访问(Kotlin 外部类不能访问嵌套类私有成员)
-        lateinit var model: InsertModel<T>
-        lateinit var renderingStrategy: RenderingStrategy
-
-        fun withInsertModel(model: InsertModel<T>): Builder<T> {
-            this.model = model
-            return this
-        }
-
-        fun withRenderingStrategy(renderingStrategy: RenderingStrategy): Builder<T> {
-            this.renderingStrategy = renderingStrategy
-            return this
-        }
-
-        fun build(): InsertRenderer<T> {
-            return InsertRenderer(this)
-        }
-    }
 }

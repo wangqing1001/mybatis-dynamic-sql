@@ -23,19 +23,19 @@ import java.util.Optional
  */
 interface TableAliasCalculator {
 
-    fun aliasForColumn(table: SqlTable): Optional<String>
+    fun aliasForColumn(table: SqlTable): String?
 
-    fun aliasForTable(table: SqlTable): Optional<String>
+    fun aliasForTable(table: SqlTable): String?
 
     companion object {
         @JvmStatic
         fun empty(): TableAliasCalculator {
             return object : TableAliasCalculator {
-                override fun aliasForColumn(table: SqlTable): Optional<String> {
+                override fun aliasForColumn(table: SqlTable): String? {
                     return table.tableAlias()
                 }
 
-                override fun aliasForTable(table: SqlTable): Optional<String> {
+                override fun aliasForTable(table: SqlTable): String? {
                     return table.tableAlias()
                 }
             }

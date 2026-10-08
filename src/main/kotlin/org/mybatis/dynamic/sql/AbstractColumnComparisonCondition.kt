@@ -28,4 +28,5 @@ abstract class AbstractColumnComparisonCondition<T> protected constructor(protec
         return rightColumn.render(renderingContext)
             .mapFragment { operator() + StringUtilities.spaceBefore(it) }
     }
+
 }

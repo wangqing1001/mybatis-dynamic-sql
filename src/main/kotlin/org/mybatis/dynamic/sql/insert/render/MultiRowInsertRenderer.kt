@@ -17,68 +17,32 @@ package org.mybatis.dynamic.sql.insert.render
 
 import org.mybatis.dynamic.sql.insert.MultiRowInsertModel
 import org.mybatis.dynamic.sql.render.RenderingStrategy
+import org.mybatis.dynamic.sql.util.FieldAndValueCollector
 import org.mybatis.dynamic.sql.util.StringUtilities
+import org.mybatis.dynamic.sql.util.toFieldAndValueCollector
 import java.util.Objects
 
 /**
  * 多行 insert 渲染器。
  */
-class MultiRowInsertRenderer<T> private constructor(builder: Builder<T>) {
-    private val model: MultiRowInsertModel<T>
-    private val visitor: MultiRowValuePhraseVisitor
-
-    init {
-        model = Objects.requireNonNull(builder.model)
-        // 前缀是通用格式,稍后将通过 String.format(...) 解析
-        visitor = MultiRowValuePhraseVisitor(
-            Objects.requireNonNull(builder.renderingStrategy),
-            "records[%s]" //$NON-NLS-1$
-        )
-    }
+class MultiRowInsertRenderer<T>(
+    private val model: MultiRowInsertModel<T>,
+    renderingStrategy: RenderingStrategy
+) {
+    private val visitor: MultiRowValuePhraseVisitor = MultiRowValuePhraseVisitor(renderingStrategy,"records[%s]")
 
     fun render(): MultiRowInsertStatementProvider<T> {
-        val collector = model.columnMappings()
-            .map { m -> m.accept(visitor) }
-            .collect(FieldAndValueCollector.collect())
-
+        val collector = model.columnMappings().map { m -> m.accept(visitor) }.toFieldAndValueCollector()
         val insertStatement = calculateInsertStatement(collector)
-
-        return DefaultMultiRowInsertStatementProvider.Builder<T>().withRecords(model.records())
-            .withInsertStatement(insertStatement)
-            .build()
+        return DefaultMultiRowInsertStatementProvider(insertStatement,model.records())
     }
 
     private fun calculateInsertStatement(collector: FieldAndValueCollector): String {
         val statementStart = InsertRenderingUtilities.calculateInsertStatementStart(model.table())
         val columnsPhrase = collector.columnsPhrase()
         val valuesPhrase = collector.multiRowInsertValuesPhrase(model.recordCount())
-
         return statementStart + StringUtilities.spaceBefore(columnsPhrase) + StringUtilities.spaceBefore(valuesPhrase)
     }
 
-    companion object {
-        @JvmStatic
-        fun <T> withMultiRowInsertModel(model: MultiRowInsertModel<T>): Builder<T> {
-            return Builder<T>().withMultiRowInsertModel(model)
-        }
-    }
 
-    class Builder<T> {
-        lateinit var model: MultiRowInsertModel<T>
-        lateinit var renderingStrategy: RenderingStrategy
-
-        fun withMultiRowInsertModel(model: MultiRowInsertModel<T>): Builder<T> {
-            this.model = model
-            return this
-        }
-
-        fun withRenderingStrategy(renderingStrategy: RenderingStrategy): Builder<T> {
-            this.renderingStrategy = renderingStrategy
-            return this
-        }
-
-        fun build(): MultiRowInsertRenderer<T> {
-            return MultiRowInsertRenderer(this)
-        }
-    }
 }

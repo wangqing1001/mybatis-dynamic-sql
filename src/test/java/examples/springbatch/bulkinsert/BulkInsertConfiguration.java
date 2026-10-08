@@ -27,7 +27,7 @@ import examples.springbatch.common.PersonRecord;
 import examples.springbatch.mapper.PersonDynamicSqlSupport;
 import examples.springbatch.mapper.PersonMapper;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.mybatis.dynamic.sql.insert.InsertDSL;
+import org.mybatis.dynamic.sql.dsl.InsertDSL;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
