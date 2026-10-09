@@ -18,23 +18,28 @@ package org.mybatis.dynamic.sql.where.condition
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition
 import org.mybatis.dynamic.sql.util.StringUtilities
 import java.util.NoSuchElementException
+import java.util.function.Function
+import java.util.function.Predicate
 
 /**
  * 不区分大小写的 like 条件,如 column like upper(value)。
  */
-open class IsLikeCaseInsensitive<T> private constructor(value: T) : AbstractSingleValueCondition<T>(
-    StringUtilities.upperCaseIfPossible(value)
-), CaseInsensitiveRenderableCondition<T>, AbstractSingleValueCondition.Filterable<T>, AbstractSingleValueCondition.Mappable<T> {
+open class IsLikeCaseInsensitive<T> private constructor(
+    value: T
+) : AbstractSingleValueCondition<T>(StringUtilities.upperCaseIfPossible(value)),
+    CaseInsensitiveRenderableCondition<T>,
+    AbstractSingleValueCondition.Filterable<T>,
+    AbstractSingleValueCondition.Mappable<T>{
 
     override fun operator(): String {
         return "like" //$NON-NLS-1$
     }
 
-    override fun filter(predicate: (T) -> Boolean): IsLikeCaseInsensitive<T> {
+    override fun filter(predicate: Predicate<in T>): IsLikeCaseInsensitive<T> {
         return filterSupport(predicate, { empty() }, this)
     }
 
-    override fun <R> map(mapper: (T) -> R): IsLikeCaseInsensitive<R> {
+    override fun <R> map(mapper: Function<in T, out R>): IsLikeCaseInsensitive<R> {
         return mapSupport(mapper, { r: R -> IsLikeCaseInsensitive(r) }, { empty() })
     }
 

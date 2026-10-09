@@ -34,6 +34,7 @@ import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.where.condition.IsEqualTo;
 import org.mybatis.dynamic.sql.where.render.CriterionRenderer;
+import org.mybatis.dynamic.sql.where.render.RenderedCriterion;
 
 class CriterionRendererTest {
     @Test
@@ -45,11 +46,12 @@ class CriterionRendererTest {
         ColumnAndConditionCriterion<Integer> criterion = new ColumnAndConditionCriterion<>(column,condition);
         RenderingContext renderingContext = new RenderingContext(RenderingStrategies.MYBATIS3,new StatementConfiguration());
         CriterionRenderer renderer = new CriterionRenderer(renderingContext);
-        assertThat(criterion.accept(renderer)).hasValueSatisfying(rc -> {
-            FragmentAndParameters fp = rc.fragmentAndParametersWithConnector();
-            assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}");
-            assertThat(fp.parameters()).hasSize(1);
-        });
+        RenderedCriterion rc = criterion.accept(renderer);
+        assertThat(rc).isNotNull();
+        FragmentAndParameters fp = rc.fragmentAndParametersWithConnector();
+        assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}");
+        assertThat(fp.parameters()).hasSize(1);
+
     }
 
     @Test
@@ -64,11 +66,11 @@ class CriterionRendererTest {
 
         RenderingContext renderingContext = new RenderingContext(RenderingStrategies.MYBATIS3,new StatementConfiguration(),new ExplicitTableAliasCalculator(tableAliases));
         CriterionRenderer renderer = new CriterionRenderer(renderingContext);
-        assertThat(criterion.accept(renderer)).hasValueSatisfying(rc -> {
-            FragmentAndParameters fp = rc.fragmentAndParametersWithConnector();
-            assertThat(fp.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER}");
-            assertThat(fp.parameters()).hasSize(1);
-        });
+        RenderedCriterion rc = criterion.accept(renderer);
+        assertThat(rc).isNotNull();
+        FragmentAndParameters fp = rc.fragmentAndParametersWithConnector();
+        assertThat(fp.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER}");
+        assertThat(fp.parameters()).hasSize(1);
     }
 
     @Test
@@ -82,17 +84,14 @@ class CriterionRendererTest {
                 .build();
         IsEqualTo<Date> condition = SqlBuilder.isEqualTo(new Date());
         ColumnAndConditionCriterion<Date> criterion = new ColumnAndConditionCriterion<>(column,condition);
-
         RenderingContext renderingContext = new RenderingContext(RenderingStrategies.MYBATIS3,new StatementConfiguration());
-
-
         CriterionRenderer renderer = new CriterionRenderer(renderingContext);
+        RenderedCriterion rc = criterion.accept(renderer);
+        assertThat(rc).isNotNull();
+        FragmentAndParameters fp = rc.fragmentAndParametersWithConnector();
+        assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=DATE,typeHandler=foo.Bar}");
+        assertThat(fp.parameters()).hasSize(1);
 
-        assertThat(criterion.accept(renderer)).hasValueSatisfying(rc -> {
-            FragmentAndParameters fp = rc.fragmentAndParametersWithConnector();
-            assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=DATE,typeHandler=foo.Bar}");
-            assertThat(fp.parameters()).hasSize(1);
-        });
     }
 
     @Test
@@ -103,17 +102,12 @@ class CriterionRendererTest {
         ColumnAndConditionCriterion<Integer> criterion = new ColumnAndConditionCriterion<>(column,condition);
         Map<SqlTable, String> tableAliases = new HashMap<>();
         tableAliases.put(table, "a");
-
         RenderingContext renderingContext = new RenderingContext(RenderingStrategies.MYBATIS3,new StatementConfiguration(),new ExplicitTableAliasCalculator(tableAliases));
-
-
-
         CriterionRenderer renderer = new CriterionRenderer(renderingContext);
-
-        assertThat(criterion.accept(renderer)).hasValueSatisfying(rc -> {
-            FragmentAndParameters fp = rc.fragmentAndParametersWithConnector();
-            assertThat(fp.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER,typeHandler=foo.Bar}");
-            assertThat(fp.parameters()).hasSize(1);
-        });
+        RenderedCriterion rc = criterion.accept(renderer);
+        assertThat(rc).isNotNull();
+        FragmentAndParameters fp = rc.fragmentAndParametersWithConnector();
+        assertThat(fp.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER,typeHandler=foo.Bar}");
+        assertThat(fp.parameters()).hasSize(1);
     }
 }

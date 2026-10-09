@@ -44,11 +44,6 @@ class KotlinMultiRowInsertBuilder<T : Any> (private val rows: Collection<T>): Bu
 
     override fun build(): MultiRowInsertModel<T> {
         assertNotNull(table, "ERROR.26") //$NON-NLS-1$
-        return with(MultiRowInsertDSL.Builder<T>()) {
-            withRecords(rows)
-            withTable(table)
-            withColumnMappings(columnMappings)
-            build()
-        }.build()
+        return MultiRowInsertDSL.Builder<T>(table!!).withRecords(rows).withColumnMappings(columnMappings).build().build()
     }
 }

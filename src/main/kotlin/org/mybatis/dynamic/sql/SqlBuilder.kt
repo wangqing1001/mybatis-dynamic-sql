@@ -809,16 +809,16 @@ interface SqlBuilder {
         // conditions for strings only
         @JvmStatic
         fun isLikeCaseInsensitive(value: String): IsLikeCaseInsensitive<String> {
-            return IsLikeCaseInsensitive.of<String>(value)
+            return IsLikeCaseInsensitive.of(value)
         }
         @JvmStatic
-        fun isLikeCaseInsensitive(valueSupplier: Supplier<String?>): IsLikeCaseInsensitive<String> {
-            return Companion.isLikeCaseInsensitive(valueSupplier.get()!!)
+        fun isLikeCaseInsensitive(valueSupplier: Supplier<String>): IsLikeCaseInsensitive<String> {
+            return IsLikeCaseInsensitive.of(valueSupplier.get())
         }
 
         @JvmStatic
         fun isLikeCaseInsensitiveWhenPresent(value: String?): IsLikeCaseInsensitiveWhenPresent<String> {
-            return IsLikeCaseInsensitiveWhenPresent.of<String>(value)
+            return IsLikeCaseInsensitiveWhenPresent.of(value)
         }
         @JvmStatic
         fun isLikeCaseInsensitiveWhenPresent(
@@ -829,16 +829,16 @@ interface SqlBuilder {
 
         @JvmStatic
         fun isNotLikeCaseInsensitive(value: String): IsNotLikeCaseInsensitive<String> {
-            return IsNotLikeCaseInsensitive.of<String>(value)
+            return IsNotLikeCaseInsensitive.of(value)
         }
         @JvmStatic
-        fun isNotLikeCaseInsensitive(valueSupplier: Supplier<String?>): IsNotLikeCaseInsensitive<String> {
-            return Companion.isNotLikeCaseInsensitive(valueSupplier.get()!!)
+        fun isNotLikeCaseInsensitive(valueSupplier: Supplier<String>): IsNotLikeCaseInsensitive<String> {
+            return IsNotLikeCaseInsensitive.of(valueSupplier.get())
         }
 
         @JvmStatic
         fun isNotLikeCaseInsensitiveWhenPresent(value: String?): IsNotLikeCaseInsensitiveWhenPresent<String> {
-            return IsNotLikeCaseInsensitiveWhenPresent.of<String>(value)
+            return IsNotLikeCaseInsensitiveWhenPresent.of(value)
         }
         @JvmStatic
         fun isNotLikeCaseInsensitiveWhenPresent(

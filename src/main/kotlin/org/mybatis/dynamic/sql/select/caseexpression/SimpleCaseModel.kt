@@ -82,7 +82,7 @@ class SimpleCaseModel<T> private constructor(builder: Builder<T>) : BasicColumn,
     }
 
     override fun renderForOrderBy(renderingContext: RenderingContext): FragmentAndParameters {
-        return render(renderingContext).mapFragment { f: String -> f + descendingPhrase }
+        return render(renderingContext).mapFragment { it + descendingPhrase }
     }
 
     override fun render(renderingContext: RenderingContext): FragmentAndParameters {

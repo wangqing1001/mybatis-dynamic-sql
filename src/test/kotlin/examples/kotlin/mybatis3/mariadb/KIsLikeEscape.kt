@@ -19,6 +19,8 @@ import org.mybatis.dynamic.sql.AbstractSingleValueCondition
 import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
+import java.util.function.Function
+import java.util.function.Predicate
 
 sealed class KIsLikeEscape<T>(
     value: T,
@@ -45,10 +47,10 @@ sealed class KIsLikeEscape<T>(
 
 
 
-    override fun filter(predicate: (T) -> Boolean): KIsLikeEscape<T> =
+    override fun filter(predicate: Predicate<in T>): KIsLikeEscape<T> =
         filterSupport(predicate, EmptyIsLikeEscape::empty, this)
 
-    override fun <R> map(mapper : (T) -> R): KIsLikeEscape<R> =
+    override fun <R> map(mapper : Function<in T, out R>): KIsLikeEscape<R> =
         mapSupport(mapper, { r -> ConcreteIsLikeEscape(r, escapeCharacter) }, EmptyIsLikeEscape::empty)
 
     companion object {

@@ -34,7 +34,7 @@ class FieldAndValueCollector(val fieldsAndValues: List<FieldAndValueAndParameter
     }
 
     fun multiRowInsertValuesPhrase(rowCount: Int): String {
-        return IntRange(0, rowCount).joinToString(", ", "values ", "") {
+        return IntRange(0, rowCount-1).joinToString(", ", "values ", "") {
             toSingleRowOfValues(it)
         }
     }

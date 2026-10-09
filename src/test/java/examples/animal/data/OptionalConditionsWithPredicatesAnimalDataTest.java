@@ -482,6 +482,7 @@ class OptionalConditionsWithPredicatesAnimalDataTest {
     void testValueStreamTransformer() {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+
             SelectStatementProvider selectStatement = select(id, animalName, bodyWeight, brainWeight)
                     .from(animalData)
                     .where(animalName, isInWhenPresent("  Mouse", "  ", null, "", "Musk shrew  ")

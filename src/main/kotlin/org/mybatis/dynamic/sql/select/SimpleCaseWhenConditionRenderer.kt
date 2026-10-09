@@ -40,7 +40,7 @@ class SimpleCaseWhenConditionRenderer<T>(
     override fun visit(whenCondition: ConditionBasedWhenCondition<T>): FragmentAndParameters {
         val fragmentCollector = whenCondition.conditions().mapNotNull {
             if (shouldRender(it)){
-                return renderCondition(it)
+                return@mapNotNull renderCondition(it)
             }
             return@mapNotNull null
         }.toFragmentCollector()
@@ -63,9 +63,6 @@ class SimpleCaseWhenConditionRenderer<T>(
 
     private fun renderBasicValue(value: T): FragmentAndParameters {
         val rpi = renderingContext.calculateParameterInfo(column)
-        return FragmentAndParameters(
-            rpi.renderedPlaceHolder,
-            mapOf(rpi.parameterMapKey to value)
-        )
+        return FragmentAndParameters(rpi.renderedPlaceHolder,mapOf(rpi.parameterMapKey to value))
     }
 }

@@ -267,7 +267,7 @@ class PersonMapperV2Test {
 
     @Test
     void testOrderByCollection() {
-        Collection<SortSpecification> orderByColumns = List.of(firstName);
+        List<SortSpecification> orderByColumns = List.of(firstName);
 
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapperV2 mapper = session.getMapper(PersonMapperV2.class);

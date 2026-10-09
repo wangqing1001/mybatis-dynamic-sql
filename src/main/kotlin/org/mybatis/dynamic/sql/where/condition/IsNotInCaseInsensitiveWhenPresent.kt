@@ -33,11 +33,11 @@ open class IsNotInCaseInsensitiveWhenPresent<T> private constructor(values: Coll
         return "not in"
     }
 
-    override fun filter(predicate: (T) -> Boolean): AbstractListValueCondition<T> {
+    override fun filter(predicate: Predicate<in T>): IsNotInCaseInsensitiveWhenPresent<T> {
         return filterSupport(predicate, { IsNotInCaseInsensitiveWhenPresent(it) }, this, { empty() })
     }
 
-    override fun <R> map(mapper: (T) -> R): AbstractListValueCondition<R> {
+    override fun <R> map(mapper: Function<in T, out R>): IsNotInCaseInsensitiveWhenPresent<R> {
         return mapSupport(mapper, { of(it) }, { empty() })
     }
 
@@ -52,7 +52,7 @@ open class IsNotInCaseInsensitiveWhenPresent<T> private constructor(values: Coll
 
         @JvmStatic
         fun <T> of(vararg values: T?): IsNotInCaseInsensitiveWhenPresent<T> {
-            return of(Arrays.asList(*values))
+            return of(listOf(*values))
         }
 
         @JvmStatic

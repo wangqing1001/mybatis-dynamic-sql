@@ -43,10 +43,12 @@ class SimpleCaseRenderer<T>(
 
     private fun renderCase(): FragmentAndParameters {
         val alias = simpleCaseModel.column().alias()
-        if (alias != null) {
-            return FragmentAndParameters(alias)
+        val fragmentAndParameters = if (alias != null) {
+            FragmentAndParameters(alias)
+        } else {
+            simpleCaseModel.column().render(renderingContext)
         }
-        return simpleCaseModel.column().render(renderingContext).mapFragment { f: String -> "case $f" }
+        return fragmentAndParameters.mapFragment { f: String -> "case $f" }
     }
 
     private fun renderWhenConditions(): FragmentAndParameters {

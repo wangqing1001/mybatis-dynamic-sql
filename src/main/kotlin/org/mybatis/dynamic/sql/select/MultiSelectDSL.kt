@@ -88,7 +88,7 @@ class MultiSelectDSL(builder: Buildable<SelectModel>) : Buildable<MultiSelectMod
     }
 
     private fun buildPagingModel(): PagingModel? {
-        if(limit==null || offset==null || fetchFirstRows==null ){
+        if(limit==null && offset==null && fetchFirstRows==null){
             return null
         }
         return PagingModel(limit,offset,fetchFirstRows)

@@ -28,7 +28,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 @SpringJUnitConfig(classes = ColumnComparisonConfiguration.class)
-class ColumnComparisonTest {
+class
+ColumnComparisonTest {
 
     @Autowired
     private ColumnComparisonMapper mapper;

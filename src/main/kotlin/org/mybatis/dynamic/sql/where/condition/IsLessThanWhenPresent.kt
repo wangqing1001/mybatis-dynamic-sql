@@ -17,6 +17,8 @@ package org.mybatis.dynamic.sql.where.condition
 
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition
 import java.util.NoSuchElementException
+import java.util.function.Function
+import java.util.function.Predicate
 
 /**
  * 小于 when present 条件。当值为 null 时渲染为空条件。
@@ -28,11 +30,11 @@ open class IsLessThanWhenPresent<T> private constructor(value: T) : AbstractSing
         return "<" //$NON-NLS-1$
     }
 
-    override fun filter(predicate: (T) -> Boolean): IsLessThanWhenPresent<T> {
+    override fun filter(predicate: Predicate<in T>): IsLessThanWhenPresent<T> {
         return filterSupport(predicate, { empty() }, this)
     }
 
-    override fun <R> map(mapper: (T) -> R): IsLessThanWhenPresent<R> {
+    override fun <R> map(mapper: Function<in T, out R>): IsLessThanWhenPresent<R> {
         return mapSupport(mapper, { r: R -> of(r) }, { empty() })
     }
 

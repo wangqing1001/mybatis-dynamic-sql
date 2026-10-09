@@ -32,11 +32,11 @@ class IsNotInWhenPresent<T> private constructor(values: Collection<T>) : Abstrac
         return "not in" //$NON-NLS-1$
     }
 
-    override fun filter(predicate:(T) -> Boolean): IsNotInWhenPresent<T> {
+    override fun filter(predicate: Predicate<in T>): IsNotInWhenPresent<T> {
         return filterSupport(predicate, { IsNotInWhenPresent(it) }, this, { empty() })
     }
 
-    override fun <R> map(mapper: (T) -> R): AbstractListValueCondition<R> {
+    override fun <R> map(mapper: Function<in T, out R>): IsNotInWhenPresent<R> {
         return mapSupport(mapper, {  of(it) }, { empty() })
     }
 

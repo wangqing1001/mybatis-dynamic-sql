@@ -22,9 +22,11 @@ import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.where.condition.IsInWhenPresent;
 
 public class MyInCondition {
+
     public static IsInWhenPresent<String> isIn(@Nullable String...values) {
         return SqlBuilder.isInWhenPresent(values)
-                .map(String::trim)
+                .map(s -> s != null ? s.trim() : null)
                 .filter(not(String::isEmpty));
     }
+
 }

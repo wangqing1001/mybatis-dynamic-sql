@@ -56,7 +56,7 @@ abstract class AbstractLimitAndOffsetSupport<T, M> :
     protected abstract fun getThis(): T
 
     protected fun toPagingModel(): PagingModel? {
-        if(limit==null || offset==null || fetchFirstRows==null ){
+        if(limit==null && offset==null && fetchFirstRows==null ){
             return null
         }
         return PagingModel(limit,offset,fetchFirstRows)

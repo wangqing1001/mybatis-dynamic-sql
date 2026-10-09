@@ -29,14 +29,14 @@ class IsInWhenPresent<T> private constructor(values: Collection<T>) : AbstractLi
     AbstractListValueCondition.Filterable<T>, AbstractListValueCondition.Mappable<T> {
 
     override fun operator(): String {
-        return "in" //$NON-NLS-1$
+        return "in"
     }
 
-    override fun filter(predicate: (T) -> Boolean): AbstractListValueCondition<T> {
+    override fun filter(predicate: Predicate<in T>): IsInWhenPresent<T> {
         return filterSupport(predicate, { IsInWhenPresent(it) }, this, { empty() })
     }
 
-    override fun <R> map(mapper: (T) -> R): AbstractListValueCondition<R> {
+    override fun <R> map(mapper: Function<in T, out R>): IsInWhenPresent<R> {
         return mapSupport(mapper, {  of(it) }, { empty() })
     }
 

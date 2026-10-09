@@ -24,14 +24,11 @@ import java.util.Objects
 /**
  * 简单 case 表达式 DSL。
  */
-class SimpleCaseDSL<T> private constructor(column: BindableColumn<T>) : ElseDSL<SimpleCaseDSL<T>.SimpleCaseEnder> {
+class SimpleCaseDSL<T> private constructor(
     private val column: BindableColumn<T>
+) : ElseDSL<SimpleCaseDSL<T>.SimpleCaseEnder> {
     private val whenConditions: MutableList<SimpleCaseWhenCondition<T>> = mutableListOf()
     private var elseValue: BasicColumn? = null
-
-    init {
-        this.column = Objects.requireNonNull(column)
-    }
 
     @SafeVarargs
     fun `when`(condition: RenderableCondition<T>, vararg subsequentConditions: RenderableCondition<T>): ConditionBasedWhenFinisher {

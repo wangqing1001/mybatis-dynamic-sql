@@ -33,10 +33,8 @@ class KotlinGeneralInsertBuilder(private val table: SqlTable) : Buildable<Genera
         columnMappings.add(it)
     }
 
-    override fun build(): GeneralInsertModel =
-        with(GeneralInsertDSL.Builder()) {
-            withTable(table)
-            withColumnMappings(columnMappings)
-            build()
-        }.build()
+    override fun build(): GeneralInsertModel{
+        return GeneralInsertDSL.Builder(table).withColumnMappings(columnMappings).build().build()
+    }
+
 }

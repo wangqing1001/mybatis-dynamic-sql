@@ -38,11 +38,11 @@ class IsIn<T> private constructor(values: Collection<T>) : AbstractListValueCond
         return "in" //$NON-NLS-1$
     }
 
-    override fun filter(predicate: (T) -> Boolean): AbstractListValueCondition<T> {
+    override fun filter(predicate: Predicate<in T>): IsIn<T> {
         return filterSupport(predicate, { IsIn(it) }, this, { empty() })
     }
 
-    override fun <R> map(mapper: (T) -> R): AbstractListValueCondition<R> {
+    override fun <R> map(mapper: Function<in T, out R>): IsIn<R> {
         return mapSupport(mapper, { IsIn(it) }, { empty() })
     }
 

@@ -50,7 +50,7 @@ class MultiRowInsertDSL<T> private constructor(builder: BatchInsertDSL.AbstractB
 
     class IntoGatherer<T>(private val records: Collection<T>) {
         fun into(table: SqlTable): MultiRowInsertDSL<T> {
-            return Builder<T>().withRecords(records).withTable(table).build()
+            return Builder<T>(table).withRecords(records).build()
         }
     }
 
@@ -82,7 +82,7 @@ class MultiRowInsertDSL<T> private constructor(builder: BatchInsertDSL.AbstractB
         }
     }
 
-    class Builder<T> : BatchInsertDSL.AbstractBuilder<T, Builder<T>>() {
+    class Builder<T>(table: SqlTable) : BatchInsertDSL.AbstractBuilder<T, Builder<T>>(table) {
         override fun getThis(): Builder<T> {
             return this
         }

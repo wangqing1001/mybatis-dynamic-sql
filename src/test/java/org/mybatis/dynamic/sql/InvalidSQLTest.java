@@ -22,6 +22,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.*;
 import java.util.Collections;
 import java.util.List;
 import java.util.MissingResourceException;
+import java.util.Optional;
 
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
@@ -143,7 +144,7 @@ class InvalidSQLTest {
 
     @Test
     void testInvalidSelectStatementNullJoinModel() {
-        assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> new JoinModel(Collections.emptyList()));
+        assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> new JoinModel(null));
     }
 
 
@@ -197,7 +198,7 @@ class InvalidSQLTest {
     @Test
     void testInvalidValueAlias() {
         BoundValue<Integer> foo = value(1);
-        assertThat(foo.alias()).isEmpty();
+        assertThat(foo.alias()).isNull();
         assertThatExceptionOfType(InvalidSqlException.class)
                 .isThrownBy(() -> foo.as("foo"))
                 .withMessage(Messages.getString("ERROR.38"));

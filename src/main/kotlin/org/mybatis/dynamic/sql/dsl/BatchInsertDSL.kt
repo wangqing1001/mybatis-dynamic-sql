@@ -17,15 +17,9 @@ import java.util.Objects
  * 批量 insert DSL。
  */
 class BatchInsertDSL<T> private constructor(builder: AbstractBuilder<T, *>) : Buildable<BatchInsertModel<T>> {
-    private val records: List<T>
-    private val table: SqlTable
-    private val columnMappings: MutableList<AbstractColumnMapping>
-
-    init {
-        this.records = builder.records
-        this.table = Objects.requireNonNull(builder.table)
-        this.columnMappings = builder.columnMappings
-    }
+    private val records: List<T> = builder.records
+    private val table: SqlTable = builder.table
+    private val columnMappings: MutableList<AbstractColumnMapping> = builder.columnMappings
 
     fun <F> map(column: SqlColumn<F>): ColumnMappingFinisher<F> {
         return ColumnMappingFinisher(column)
@@ -55,7 +49,7 @@ class BatchInsertDSL<T> private constructor(builder: AbstractBuilder<T, *>) : Bu
 
     class IntoGatherer<T>(private val records: Collection<T>) {
         fun into(table: SqlTable): BatchInsertDSL<T> {
-            return Builder<T>().withRecords(records).withTable(table).build()
+            return Builder<T>(table).withRecords(records).build()
         }
     }
 
@@ -87,19 +81,13 @@ class BatchInsertDSL<T> private constructor(builder: AbstractBuilder<T, *>) : Bu
         }
     }
 
-    abstract class AbstractBuilder<T, B : AbstractBuilder<T, B>> {
-        // 字段公开,以便外部类访问(Kotlin 外部类不能访问嵌套类私有成员)
+    abstract class AbstractBuilder<T, B : AbstractBuilder<T, B>>(val table: SqlTable) {
+
         val records: MutableList<T> = mutableListOf()
-        lateinit var table: SqlTable
         val columnMappings: MutableList<AbstractColumnMapping> =  mutableListOf()
 
         fun withRecords(records: Collection<T>): B {
             this.records.addAll(records)
-            return getThis()
-        }
-
-        fun withTable(table: SqlTable): B {
-            this.table = table
             return getThis()
         }
 
@@ -111,7 +99,8 @@ class BatchInsertDSL<T> private constructor(builder: AbstractBuilder<T, *>) : Bu
         protected abstract fun getThis(): B
     }
 
-    class Builder<T> : AbstractBuilder<T, Builder<T>>() {
+    class Builder<T> (table: SqlTable): AbstractBuilder<T, Builder<T>>(table) {
+
         override fun getThis(): Builder<T> {
             return this
         }
@@ -119,5 +108,6 @@ class BatchInsertDSL<T> private constructor(builder: AbstractBuilder<T, *>) : Bu
         fun build(): BatchInsertDSL<T> {
             return BatchInsertDSL(this)
         }
+
     }
 }

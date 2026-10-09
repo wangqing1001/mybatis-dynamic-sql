@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql.where.condition;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.Predicate;
@@ -427,7 +428,7 @@ class FilterAndMapTest {
         IsIn<String> cond = SqlBuilder.isIn("Fred", "Wilma");
         assertThat(cond.isEmpty()).isFalse();
         IsIn<String> mapped = cond.map(String::toUpperCase);
-        List<String> mappedValues = mapped.values().toList();
+        List<String> mappedValues = new ArrayList<>(mapped.values());
         assertThat(mappedValues).containsExactly("FRED", "WILMA");
     }
 
@@ -436,31 +437,31 @@ class FilterAndMapTest {
         IsNotIn<String> cond = SqlBuilder.isNotIn("Fred", "Wilma");
         assertThat(cond.isEmpty()).isFalse();
         IsNotIn<String> mapped = cond.map(String::toUpperCase);
-        List<String> mappedValues = mapped.values().toList();
+        List<String> mappedValues = new ArrayList<>(mapped.values());
         assertThat(mappedValues).containsExactly("FRED", "WILMA");
     }
 
     @Test
     void testIsNotInCaseInsensitiveRenderableMapShouldReturnMappedObject() {
         var cond = SqlBuilder.isNotInCaseInsensitive("Fred  ", "Wilma  ");
-        var values = cond.values().toList();
+        var values = cond.values();
         assertThat(values).containsExactly("FRED  ", "WILMA  ");
         assertThat(cond.isEmpty()).isFalse();
 
         var mapped = cond.map(String::trim);
-        var mappedValues = mapped.values().toList();
+        var mappedValues = mapped.values();
         assertThat(mappedValues).containsExactly("FRED", "WILMA");
     }
 
     @Test
     void testIsInCaseInsensitiveRenderableMapShouldReturnMappedObject() {
         var cond = SqlBuilder.isInCaseInsensitive("Fred  ", "Wilma  ");
-        var values = cond.values().toList();
+        var values = cond.values();
         assertThat(values).containsExactly("FRED  ", "WILMA  ");
         assertThat(cond.isEmpty()).isFalse();
 
         var mapped = cond.map(String::trim);
-        var mappedValues = mapped.values().toList();
+        var mappedValues = mapped.values();
         assertThat(mappedValues).containsExactly("FRED", "WILMA");
     }
 
@@ -599,13 +600,13 @@ class FilterAndMapTest {
     void testIsInCaseInsensitiveWhenPresentMapCaseInsensitive() {
         var cond = SqlBuilder.isInCaseInsensitiveWhenPresent("Fred", "Wilma");
         var mapped = cond.map(s -> s + " Flintstone");
-        assertThat(mapped.values().toList()).containsExactly("FRED FLINTSTONE", "WILMA FLINTSTONE");
+        assertThat(mapped.values()).containsExactly("FRED FLINTSTONE", "WILMA FLINTSTONE");
     }
 
     @Test
     void testIsNotInCaseInsensitiveWhenPresentMapCaseInsensitive() {
         var cond = SqlBuilder.isNotInCaseInsensitiveWhenPresent("Fred", "Wilma");
         var mapped = cond.map(s -> s + " Flintstone");
-        assertThat(mapped.values().toList()).containsExactly("FRED FLINTSTONE", "WILMA FLINTSTONE");
+        assertThat(mapped.values()).containsExactly("FRED FLINTSTONE", "WILMA FLINTSTONE");
     }
 }

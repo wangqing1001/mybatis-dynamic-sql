@@ -41,21 +41,15 @@ class CriterionRendererTest {
         SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER);
 
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
-        ColumnAndConditionCriterion<Integer> criterion = ColumnAndConditionCriterion.withColumn(column)
-                .withCondition(condition)
-                .build();
-
+        ColumnAndConditionCriterion<Integer> criterion = new ColumnAndConditionCriterion<>(column,condition);
         RenderingContext renderingContext = new RenderingContext(RenderingStrategies.MYBATIS3,new StatementConfiguration());
-
-
-
         CriterionRenderer renderer = new CriterionRenderer(renderingContext);
+        RenderedCriterion rc = criterion.accept(renderer);
+        assertThat(rc).isNotNull();
+        FragmentAndParameters fp = rc.fragmentAndParameters();
+        assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}");
+        assertThat(fp.parameters()).containsExactly(entry("p1", 3));
 
-        assertThat(criterion.accept(renderer)).hasValueSatisfying(rc -> {
-            FragmentAndParameters fp = rc.fragmentAndParameters();
-            assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}");
-            assertThat(fp.parameters()).containsExactly(entry("p1", 3));
-        });
     }
 
     @Test
@@ -63,24 +57,15 @@ class CriterionRendererTest {
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER);
         IsEqualTo<Integer> condition = IsEqualTo.of(3);
-        ColumnAndConditionCriterion<Integer> criterion = ColumnAndConditionCriterion.withColumn(column)
-                .withCondition(condition)
-                .build();
-
+        ColumnAndConditionCriterion<Integer> criterion = new ColumnAndConditionCriterion<>(column,condition);
         Map<SqlTable, String> tableAliases = new HashMap<>();
         tableAliases.put(table, "a");
-
-
         RenderingContext renderingContext = new RenderingContext(RenderingStrategies.MYBATIS3,new StatementConfiguration(),new ExplicitTableAliasCalculator(tableAliases));
-
-
-
         CriterionRenderer renderer = new CriterionRenderer(renderingContext);
-
-        assertThat(criterion.accept(renderer)).hasValueSatisfying(rc -> {
-            FragmentAndParameters fp = rc.fragmentAndParameters();
-            assertThat(fp.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER}");
-            assertThat(fp.parameters()).containsExactly(entry("p1", 3));
-        });
+        RenderedCriterion rc = criterion.accept(renderer);
+        assertThat(rc).isNotNull();
+        FragmentAndParameters fp = rc.fragmentAndParameters();
+        assertThat(fp.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER}");
+        assertThat(fp.parameters()).containsExactly(entry("p1", 3));
     }
 }

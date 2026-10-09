@@ -27,7 +27,7 @@ open class IsNull<T> : AbstractNoValueCondition<T>(), AbstractNoValueCondition.F
         return "is null" //$NON-NLS-1$
     }
 
-    override fun <S> filter(booleanSupplier: ()-> Boolean): IsNull<S> {
+    override fun <S> filter(booleanSupplier: BooleanSupplier): IsNull<S> {
         @Suppress("UNCHECKED_CAST")
         val self = this as IsNull<S>
         return filterSupport(booleanSupplier, { empty() }, self)

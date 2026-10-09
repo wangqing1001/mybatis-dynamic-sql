@@ -48,11 +48,7 @@ class KotlinInsertBuilder<T> (private val row: T): Buildable<InsertModel<T>> {
     }
 
     override fun build(): InsertModel<T> {
-        assertNotNull(table, "ERROR.25") //$NON-NLS-1$
-        return with(InsertDSL.Builder(row)) {
-            withTable(table)
-            withColumnMappings(columnMappings)
-            build()
-        }.build()
+        assertNotNull(table, "ERROR.25")
+        return InsertDSL.Builder(row,table!!).withColumnMappings(columnMappings).build().build()
     }
 }

@@ -18,6 +18,9 @@ package org.mybatis.dynamic.sql
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.StringUtilities
+import java.util.function.Function
+import java.util.function.Predicate
+import java.util.function.Supplier
 
 abstract class AbstractSingleValueCondition<T> protected constructor(protected val value: T) : RenderableCondition<T> {
 
@@ -25,18 +28,18 @@ abstract class AbstractSingleValueCondition<T> protected constructor(protected v
         return value
     }
 
-    protected fun <S : AbstractSingleValueCondition<T>> filterSupport(predicate: (T)->Boolean,emptySupplier: ()->S, self: S): S {
+    protected fun <S : AbstractSingleValueCondition<T>> filterSupport(predicate: Predicate<in T>,emptySupplier: Supplier<S>, self: S): S {
         if (isEmpty()) {
             return self
         }
-        return if (predicate(value)) self else emptySupplier()
+        return if (predicate.test(value)) self else emptySupplier.get()
     }
 
-    protected fun <R, S : AbstractSingleValueCondition<R>> mapSupport(mapper:  (T)->R,constructor: (R)->S, emptySupplier: ()->S): S {
+    protected fun <R, S : AbstractSingleValueCondition<R>> mapSupport(mapper: Function<in T,out R>,constructor:Function<R,S>, emptySupplier: Supplier<S>): S {
         if (isEmpty()) {
-            return emptySupplier()
+            return emptySupplier.get()
         }
-        return constructor(mapper(value))
+        return constructor.apply(mapper.apply(value))
     }
 
     abstract fun operator(): String
@@ -50,13 +53,13 @@ abstract class AbstractSingleValueCondition<T> protected constructor(protected v
 
     interface Filterable<T> {
 
-        fun filter(predicate: (T)->Boolean): AbstractSingleValueCondition<T>
+        fun filter(predicate: Predicate<in T>): AbstractSingleValueCondition<T>
 
     }
 
     interface Mappable<T> {
 
-        fun <R> map(mapper: (T)->R): AbstractSingleValueCondition<R>
+        fun <R> map(mapper: Function<in T,out R>): AbstractSingleValueCondition<R>
 
     }
 }

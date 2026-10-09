@@ -25,6 +25,6 @@ class BindableColumnTest {
     void testDefaultFunctions() {
         StringConstant constant = StringConstant.of("Fred");
         assertThat(constant.jdbcType()).isNull();
-        assertThat(constant.typeHandler()).isEmpty();
+        assertThat(constant.typeHandler()).isNull();
     }
 }

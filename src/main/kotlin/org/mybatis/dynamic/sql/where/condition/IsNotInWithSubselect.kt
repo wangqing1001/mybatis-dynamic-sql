@@ -22,7 +22,7 @@ import org.mybatis.dynamic.sql.util.Buildable
 /**
  * not in 子查询条件,如 column not in (select ...)。
  */
-class IsNotInWithSubselect<T> protected constructor(selectModelBuilder: Buildable<SelectModel>) :
+class IsNotInWithSubselect<T> private constructor(selectModelBuilder: Buildable<SelectModel>) :
     AbstractSubselectCondition<T>(selectModelBuilder) {
 
     override fun operator(): String {

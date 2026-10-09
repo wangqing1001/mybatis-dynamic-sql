@@ -17,14 +17,16 @@ package org.mybatis.dynamic.sql
 
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
+import java.util.function.BooleanSupplier
+import java.util.function.Supplier
 
 abstract class AbstractNoValueCondition<T> : RenderableCondition<T> {
 
-    protected fun <S : AbstractNoValueCondition<*>> filterSupport(booleanSupplier: ()-> Boolean,emptySupplier: ()->S, self: S): S {
+    protected fun <S : AbstractNoValueCondition<*>> filterSupport(booleanSupplier: BooleanSupplier,emptySupplier: Supplier<S>, self: S): S {
         if (isEmpty()) {
              return self
         }
-        return if (booleanSupplier()) self else emptySupplier()
+        return if (booleanSupplier.asBoolean) self else emptySupplier.get()
     }
 
     abstract fun operator(): String
@@ -35,7 +37,7 @@ abstract class AbstractNoValueCondition<T> : RenderableCondition<T> {
 
     interface Filterable {
 
-        fun <S> filter(booleanSupplier: ()-> Boolean): AbstractNoValueCondition<S>
+        fun <S> filter(booleanSupplier: BooleanSupplier): AbstractNoValueCondition<S>
 
     }
 

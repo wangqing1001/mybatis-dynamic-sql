@@ -17,6 +17,8 @@ package org.mybatis.dynamic.sql.where.condition
 
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition
 import java.util.NoSuchElementException
+import java.util.function.Function
+import java.util.function.Predicate
 
 /**
  * 大于条件,如 column > value。
@@ -25,14 +27,14 @@ open class IsGreaterThan<T> private constructor(value: T) : AbstractSingleValueC
     AbstractSingleValueCondition.Filterable<T>, AbstractSingleValueCondition.Mappable<T> {
 
     override fun operator(): String {
-        return ">" //$NON-NLS-1$
+        return ">"
     }
 
-    override fun filter(predicate: (T) -> Boolean): IsGreaterThan<T> {
+    override fun filter(predicate: Predicate<in T>): IsGreaterThan<T> {
         return filterSupport(predicate, { empty() }, this)
     }
 
-    override fun <R> map(mapper: (T) -> R): IsGreaterThan<R> {
+    override fun <R> map(mapper: Function<in T, out R>): IsGreaterThan<R> {
         return mapSupport(mapper, { r: R -> IsGreaterThan(r) }, { empty() })
     }
 

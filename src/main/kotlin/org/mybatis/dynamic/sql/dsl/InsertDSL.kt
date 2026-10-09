@@ -18,7 +18,7 @@ import java.util.function.Supplier
 /**
  * 单行 insert DSL。
  */
-class InsertDSL<T> private constructor(
+class InsertDSL<T>(
     private val row: T,
     private val table: SqlTable,
     private val columnMappings: MutableList<AbstractColumnMapping>,
@@ -48,12 +48,11 @@ class InsertDSL<T> private constructor(
             return IntoGatherer(row)
         }
 
-
     }
 
     class IntoGatherer<T>(private val row: T) {
         fun into(table: SqlTable): InsertDSL<T> {
-            return Builder(row).withTable(table).build()
+            return Builder(row,table).build()
         }
     }
 
@@ -90,16 +89,9 @@ class InsertDSL<T> private constructor(
         }
     }
 
-    class Builder<T>(
-        val row: T
-    ) {
-        lateinit var table: SqlTable
-        val columnMappings: MutableList<AbstractColumnMapping> = mutableListOf()
+    class Builder<T>(val row: T,val table: SqlTable) {
 
-        fun withTable(table: SqlTable): Builder<T> {
-            this.table = table
-            return this
-        }
+        val columnMappings: MutableList<AbstractColumnMapping> = mutableListOf()
 
         fun withColumnMappings(columnMappings: Collection<AbstractColumnMapping>): Builder<T> {
             this.columnMappings.addAll(columnMappings)
@@ -109,6 +101,7 @@ class InsertDSL<T> private constructor(
         fun build(): InsertDSL<T> {
             return InsertDSL(row, table, columnMappings)
         }
+
     }
 
 }

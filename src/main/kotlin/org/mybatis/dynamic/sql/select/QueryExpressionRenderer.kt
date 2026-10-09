@@ -26,28 +26,10 @@ class QueryExpressionRenderer(
     init {
         val childTableAliasCalculator = calculateChildTableAliasCalculator(queryExpression)
         this.renderingContext = renderingContext.withChildTableAliasCalculator(childTableAliasCalculator)
-        tableExpressionRenderer = TableExpressionRenderer(renderingContext)
+        tableExpressionRenderer = TableExpressionRenderer(this.renderingContext)
     }
 
-    /**
-     * 此函数计算当前上下文中使用的表别名计算器。有几种可能性:这可能是顶层 select 语句的渲染器,
-     * 也可能是 join 中表表达式的渲染器,或者是 where 条件中列到子查询的渲染器,
-     * 或者是 where 子句 "exists" 条件中 select 语句的渲染器。
-     *
-     * <p>对于 where 子句中的条件,我们将有一个父表别名计算器。这将使外层 select 语句中的别名
-     * 对该渲染器可见,以便在 where 子查询条件中可以使用别名表中的列,而无需重新指定别名。
-     *
-     * <p>另一个复杂之处在于,如果有 join 和子查询,我们计算别名的方式不同。情况如下:
-     *
-     * <ol>
-     *     <li>如果没有 join,那么我们只使用用户显式设置的别名</li>
-     *     <lI>如果有 join 和子查询,我们也只使用显式别名</lI>
-     *     <li>如果有 join 但没有子查询,那么如果未指定显式别名,我们将自动使用表名作为别名</li>
-     * </ol>
-     *
-     * @param queryExpression 要渲染的模型
-     * @return 适合此上下文的表别名计算器
-     */
+
     private fun calculateChildTableAliasCalculator(queryExpression: QueryExpressionModel): TableAliasCalculator {
         return queryExpression.joinModel()?.containsSubQueries()?.let { calculateTableAliasCalculatorWithJoins(it) }
             ?:explicitTableAliasCalculator()

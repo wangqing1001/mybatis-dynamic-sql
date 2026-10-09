@@ -37,31 +37,19 @@ abstract class AbstractTwoValueCondition<T>(
     protected fun <S : AbstractTwoValueCondition<T>> filterSupport(predicate: BiPredicate<in T, in T>,emptySupplier: Supplier<S>, self: S): S {
         if (isEmpty()) {
             return self
-        } else {
-            return if (predicate.test(value1, value2)) self else emptySupplier.get()
         }
+        return if (predicate.test(value1, value2)) self else emptySupplier.get()
     }
 
-    protected fun <S : AbstractTwoValueCondition<T>> filterSupport(
-        predicate: Predicate<in T>,
-        emptySupplier: Supplier<S>, self: S
-    ): S {
-        return filterSupport(
-            BiPredicate { v1: T, v2: T -> predicate.test(v1) && predicate.test(v2) },
-            emptySupplier,
-            self
-        )
+    protected fun <S : AbstractTwoValueCondition<T>> filterSupport(predicate: Predicate<in T>,emptySupplier: Supplier<S>, self: S): S {
+        return filterSupport({ v1: T, v2: T -> predicate.test(v1) && predicate.test(v2) },emptySupplier, self)
     }
 
-    protected fun <R, S : AbstractTwoValueCondition<R>> mapSupport(
-        mapper1: Function<in T, out R>,
-        mapper2: Function<in T, out R>, constructor: BiFunction<R, R, S>, emptySupplier: Supplier<S>
-    ): S {
+    protected fun <R, S : AbstractTwoValueCondition<R>> mapSupport( mapper1: Function<in T, out R>,mapper2: Function<in T, out R>, constructor: BiFunction<R, R, S>, emptySupplier: Supplier<S>): S {
         if (isEmpty()) {
             return emptySupplier.get()
-        } else {
-            return constructor.apply(mapper1.apply(value1), mapper2.apply(value2))
         }
+        return constructor.apply(mapper1.apply(value1), mapper2.apply(value2))
     }
 
     abstract fun operator1(): String
@@ -71,7 +59,6 @@ abstract class AbstractTwoValueCondition<T>(
     override fun renderCondition(renderingContext: RenderingContext,leftColumn: BindableColumn<T>): FragmentAndParameters {
         val parameterInfo1 = renderingContext.calculateParameterInfo(leftColumn)
         val parameterInfo2 = renderingContext.calculateParameterInfo(leftColumn)
-
         val finalFragment = (operator1()
                 + StringUtilities.spaceBefore(parameterInfo1.renderedPlaceHolder)
                 + StringUtilities.spaceBefore(operator2())
@@ -80,85 +67,19 @@ abstract class AbstractTwoValueCondition<T>(
         return FragmentAndParameters(finalFragment, parameters)
     }
 
-    /**
-     * Conditions may implement Filterable to add optionality to rendering.
-     *
-     *
-     * If a condition is Filterable, then a user may add a filter to the usage of the condition that makes a decision
-     * whether to render the condition at runtime. Conditions that fail the filter will be dropped from the
-     * rendered SQL.
-     *
-     *
-     * Implementations of Filterable may call
-     * [filterSupport]
-     * or [filterSupport] as
-     * a common implementation of the filtering algorithm.
-     *
-     * @param <T> the Java type related to the database column type
-    </T> */
     interface Filterable<T> {
-        /**
-         * If renderable and the values match the predicate, returns this condition. Else returns a condition
-         * that will not render.
-         *
-         * @param predicate predicate applied to the values, if renderable
-         * @return this condition if renderable and the values match the predicate, otherwise a condition
-         * that will not render.
-         */
+
         fun filter(predicate: BiPredicate<in T, in T>): AbstractTwoValueCondition<T>
 
-        /**
-         * If renderable and both values match the predicate, returns this condition. Else returns a condition
-         * that will not render. This function implements a short-circuiting test. If the
-         * first value does not match the predicate, then the second value will not be tested.
-         *
-         * @param predicate predicate applied to both values, if renderable
-         * @return this condition if renderable and the values match the predicate, otherwise a condition
-         * that will not render.
-         */
         fun filter(predicate: Predicate<in T>): AbstractTwoValueCondition<T>
 
     }
 
-    /**
-     * Conditions may implement Mappable to alter condition values or types during rendering.
-     *
-     *
-     * If a condition is Mappable, then a user may add a mapper to the usage of the condition that can alter the
-     * values of a condition, or change that datatype.
-     *
-     *
-     * Implementations of Mappable may call
-     * [mapSupport] as
-     * a common implementation of the mapping algorithm.
-     *
-     * @param <T> the Java type related to the database column type
-    </T> */
     interface Mappable<T> {
-        /**
-         * If renderable, apply the mappings to the values and return a new condition with the new values. Else return a
-         * condition that will not render (this).
-         *
-         * @param mapper1 a mapping function to apply to the first value, if renderable
-         * @param mapper2 a mapping function to apply to the second value, if renderable
-         * @param <R> type of the new condition
-         * @return a new condition with the result of applying the mappers to the values of this condition,
-         * if renderable, otherwise a condition that will not render.
-        </R> */
-        fun <R> map(
-            mapper1: Function<in T, out R>,
-            mapper2: Function<in T, out R>
-        ): AbstractTwoValueCondition<R>
 
-        /**
-         * If renderable, apply the mapping to both values and return a new condition with the new values. Else return a
-         * condition that will not render (this).
-         *
-         * @param mapper a mapping function to apply to both values, if renderable
-         * @param <R> type of the new condition
-         * @return a new condition with the result of applying the mappers to the values of this condition,
-         * if renderable, otherwise a condition that will not render.
-        </R> */
+        fun <R> map(mapper1: Function<in T, out R>,mapper2: Function<in T, out R> ): AbstractTwoValueCondition<R>
+
         fun <R> map(mapper: Function<in T, out R>): AbstractTwoValueCondition<R>
+
     }
 }

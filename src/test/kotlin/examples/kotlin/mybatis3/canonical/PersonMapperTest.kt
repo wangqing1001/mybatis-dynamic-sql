@@ -892,7 +892,7 @@ class PersonMapperTest {
                     configureStatement { nonRenderingWhereClauseAllowed(false)  }
                 }
             }
-            configureStatement { nonRenderingWhereClauseAllowed(false) }
+            configureStatement { nonRenderingWhereClauseAllowed(true) }
         }
 
         val expected = "(select id, first_name from Person where id <= #{parameters.p1,jdbcType=INTEGER}) " +
@@ -923,7 +923,7 @@ class PersonMapperTest {
                 // following should be ignored in favor of the statement configuration...
                 configureStatement { nonRenderingWhereClauseAllowed(false) }
             }
-            configureStatement { nonRenderingWhereClauseAllowed(false) }
+            configureStatement { nonRenderingWhereClauseAllowed(true) }
         }
 
         val expected = "insert into Person " +

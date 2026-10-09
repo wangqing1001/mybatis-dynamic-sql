@@ -490,9 +490,12 @@ class CaseExpressionTest {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             CommonSelectMapper mapper = sqlSession.getMapper(CommonSelectMapper.class);
 
-            SelectStatementProvider selectStatement = select(animalName, case_(animalName)
-                    .when(isEqualTo("Artic fox"), isEqualTo("Red fox")).then(value("yes"))
-                    .else_(cast(value("no")).as("VARCHAR(30)")).end().as("IsAFox"))
+            SelectStatementProvider selectStatement = select(
+                    animalName,
+                    case_(animalName).when(isEqualTo("Artic fox"),isEqualTo("Red fox")).then(value("yes"))
+                    .else_(cast(value("no")).as("VARCHAR(30)")).end()
+                            .as("IsAFox")
+            )
                     .from(animalData)
                     .where(id, isIn(31, 32, 38, 39))
                     .orderBy(id)

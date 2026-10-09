@@ -20,13 +20,8 @@ import java.util.function.Supplier
  * 通用 insert DSL,支持 set 子句的各种映射方式。
  */
 class GeneralInsertDSL private constructor(builder: Builder) : Buildable<GeneralInsertModel> {
-    private val columnMappings: MutableList<AbstractColumnMapping>
-    private val table: SqlTable
-
-    init {
-        table = Objects.requireNonNull(builder.table)
-        columnMappings = builder.columnMappings
-    }
+    private val columnMappings: MutableList<AbstractColumnMapping> = builder.columnMappings
+    private val table: SqlTable = builder.table
 
     fun <T> set(column: SqlColumn<T>): SetClauseFinisher<T> {
         return SetClauseFinisher(column)
@@ -39,7 +34,7 @@ class GeneralInsertDSL private constructor(builder: Builder) : Buildable<General
     companion object {
         @JvmStatic
         fun insertInto(table: SqlTable): GeneralInsertDSL {
-            return Builder().withTable(table).build()
+            return Builder(table).build()
         }
     }
 
@@ -88,15 +83,9 @@ class GeneralInsertDSL private constructor(builder: Builder) : Buildable<General
         }
     }
 
-    class Builder {
-        // 字段公开,以便外部类访问(Kotlin 外部类不能访问嵌套类私有成员)
-        val columnMappings: MutableList<AbstractColumnMapping> = ArrayList()
-        lateinit var table: SqlTable
+    class Builder(val table: SqlTable) {
 
-        fun withTable(table: SqlTable): Builder {
-            this.table = table
-            return this
-        }
+        val columnMappings: MutableList<AbstractColumnMapping> = mutableListOf()
 
         fun withColumnMappings(columnMappings: Collection<AbstractColumnMapping>): Builder {
             this.columnMappings.addAll(columnMappings)

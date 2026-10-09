@@ -44,11 +44,6 @@ class KotlinBatchInsertBuilder<T : Any> (private val rows: Collection<T>): Build
 
     override fun build(): BatchInsertModel<T> {
         assertNotNull(table, "ERROR.23") //$NON-NLS-1$
-        return with(BatchInsertDSL.Builder<T>()) {
-            withRecords(rows)
-            withTable(table)
-            withColumnMappings(columnMappings)
-            build()
-        }.build()
+        return BatchInsertDSL.Builder<T>(table!!).withRecords(rows).withColumnMappings(columnMappings).build().build()
     }
 }
