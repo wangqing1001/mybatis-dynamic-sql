@@ -109,23 +109,11 @@ interface BooleanOperations<T : BooleanOperations<T>> {
     }
 
     private fun  addSubCriterion(connector: String,initialCriterion: SqlCriterion,subCriteria: List<AndOrCriteriaGroup>): T {
-        return addSubCriterion(
-            AndOrCriteriaGroup.Builder()
-                .withInitialCriterion(initialCriterion)
-                .withConnector(connector)
-                .withSubCriteria(subCriteria)
-                .build()
-        )
+        return addSubCriterion(AndOrCriteriaGroup(connector,initialCriterion,subCriteria))
     }
 
     private fun addSubCriterion(connector: String,criteria: List<AndOrCriteriaGroup>): T {
-        return addSubCriterion(
-            AndOrCriteriaGroup.Builder()
-                .withConnector(connector)
-                .withInitialCriterion(NullCriterion())
-                .withSubCriteria(criteria)
-                .build()
-        )
+        return addSubCriterion(AndOrCriteriaGroup(connector,NullCriterion(),criteria))
     }
 
     fun addSubCriterion(subCriterion: AndOrCriteriaGroup): T

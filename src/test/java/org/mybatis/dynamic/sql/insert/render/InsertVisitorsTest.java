@@ -21,6 +21,8 @@ import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.exception.InvalidSqlException;
+import org.mybatis.dynamic.sql.insert.ValuePhraseVisitor;
+import org.mybatis.dynamic.sql.insert.batch.MultiRowValuePhraseVisitor;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.util.MappedColumnMapping;
 import org.mybatis.dynamic.sql.util.Messages;

@@ -16,7 +16,7 @@
 package org.mybatis.dynamic.sql.update
 
 import org.mybatis.dynamic.sql.render.RenderingContext
-import org.mybatis.dynamic.sql.select.render.SubQueryRenderer
+import org.mybatis.dynamic.sql.select.SubQueryRenderer
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping
 import org.mybatis.dynamic.sql.util.ColumnToColumnMapping
 import org.mybatis.dynamic.sql.util.ConstantMapping
@@ -29,69 +29,64 @@ import org.mybatis.dynamic.sql.util.UpdateMappingVisitor
 import org.mybatis.dynamic.sql.util.ValueMapping
 import org.mybatis.dynamic.sql.util.ValueOrNullMapping
 import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping
-import java.util.Objects
-import java.util.Optional
 
 /**
  * set 短语访问器,负责将列映射转换为 update 语句中的 set 短语。
  */
-class SetPhraseVisitor(renderingContext: RenderingContext) :
-    UpdateMappingVisitor<Optional<FragmentAndParameters>>() {
+class SetPhraseVisitor(private val renderingContext: RenderingContext) :
+    UpdateMappingVisitor<FragmentAndParameters?>() {
 
-    private val renderingContext: RenderingContext = Objects.requireNonNull(renderingContext)
-
-    override fun visit(mapping: NullMapping): Optional<FragmentAndParameters> {
+    override fun visit(mapping: NullMapping): FragmentAndParameters? {
         return buildNullFragment(mapping)
     }
 
-    override fun visit(mapping: ConstantMapping): Optional<FragmentAndParameters> {
-        val fragment = renderingContext.aliasedColumnName(mapping.column())  + " = " + mapping.constant() //$NON-NLS-1$
-        return Optional.of(FragmentAndParameters(fragment))
+    override fun visit(mapping: ConstantMapping): FragmentAndParameters {
+        val columnName = renderingContext.aliasedColumnName(mapping.column())
+        val constant = mapping.constant()
+        return FragmentAndParameters("$columnName = $constant")
     }
 
-    override fun visit(mapping: StringConstantMapping): Optional<FragmentAndParameters> {
-        val fragment = renderingContext.aliasedColumnName(mapping.column()) + " = " + StringUtilities.formatConstantForSQL(mapping.constant())
-
-        return Optional.of(FragmentAndParameters(fragment))
+    override fun visit(mapping: StringConstantMapping): FragmentAndParameters {
+        val columnName = renderingContext.aliasedColumnName(mapping.column())
+        val constant = StringUtilities.formatConstantForSQL(mapping.constant())
+        return FragmentAndParameters("$columnName = $constant")
     }
 
-    override fun <T> visit(mapping: ValueMapping<T>): Optional<FragmentAndParameters> {
+    override fun <T> visit(mapping: ValueMapping<T>): FragmentAndParameters {
         return buildValueFragment(mapping, mapping.value())
     }
 
-    override fun <T> visit(mapping: ValueOrNullMapping<T>): Optional<FragmentAndParameters> {
+    override fun <T> visit(mapping: ValueOrNullMapping<T>): FragmentAndParameters? {
         return mapping.value()
             .map { v: Any -> buildValueFragment(mapping, v) }
             .orElseGet { buildNullFragment(mapping) }
     }
 
-    override fun <T> visit(mapping: ValueWhenPresentMapping<T>): Optional<FragmentAndParameters> {
-        val value = mapping.value()?:return Optional.empty()
+    override fun <T> visit(mapping: ValueWhenPresentMapping<T>): FragmentAndParameters? {
+        val value = mapping.value()?:return null
         return buildValueFragment(mapping, value)
     }
 
-    override fun visit(mapping: SelectMapping): Optional<FragmentAndParameters> {
-        val prefix = renderingContext.aliasedColumnName(mapping.column()) + " = (" //$NON-NLS-1$
-        val fragmentAndParameters = SubQueryRenderer(mapping.selectModel(),renderingContext,prefix,")").render()
-        return Optional.of(fragmentAndParameters)
+    override fun visit(mapping: SelectMapping): FragmentAndParameters? {
+        val columnName = renderingContext.aliasedColumnName(mapping.column())
+        val prefix = "$columnName = ("
+        return SubQueryRenderer(mapping.selectModel(),renderingContext,prefix,")").render()
     }
 
-    override fun visit(mapping: ColumnToColumnMapping): Optional<FragmentAndParameters> {
-        val fragmentAndParameters = mapping.rightColumn().render(renderingContext)
-            .mapFragment { f: String -> renderingContext.aliasedColumnName(mapping.column()) + " = " + f } //$NON-NLS-1$
-        return Optional.of(fragmentAndParameters)
+    override fun visit(mapping: ColumnToColumnMapping): FragmentAndParameters {
+        val columnName = renderingContext.aliasedColumnName(mapping.column())
+        return mapping.rightColumn().render(renderingContext).mapFragment { "$columnName = $it" }
     }
 
-    private fun <T> buildValueFragment(mapping: AbstractColumnMapping, value: T?): Optional<FragmentAndParameters> {
+    private fun <T> buildValueFragment(mapping: AbstractColumnMapping, value: T?): FragmentAndParameters {
         val parameterInfo = renderingContext.calculateParameterInfo(mapping.column())
-        val setPhrase = renderingContext.aliasedColumnName(mapping.column()) + " = "  + parameterInfo.renderedPlaceHolder
-
-        return Optional.of(FragmentAndParameters(setPhrase, mapOf(parameterInfo.parameterMapKey to value)))
+        val columnName = renderingContext.aliasedColumnName(mapping.column())
+        val fragment = "$columnName = ${parameterInfo.renderedPlaceHolder}"
+        return FragmentAndParameters(fragment,mapOf(parameterInfo.parameterMapKey to value))
     }
 
-    private fun buildNullFragment(mapping: AbstractColumnMapping): Optional<FragmentAndParameters> {
-        return Optional.of(
-            FragmentAndParameters(renderingContext.aliasedColumnName(mapping.column()) + " = null") //$NON-NLS-1$
-        )
+    private fun buildNullFragment(mapping: AbstractColumnMapping): FragmentAndParameters {
+        val columnName = renderingContext.aliasedColumnName(mapping.column())
+        return FragmentAndParameters("$columnName = null")
     }
 }

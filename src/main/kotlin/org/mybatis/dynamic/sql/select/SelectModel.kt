@@ -19,8 +19,6 @@ import org.mybatis.dynamic.sql.configuration.StatementConfiguration
 import org.mybatis.dynamic.sql.order.OrderByModel
 import org.mybatis.dynamic.sql.render.RenderingStrategy
 import org.mybatis.dynamic.sql.select.paging.PagingModel
-import org.mybatis.dynamic.sql.select.render.SelectRenderer
-import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
 import org.mybatis.dynamic.sql.util.Validator
 import java.util.function.Function
 

@@ -21,22 +21,14 @@ import org.mybatis.dynamic.sql.util.Validator
 /**
  * order by 子句模型。
  */
-class OrderByModel private constructor(columns: Collection<SortSpecification>) {
-    private val columns: MutableList<SortSpecification> = mutableListOf()
+class OrderByModel(private val columns: List<SortSpecification>) {
 
     init {
         Validator.assertNotEmpty(columns, "ERROR.12") //$NON-NLS-1$
-        this.columns.addAll(columns)
     }
 
-    fun columns(): Collection<SortSpecification> {
+    fun columns(): List<SortSpecification> {
         return columns
     }
 
-    companion object {
-        @JvmStatic
-        fun of(columns: Collection<SortSpecification>): OrderByModel {
-            return OrderByModel(columns)
-        }
-    }
 }

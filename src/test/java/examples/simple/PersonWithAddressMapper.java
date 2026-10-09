@@ -41,7 +41,7 @@ import org.mybatis.dynamic.sql.dsl.CountDSL;
 import org.mybatis.dynamic.sql.dsl.CountDSLCompleter;
 import org.mybatis.dynamic.sql.dsl.SelectDSL;
 import org.mybatis.dynamic.sql.dsl.SelectDSLCompleter;
-import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.select.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonCountMapper;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;

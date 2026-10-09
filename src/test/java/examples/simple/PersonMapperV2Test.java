@@ -58,10 +58,10 @@ import org.mybatis.dynamic.sql.dsl.SelectDSL;
 import org.mybatis.dynamic.sql.dsl.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.dsl.UpdateDSL;
 import org.mybatis.dynamic.sql.exception.NonRenderingWhereClauseException;
-import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
+import org.mybatis.dynamic.sql.insert.InsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.having.HavingApplier;
-import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.select.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
 import org.mybatis.dynamic.sql.where.WhereApplier;
 
@@ -1407,11 +1407,7 @@ class PersonMapperV2Test {
     @Test
     void testWhereMultipleCriteria() {
         SqlCriterion initialCriterion = new NullCriterion();
-        List<AndOrCriteriaGroup> groups = List.of(
-                new AndOrCriteriaGroup.Builder()
-                        .withConnector("and")
-                        .withInitialCriterion(new ColumnAndConditionCriterion<>(id,isGreaterThan(25))).build()
-        );
+        List<AndOrCriteriaGroup> groups = List.of(new AndOrCriteriaGroup("and",new ColumnAndConditionCriterion<>(id,isGreaterThan(25))));
 
         var selectStatement = SelectDSL.select(id, lastName)
                 .from(person)

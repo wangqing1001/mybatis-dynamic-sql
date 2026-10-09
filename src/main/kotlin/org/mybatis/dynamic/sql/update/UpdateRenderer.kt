@@ -24,7 +24,6 @@ import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.FragmentCollector
 import org.mybatis.dynamic.sql.util.Validator
 import org.mybatis.dynamic.sql.util.toFragmentCollector
-import kotlin.jvm.optionals.toList
 
 /**
  * update 渲染器。
@@ -66,20 +65,18 @@ class UpdateRenderer(
     }
 
     private fun toUpdateStatementProvider(fragmentCollector: FragmentCollector): UpdateStatementProvider {
-        return DefaultUpdateStatementProvider
-            .withUpdateStatement(fragmentCollector.collectFragments(" "))//$NON-NLS-1$
-            .withParameters(fragmentCollector.parameters())
-            .build()
+        val updateStatement = fragmentCollector.collectFragments(" ")
+        return DefaultUpdateStatementProvider(updateStatement,fragmentCollector.parameters())
     }
 
     private fun calculateUpdateStatementStart(): FragmentAndParameters {
         val aliasedTableName = renderingContext.aliasedTableName(updateModel.table())
-        return FragmentAndParameters("update $aliasedTableName") //$NON-NLS-1$
+        return FragmentAndParameters("update $aliasedTableName")
     }
 
     private fun calculateSetPhrase(): FragmentAndParameters {
         val fragmentCollector = updateModel.columnMappings()
-            .map { m -> m.accept(visitor) }.flatMap { it.toList()  }.toFragmentCollector()
+            .mapNotNull { it.accept(visitor) }.toFragmentCollector()
         Validator.assertFalse(fragmentCollector.isEmpty(), "ERROR.18")
         return fragmentCollector.toFragmentAndParameters(", ", "set ", "")
     }
@@ -88,20 +85,16 @@ class UpdateRenderer(
         return updateModel.whereModel()?.render(renderingContext)
     }
 
-
-
     private fun calculateLimitClause(): FragmentAndParameters? {
         val limit = updateModel.limit() ?: return null
         val parameterInfo = renderingContext.calculateLimitParameterInfo()
-        return FragmentAndParameters(
-            "limit " + parameterInfo.renderedPlaceHolder,
-            mapOf(parameterInfo.parameterMapKey to limit)
-        )
+        val fragment = "limit ${parameterInfo.renderedPlaceHolder}"
+        return FragmentAndParameters(fragment,mapOf(parameterInfo.parameterMapKey to limit))
     }
 
     private fun calculateOrderByClause():FragmentAndParameters? {
         val orderByModel = updateModel.orderByModel()?:return null
-        return OrderByRenderer(renderingContext).render(orderByModel)
+        return OrderByRenderer(orderByModel,renderingContext).render()
     }
 
 }

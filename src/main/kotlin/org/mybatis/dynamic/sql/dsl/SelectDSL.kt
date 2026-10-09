@@ -24,7 +24,7 @@ import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.TableExpression
 import org.mybatis.dynamic.sql.order.OrderByModel
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration
-import org.mybatis.dynamic.sql.select.GroupByModel
+import org.mybatis.dynamic.sql.select.group.GroupByModel
 import org.mybatis.dynamic.sql.select.having.HavingApplier
 import org.mybatis.dynamic.sql.select.having.HavingModel
 import org.mybatis.dynamic.sql.select.paging.PagingModel
@@ -126,8 +126,8 @@ class SelectDSL(
         return currentQueryValues.whereBuilder!!
     }
 
-    override fun orderBy(columns: Collection<SortSpecification>): SelectDSL {
-        orderByModel = OrderByModel.of(columns)
+    override fun orderBy(columns: List<SortSpecification>): SelectDSL {
+        orderByModel = OrderByModel(columns)
         return this
     }
 
@@ -255,7 +255,7 @@ class SelectDSL(
             return this@SelectDSL.fetchFirstWhenPresent(fetchFirstRows)
         }
 
-        override fun orderBy(columns: Collection<SortSpecification>): SelectDSL {
+        override fun orderBy(columns: List<SortSpecification>): SelectDSL {
             return this@SelectDSL.orderBy(columns)
         }
 
@@ -331,7 +331,7 @@ class SelectDSL(
             return this@SelectDSL.unionAll()
         }
 
-        override fun orderBy(columns: Collection<SortSpecification>): SelectDSL {
+        override fun orderBy(columns: List<SortSpecification>): SelectDSL {
             return this@SelectDSL.orderBy(columns)
         }
 
@@ -399,7 +399,7 @@ class SelectDSL(
             return this
         }
 
-        override fun orderBy(columns: Collection<SortSpecification>): SelectDSL {
+        override fun orderBy(columns: List<SortSpecification>): SelectDSL {
             return this@SelectDSL.orderBy(columns)
         }
 

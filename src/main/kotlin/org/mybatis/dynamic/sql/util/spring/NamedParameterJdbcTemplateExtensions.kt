@@ -17,17 +17,17 @@ package org.mybatis.dynamic.sql.util.spring
 
 import org.mybatis.dynamic.sql.delete.DeleteModel
 import org.mybatis.dynamic.sql.delete.DeleteStatementProvider
-import org.mybatis.dynamic.sql.insert.BatchInsertModel
+import org.mybatis.dynamic.sql.insert.batch.BatchInsertModel
 import org.mybatis.dynamic.sql.insert.GeneralInsertModel
 import org.mybatis.dynamic.sql.insert.InsertModel
-import org.mybatis.dynamic.sql.insert.MultiRowInsertModel
-import org.mybatis.dynamic.sql.insert.render.BatchInsert
-import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider
-import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
-import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider
+import org.mybatis.dynamic.sql.insert.batch.MultiRowInsertModel
+import org.mybatis.dynamic.sql.insert.batch.BatchInsert
+import org.mybatis.dynamic.sql.insert.GeneralInsertStatementProvider
+import org.mybatis.dynamic.sql.insert.InsertStatementProvider
+import org.mybatis.dynamic.sql.insert.batch.MultiRowInsertStatementProvider
 import org.mybatis.dynamic.sql.render.RenderingStrategies
 import org.mybatis.dynamic.sql.select.SelectModel
-import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
+import org.mybatis.dynamic.sql.select.SelectStatementProvider
 import org.mybatis.dynamic.sql.update.UpdateModel
 import org.mybatis.dynamic.sql.update.UpdateStatementProvider
 import org.mybatis.dynamic.sql.util.Buildable

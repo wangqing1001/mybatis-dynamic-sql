@@ -100,21 +100,13 @@ import org.mybatis.dynamic.sql.where.condition.IsNotLikeWhenPresent
 import org.mybatis.dynamic.sql.where.condition.IsNotNull
 import org.mybatis.dynamic.sql.where.condition.IsNull
 
-// support for criteria without initial conditions
-fun and(receiver: GroupingCriteriaReceiver): AndOrCriteriaGroup =
-    with(GroupingCriteriaCollector().apply(receiver)) {
-        AndOrCriteriaGroup.Builder().withInitialCriterion(initialCriterion)
-            .withSubCriteria(subCriteria)
-            .withConnector("and")
-            .build()
-    }
+fun and(receiver: GroupingCriteriaReceiver): AndOrCriteriaGroup = with(GroupingCriteriaCollector().apply(receiver)) {
+    AndOrCriteriaGroup("and",initialCriterion,subCriteria)
+}
 
 fun or(receiver: GroupingCriteriaReceiver): AndOrCriteriaGroup =
     with(GroupingCriteriaCollector().apply(receiver)) {
-        AndOrCriteriaGroup.Builder().withInitialCriterion(initialCriterion)
-            .withSubCriteria(subCriteria)
-            .withConnector("or")
-            .build()
+        AndOrCriteriaGroup("or",initialCriterion,subCriteria)
     }
 
 // case expressions
@@ -201,14 +193,14 @@ fun <T : Any> concatenate(
     firstColumn: BindableColumn<T>,
     secondColumn: BasicColumn,
     vararg subsequentColumns: BasicColumn
-): Concatenate<T> = Concatenate.of(firstColumn, secondColumn, subsequentColumns.asList())
+): Concatenate<T> = Concatenate(firstColumn, secondColumn, subsequentColumns.asList())
 
 fun <T : Any> applyOperator(
     operator: String,
     firstColumn: BindableColumn<T>,
     secondColumn: BasicColumn,
     vararg subsequentColumns: BasicColumn
-): OperatorFunction<T> = OperatorFunction.of(operator, firstColumn, secondColumn, subsequentColumns.asList())
+): OperatorFunction<T> = OperatorFunction(operator, firstColumn, secondColumn, subsequentColumns.asList())
 
 fun <T : Any> lower(column: BindableColumn<T>): Lower<T> = SqlBuilder.lower(column)
 

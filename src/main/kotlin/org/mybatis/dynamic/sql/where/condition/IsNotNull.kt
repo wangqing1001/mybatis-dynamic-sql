@@ -27,19 +27,20 @@ open class IsNotNull<T> : AbstractNoValueCondition<T>(), AbstractNoValueConditio
         return "is not null" //$NON-NLS-1$
     }
 
-    override fun <S> filter(booleanSupplier: BooleanSupplier): IsNotNull<S> {
+    override fun <S> filter(booleanSupplier: ()-> Boolean): IsNotNull<S> {
         @Suppress("UNCHECKED_CAST")
         val self = this as IsNotNull<S>
         return filterSupport(booleanSupplier, { empty() }, self)
     }
 
-
-
     companion object {
+
         private val EMPTY: IsNotNull<Any> = object : IsNotNull<Any>() {
+
             override fun isEmpty(): Boolean {
                 return true
             }
+
         }
 
         @JvmStatic
@@ -47,5 +48,6 @@ open class IsNotNull<T> : AbstractNoValueCondition<T>(), AbstractNoValueConditio
             @Suppress("UNCHECKED_CAST")
             return EMPTY as IsNotNull<T>
         }
+
     }
 }

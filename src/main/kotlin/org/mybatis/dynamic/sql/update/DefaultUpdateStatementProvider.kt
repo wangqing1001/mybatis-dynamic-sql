@@ -15,48 +15,11 @@
  */
 package org.mybatis.dynamic.sql.update
 
-import java.util.HashMap
-import java.util.Objects
 
 /**
  * 默认 update 语句提供者。
  */
-class DefaultUpdateStatementProvider private constructor(builder: Builder) : UpdateStatementProvider {
-
-    override val updateStatement: String
+class DefaultUpdateStatementProvider(
+    override val updateStatement: String,
     override val parameters: Map<String, Any?>
-
-    init {
-        updateStatement = Objects.requireNonNull(builder.updateStatement!!)
-        parameters = builder.parameters
-    }
-
-
-
-    companion object {
-        @JvmStatic
-        fun withUpdateStatement(updateStatement: String): Builder {
-            return Builder().withUpdateStatement(updateStatement)
-        }
-    }
-
-    class Builder {
-        // 字段公开,以便外部类访问(Kotlin 外部类不能访问嵌套类私有成员)
-        var updateStatement: String? = null
-        val parameters: MutableMap<String, Any?> = HashMap()
-
-        fun withUpdateStatement(updateStatement: String): Builder {
-            this.updateStatement = updateStatement
-            return this
-        }
-
-        fun withParameters(parameters: Map<String, Any?>): Builder {
-            this.parameters.putAll(parameters)
-            return this
-        }
-
-        fun build(): DefaultUpdateStatementProvider {
-            return DefaultUpdateStatementProvider(this)
-        }
-    }
-}
+) : UpdateStatementProvider

@@ -22,7 +22,7 @@ import java.util.Arrays
 /**
  * 拼接运算符函数,使用 || 运算符。
  */
-class Concatenate<T> protected constructor(
+class Concatenate<T>(
     firstColumn: BasicColumn,
     secondColumn: BasicColumn,
     subsequentColumns: List<BasicColumn>
@@ -32,23 +32,4 @@ class Concatenate<T> protected constructor(
         return Concatenate(column, secondColumn, subsequentColumns)
     }
 
-    companion object {
-        @JvmStatic
-        fun <T> concatenate(
-            firstColumn: BindableColumn<T>,
-            secondColumn: BasicColumn,
-            vararg subsequentColumns: BasicColumn
-        ): Concatenate<T> {
-            return Concatenate(firstColumn, secondColumn, Arrays.asList(*subsequentColumns))
-        }
-
-        @JvmStatic
-        fun <T> of(
-            firstColumn: BindableColumn<T>,
-            secondColumn: BasicColumn,
-            subsequentColumns: List<BasicColumn>
-        ): Concatenate<T> {
-            return Concatenate(firstColumn, secondColumn, subsequentColumns)
-        }
-    }
 }

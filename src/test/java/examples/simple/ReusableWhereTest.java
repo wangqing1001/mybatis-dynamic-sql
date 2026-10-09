@@ -47,7 +47,7 @@ import org.mybatis.dynamic.sql.select.QueryExpressionModel;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.SubQuery;
 import org.mybatis.dynamic.sql.select.aggregate.CountAll;
-import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.select.SelectStatementProvider;
 import org.mybatis.dynamic.sql.where.WhereApplier;
 
 class ReusableWhereTest {

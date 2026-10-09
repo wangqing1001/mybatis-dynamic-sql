@@ -18,8 +18,7 @@ package org.mybatis.dynamic.sql.select.join
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup
 import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.TableExpression
-import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionModel
-import java.util.Objects
+import org.mybatis.dynamic.sql.AbstractBooleanExpressionModel
 
 /**
  * 连接规格,描述一次 join 的表、连接类型与连接条件。

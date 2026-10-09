@@ -31,21 +31,11 @@ import java.util.stream.Stream
  * 运算符函数,如加、减、乘、除等。
  */
 open class OperatorFunction<T>(
-    operator: String,
+    private val operator: String,
     firstColumn: BasicColumn,
-    secondColumn: BasicColumn,
-    subsequentColumns: List<BasicColumn>
+    protected val secondColumn: BasicColumn,
+    protected val subsequentColumns: List<BasicColumn>
 ) : AbstractUniTypeFunction<T, OperatorFunction<T>>(firstColumn) {
-
-    protected val secondColumn: BasicColumn
-    protected val subsequentColumns: MutableList<BasicColumn> = ArrayList()
-    private val operator: String
-
-    init {
-        this.secondColumn = Objects.requireNonNull(secondColumn)
-        this.subsequentColumns.addAll(subsequentColumns)
-        this.operator = Objects.requireNonNull(operator)
-    }
 
     override fun copy(): OperatorFunction<T> {
         return OperatorFunction(operator, column, secondColumn, subsequentColumns)
@@ -54,30 +44,8 @@ open class OperatorFunction<T>(
     override fun render(renderingContext: RenderingContext): FragmentAndParameters {
         val paddedOperator = " $operator "
         listOf(column, secondColumn)
-        return listOf(listOf(column, secondColumn), subsequentColumns).flatten().map {
-            it.render(renderingContext)
-        }.toFragmentCollector().toFragmentAndParameters(paddedOperator, "(", ")")
+        return listOf(listOf(column, secondColumn), subsequentColumns).flatten().map { it.render(renderingContext) }
+            .toFragmentCollector().toFragmentAndParameters(paddedOperator, "(", ")")
     }
 
-    companion object {
-        @JvmStatic
-        fun <T> of(
-            operator: String,
-            firstColumn: BindableColumn<T>,
-            secondColumn: BasicColumn,
-            vararg subsequentColumns: BasicColumn
-        ): OperatorFunction<T> {
-            return of(operator, firstColumn, secondColumn, Arrays.asList(*subsequentColumns))
-        }
-
-        @JvmStatic
-        fun <T> of(
-            operator: String,
-            firstColumn: BindableColumn<T>,
-            secondColumn: BasicColumn,
-            subsequentColumns: List<BasicColumn>
-        ): OperatorFunction<T> {
-            return OperatorFunction(operator, firstColumn, secondColumn, subsequentColumns)
-        }
-    }
 }

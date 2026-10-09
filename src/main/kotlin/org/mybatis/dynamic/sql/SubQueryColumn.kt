@@ -17,9 +17,8 @@ package org.mybatis.dynamic.sql
 
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.select.SelectModel
-import org.mybatis.dynamic.sql.select.render.SubQueryRenderer
+import org.mybatis.dynamic.sql.select.SubQueryRenderer
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import java.util.*
 
 class SubQueryColumn private constructor(private val selectModel: SelectModel) : BasicColumn {
 

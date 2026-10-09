@@ -19,20 +19,16 @@ import org.mybatis.dynamic.sql.AndOrCriteriaGroup
 import org.mybatis.dynamic.sql.ColumnAndConditionCriterion
 import org.mybatis.dynamic.sql.CriteriaGroup
 import org.mybatis.dynamic.sql.ExistsCriterion
-import org.mybatis.dynamic.sql.ExistsPredicate
 import org.mybatis.dynamic.sql.NotCriterion
 import org.mybatis.dynamic.sql.NullCriterion
 import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.SqlCriterionVisitor
 import org.mybatis.dynamic.sql.render.RenderingContext
-import org.mybatis.dynamic.sql.select.render.SubQueryRenderer
+import org.mybatis.dynamic.sql.select.SubQueryRenderer
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.FragmentCollector
 import org.mybatis.dynamic.sql.util.toFragmentCollector
-import java.util.Objects
-import java.util.Optional
 import java.util.function.Function
-import java.util.stream.Collectors
 
 /**
  * 将 [SqlCriterion] 渲染为 [RenderedCriterion]。

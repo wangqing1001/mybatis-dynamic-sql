@@ -17,8 +17,6 @@ package org.mybatis.dynamic.sql.insert
 
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration
-import org.mybatis.dynamic.sql.insert.render.GeneralInsertRenderer
-import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider
 import org.mybatis.dynamic.sql.render.RenderingStrategy
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping
 import org.mybatis.dynamic.sql.util.Validator

@@ -22,7 +22,7 @@ import static org.mybatis.dynamic.sql.SqlBuilder.select;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.dsl.SelectDSL;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
-import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.select.SelectStatementProvider;
 
 class FromGroupByTest {
 

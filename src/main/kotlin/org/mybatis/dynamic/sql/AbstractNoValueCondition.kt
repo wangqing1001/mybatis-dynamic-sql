@@ -17,17 +17,14 @@ package org.mybatis.dynamic.sql
 
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import java.util.function.BooleanSupplier
-import java.util.function.Supplier
 
 abstract class AbstractNoValueCondition<T> : RenderableCondition<T> {
 
-    protected fun <S : AbstractNoValueCondition<*>> filterSupport(booleanSupplier: BooleanSupplier,emptySupplier: Supplier<S>, self: S): S {
-        return if (isEmpty()) {
-            self
-        } else {
-            if (booleanSupplier.asBoolean) self else emptySupplier.get()
+    protected fun <S : AbstractNoValueCondition<*>> filterSupport(booleanSupplier: ()-> Boolean,emptySupplier: ()->S, self: S): S {
+        if (isEmpty()) {
+             return self
         }
+        return if (booleanSupplier()) self else emptySupplier()
     }
 
     abstract fun operator(): String
@@ -36,32 +33,10 @@ abstract class AbstractNoValueCondition<T> : RenderableCondition<T> {
         return FragmentAndParameters(operator())
     }
 
-    /**
-     * Conditions may implement Filterable to add optionality to rendering.
-     *
-     *
-     * If a condition is Filterable, then a user may add a filter to the usage of the condition that makes a decision
-     * whether to render the condition at runtime. Conditions that fail the filter will be dropped from the
-     * rendered SQL.
-     *
-     *
-     * Implementations of Filterable may call
-     * [filterSupport] as
-     * a common implementation of the filtering algorithm.
-     */
     interface Filterable {
-        /**
-         * If renderable and the supplier returns true, returns this condition. Else returns a condition that will not
-         * render.
-         *
-         * @param booleanSupplier
-         * function that specifies whether the condition should render
-         * @param <S>
-         * condition type - not used except for compilation compliance
-         *
-         * @return this condition if renderable and the supplier returns true, otherwise a condition that will not
-         * render.
-        </S> */
-        fun <S> filter(booleanSupplier: BooleanSupplier): AbstractNoValueCondition<S>
+
+        fun <S> filter(booleanSupplier: ()-> Boolean): AbstractNoValueCondition<S>
+
     }
+
 }

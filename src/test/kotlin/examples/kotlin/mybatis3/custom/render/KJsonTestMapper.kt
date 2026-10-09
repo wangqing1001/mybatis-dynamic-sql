@@ -18,7 +18,7 @@ package examples.kotlin.mybatis3.custom.render
 import org.apache.ibatis.annotations.Arg
 import org.apache.ibatis.annotations.ConstructorArgs
 import org.apache.ibatis.annotations.SelectProvider
-import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
+import org.mybatis.dynamic.sql.select.SelectStatementProvider
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter
 import org.mybatis.dynamic.sql.util.mybatis3.CommonDeleteMapper
 import org.mybatis.dynamic.sql.util.mybatis3.CommonInsertMapper

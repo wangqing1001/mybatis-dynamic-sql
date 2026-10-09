@@ -121,12 +121,12 @@ necessary):
 
 ```java
 import org.apache.ibatis.annotations.InsertProvider;
-import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
+import org.mybatis.dynamic.sql.insert.InsertStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 
 ...
-    @InsertProvider(type=SqlProviderAdapter.class, method="insert")
-    int insert(InsertStatementProvider<SimpleTableRecord> insertStatement);
+@InsertProvider(type = SqlProviderAdapter.class, method = "insert")
+int insert(InsertStatementProvider<SimpleTableRecord> insertStatement);
 ...
 
 ```
@@ -213,12 +213,12 @@ are using an annotated mapper, the insert method should look like this:
 
 ```java
 import org.apache.ibatis.annotations.InsertProvider;
-import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
+import org.mybatis.dynamic.sql.insert.batch.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 
 ...
-    @InsertProvider(type=SqlProviderAdapter.class, method="insertMultiple")
-    int insertMultiple(MultiRowInsertStatementProvider<SimpleTableRecord> insertStatement);
+@InsertProvider(type = SqlProviderAdapter.class, method = "insertMultiple")
+int insertMultiple(MultiRowInsertStatementProvider<SimpleTableRecord> insertStatement);
 ...
 
 ```
@@ -350,12 +350,12 @@ are using an annotated mapper, the insert method should look like this:
 
 ```java
 import org.apache.ibatis.annotations.InsertProvider;
-import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
+import org.mybatis.dynamic.sql.insert.GeneralInsertStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 
 ...
-    @InsertProvider(type=SqlProviderAdapter.class, method="generalInsert")
-    int generalInsert(GeneralInsertStatementProvider insertStatement);
+@InsertProvider(type = SqlProviderAdapter.class, method = "generalInsert")
+int generalInsert(GeneralInsertStatementProvider insertStatement);
 ...
 
 ```
@@ -426,10 +426,10 @@ InsertSelectStatementProvider object can be used as a parameter to a MyBatis map
 If you are using an XML mapper, the insert method should look like this in the Java interface:
 
 ```java
-import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider;
+import org.mybatis.dynamic.sql.insert.select.InsertSelectStatementProvider;
 
 ...
-    int insertSelect(InsertSelectStatementProvider insertSelectStatement);
+int insertSelect(InsertSelectStatementProvider insertSelectStatement);
 ...
 
 ```

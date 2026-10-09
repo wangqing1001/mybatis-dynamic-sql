@@ -22,8 +22,7 @@ import org.mybatis.dynamic.sql.exception.InvalidSqlException
  */
 class Validator private constructor() {
     companion object {
-        @JvmField
-        val ERROR_32: String = "ERROR.32" //$NON-NLS-1$
+        const val ERROR_32: String = "ERROR.32" //$NON-NLS-1$
 
         @JvmStatic
         fun assertNotEmpty(collection: Collection<*>, messageNumber: String) {

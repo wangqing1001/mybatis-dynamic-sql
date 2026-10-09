@@ -36,7 +36,7 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.SqlBuilder;
-import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider;
+import org.mybatis.dynamic.sql.insert.select.InsertSelectStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 
 import examples.generated.always.PersonRecord;

@@ -22,7 +22,7 @@ import org.apache.ibatis.annotations.Results
 import org.apache.ibatis.annotations.SelectProvider
 import org.apache.ibatis.type.EnumOrdinalTypeHandler
 import org.apache.ibatis.type.JdbcType
-import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
+import org.mybatis.dynamic.sql.select.SelectStatementProvider
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter
 
 /**

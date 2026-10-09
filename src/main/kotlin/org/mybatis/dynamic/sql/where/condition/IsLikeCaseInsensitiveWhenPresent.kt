@@ -18,8 +18,6 @@ package org.mybatis.dynamic.sql.where.condition
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition
 import org.mybatis.dynamic.sql.util.StringUtilities
 import java.util.NoSuchElementException
-import java.util.function.Function
-import java.util.function.Predicate
 
 /**
  * 不区分大小写的 like when present 条件。当值为 null 时渲染为空条件。
@@ -32,11 +30,11 @@ open class IsLikeCaseInsensitiveWhenPresent<T> private constructor(value: T) : A
         return "like" //$NON-NLS-1$
     }
 
-    override fun filter(predicate: Predicate<in T>): IsLikeCaseInsensitiveWhenPresent<T> {
+    override fun filter(predicate: (T) -> Boolean): IsLikeCaseInsensitiveWhenPresent<T> {
         return filterSupport(predicate, { empty() }, this)
     }
 
-    override fun <R> map(mapper: Function<in T, out R>): IsLikeCaseInsensitiveWhenPresent<R> {
+    override fun <R> map(mapper: (T) -> R): IsLikeCaseInsensitiveWhenPresent<R> {
         return mapSupport(mapper, { r: R -> of(r) }, { empty() })
     }
 

@@ -20,7 +20,7 @@ import org.apache.ibatis.annotations.ConstructorArgs
 import org.apache.ibatis.annotations.Mapper
 import org.apache.ibatis.annotations.SelectProvider
 import org.apache.ibatis.type.JdbcType
-import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
+import org.mybatis.dynamic.sql.select.SelectStatementProvider
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectList

@@ -17,7 +17,7 @@ package org.mybatis.dynamic.sql.select.having
 
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup
 import org.mybatis.dynamic.sql.SqlCriterion
-import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionModel
+import org.mybatis.dynamic.sql.AbstractBooleanExpressionModel
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
 

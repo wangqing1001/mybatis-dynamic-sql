@@ -16,7 +16,7 @@
 package org.mybatis.dynamic.sql.util.springbatch
 
 import org.mybatis.dynamic.sql.render.RenderingStrategy
-import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
+import org.mybatis.dynamic.sql.select.SelectStatementProvider
 import java.util.HashMap
 
 /**

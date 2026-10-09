@@ -16,7 +16,7 @@
 package org.mybatis.dynamic.sql.util.mybatis3
 
 import org.apache.ibatis.annotations.SelectProvider
-import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
+import org.mybatis.dynamic.sql.select.SelectStatementProvider
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter
 import java.math.BigDecimal
 import java.util.Optional

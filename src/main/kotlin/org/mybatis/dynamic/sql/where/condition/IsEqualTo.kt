@@ -17,8 +17,6 @@ package org.mybatis.dynamic.sql.where.condition
 
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition
 import java.util.NoSuchElementException
-import java.util.function.Function
-import java.util.function.Predicate
 
 /**
  * 等值条件,如 column = value。
@@ -30,11 +28,11 @@ open class IsEqualTo<T> protected constructor(value: T) : AbstractSingleValueCon
         return "=" //$NON-NLS-1$
     }
 
-    override fun filter(predicate: Predicate<in T>): IsEqualTo<T> {
+    override fun filter(predicate: (T) -> Boolean): IsEqualTo<T> {
         return filterSupport(predicate, { empty() }, this)
     }
 
-    override fun <R> map(mapper: Function<in T, out R>): IsEqualTo<R> {
+    override fun <R> map(mapper: (T) -> R): IsEqualTo<R> {
         return mapSupport(mapper, { r: R -> IsEqualTo(r) }, { empty() })
     }
 

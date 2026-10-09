@@ -24,11 +24,11 @@ import org.mybatis.dynamic.sql.dsl.CountDSL
 import org.mybatis.dynamic.sql.dsl.DeleteDSL
 import org.mybatis.dynamic.sql.dsl.SelectDSL
 import org.mybatis.dynamic.sql.dsl.UpdateDSL
-import org.mybatis.dynamic.sql.insert.BatchInsertModel
+import org.mybatis.dynamic.sql.insert.batch.BatchInsertModel
 import org.mybatis.dynamic.sql.insert.GeneralInsertModel
 import org.mybatis.dynamic.sql.insert.InsertModel
-import org.mybatis.dynamic.sql.insert.InsertSelectModel
-import org.mybatis.dynamic.sql.insert.MultiRowInsertModel
+import org.mybatis.dynamic.sql.insert.select.InsertSelectModel
+import org.mybatis.dynamic.sql.insert.batch.MultiRowInsertModel
 import org.mybatis.dynamic.sql.select.MultiSelectModel
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.update.UpdateModel

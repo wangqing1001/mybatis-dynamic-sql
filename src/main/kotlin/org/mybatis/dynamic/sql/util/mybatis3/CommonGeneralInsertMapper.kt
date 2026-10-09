@@ -16,8 +16,8 @@
 package org.mybatis.dynamic.sql.util.mybatis3
 
 import org.apache.ibatis.annotations.InsertProvider
-import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider
-import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider
+import org.mybatis.dynamic.sql.insert.GeneralInsertStatementProvider
+import org.mybatis.dynamic.sql.insert.select.InsertSelectStatementProvider
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter
 
 /**

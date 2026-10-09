@@ -18,11 +18,11 @@ package org.mybatis.dynamic.sql.select
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.TableExpression
+import org.mybatis.dynamic.sql.select.group.GroupByModel
 import org.mybatis.dynamic.sql.select.having.HavingModel
 import org.mybatis.dynamic.sql.select.join.JoinModel
 import org.mybatis.dynamic.sql.util.Validator
 import org.mybatis.dynamic.sql.where.WhereModel
-import java.util.Objects
 
 
 /**

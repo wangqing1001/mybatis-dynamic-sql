@@ -26,17 +26,11 @@ import java.util.*
  *
  * @since 1.4.0
  */
-class AndOrCriteriaGroup private constructor(builder: Builder) {
-
-    private val connector: String
-    private val initialCriterion: SqlCriterion
-    private val subCriteria: MutableList<AndOrCriteriaGroup>
-
-    init {
-        connector = Objects.requireNonNull(builder.connector)
-        initialCriterion = Objects.requireNonNull(builder.initialCriterion)
-        subCriteria = builder.subCriteria
-    }
+class AndOrCriteriaGroup @JvmOverloads constructor(
+    private val connector: String,
+    private val initialCriterion: SqlCriterion,
+    private val subCriteria: List<AndOrCriteriaGroup> = emptyList()
+) {
 
     fun connector(): String {
         return connector
@@ -46,33 +40,8 @@ class AndOrCriteriaGroup private constructor(builder: Builder) {
         return initialCriterion
     }
 
-    fun subCriteria(): MutableList<AndOrCriteriaGroup> {
-        return Collections.unmodifiableList(subCriteria)
+    fun subCriteria(): List<AndOrCriteriaGroup> {
+        return subCriteria
     }
 
-    class Builder {
-        lateinit var connector: String
-        lateinit var initialCriterion: SqlCriterion
-        val subCriteria: MutableList<AndOrCriteriaGroup> = mutableListOf()
-
-        fun withConnector(connector: String): Builder {
-            this.connector = connector
-            return this
-        }
-
-        fun withInitialCriterion(initialCriterion: SqlCriterion): Builder {
-            this.initialCriterion = initialCriterion
-            return this
-        }
-
-        fun withSubCriteria(subCriteria: List<AndOrCriteriaGroup>): Builder {
-            this.subCriteria.addAll(subCriteria)
-            return this
-        }
-
-        fun build(): AndOrCriteriaGroup {
-            return AndOrCriteriaGroup(this)
-        }
-
-    }
 }

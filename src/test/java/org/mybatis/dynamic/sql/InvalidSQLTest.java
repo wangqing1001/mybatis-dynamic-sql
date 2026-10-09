@@ -28,14 +28,14 @@ import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.order.OrderByModel;
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration;
 import org.mybatis.dynamic.sql.exception.InvalidSqlException;
-import org.mybatis.dynamic.sql.insert.BatchInsertModel;
+import org.mybatis.dynamic.sql.insert.batch.BatchInsertModel;
 import org.mybatis.dynamic.sql.insert.GeneralInsertModel;
-import org.mybatis.dynamic.sql.insert.InsertColumnListModel;
+import org.mybatis.dynamic.sql.insert.select.InsertColumnListModel;
 import org.mybatis.dynamic.sql.insert.InsertModel;
-import org.mybatis.dynamic.sql.insert.MultiRowInsertModel;
+import org.mybatis.dynamic.sql.insert.batch.MultiRowInsertModel;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
-import org.mybatis.dynamic.sql.select.GroupByModel;
+import org.mybatis.dynamic.sql.select.group.GroupByModel;
 import org.mybatis.dynamic.sql.select.paging.PagingModel;
 import org.mybatis.dynamic.sql.select.QueryExpressionModel;
 import org.mybatis.dynamic.sql.select.SelectModel;
@@ -150,14 +150,14 @@ class InvalidSQLTest {
     @Test
     void testInvalidSelectStatementWithEmptyOrderByList() {
         List<SortSpecification> list = Collections.emptyList();
-        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(() -> OrderByModel.of(list))
+        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(() -> new OrderByModel(list))
                 .withMessage(Messages.getString("ERROR.12"));
     }
 
     @Test
     void testInvalidSelectStatementWithEmptyGroupByList() {
         List<BasicColumn> list = Collections.emptyList();
-        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(() -> GroupByModel.of(list))
+        assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(() -> new GroupByModel(list))
                 .withMessage(Messages.getString("ERROR.11"));
     }
 

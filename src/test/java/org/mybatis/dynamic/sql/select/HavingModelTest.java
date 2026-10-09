@@ -25,7 +25,6 @@ import org.mybatis.dynamic.sql.SqlColumn;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.having.HavingApplier;
-import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
 
 class HavingModelTest {
     @Test

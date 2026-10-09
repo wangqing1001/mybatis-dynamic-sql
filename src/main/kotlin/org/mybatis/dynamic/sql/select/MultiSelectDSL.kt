@@ -48,11 +48,11 @@ class MultiSelectDSL(builder: Buildable<SelectModel>) : Buildable<MultiSelectMod
     }
 
     fun orderBy(vararg columns: SortSpecification): MultiSelectDSL {
-        return orderBy(Arrays.asList(*columns))
+        return orderBy(listOf(*columns))
     }
 
-    fun orderBy(columns: Collection<SortSpecification>): MultiSelectDSL {
-        orderByModel = OrderByModel.of(columns)
+    fun orderBy(columns: List<SortSpecification>): MultiSelectDSL {
+        orderByModel = OrderByModel(columns)
         return this
     }
 

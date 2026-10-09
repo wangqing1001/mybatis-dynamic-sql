@@ -71,24 +71,26 @@ An example of using the mapped row methods follows:
 
 ```java
 package foo.service;
+
 import static org.mybatis.dynamic.sql.SqlBuilder.*;
 
 import java.util.List;
 import java.util.Map;
+
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
-import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.select.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
 
 public class MyService {
-    public List<Map<String,Object>> generalSearch() {
+    public List<Map<String, Object>> generalSearch() {
         CommonSelectMapper mapper = getGeneralMapper(); // not shown
 
         SelectStatementProvider selectStatement = select(id, description)
-            .from(foo)
-            .where(description. isLike("%bar%"))
-            .build()
-            .render(RenderingStrategies.MYBATIS3);
-        return  mapper.selectManyMappedRows(selectStatement);
+                .from(foo)
+                .where(description.isLike("%bar%"))
+                .build()
+                .render(RenderingStrategies.MYBATIS3);
+        return mapper.selectManyMappedRows(selectStatement);
     }
 }
 ```

@@ -48,7 +48,7 @@ class DeleteRenderer(
         if (whereClause != null) {
             list.add(whereClause)
         }
-        val orderByClause = deleteModel.orderByModel()?.let { OrderByRenderer(renderingContext).render(it) }
+        val orderByClause = deleteModel.orderByModel()?.let { OrderByRenderer(it,renderingContext).render() }
         if (orderByClause != null) {
             list.add(orderByClause)
         }

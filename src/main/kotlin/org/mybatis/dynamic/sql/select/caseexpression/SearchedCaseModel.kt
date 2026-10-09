@@ -18,12 +18,11 @@ package org.mybatis.dynamic.sql.select.caseexpression
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SortSpecification
 import org.mybatis.dynamic.sql.render.RenderingContext
-import org.mybatis.dynamic.sql.select.render.SearchedCaseRenderer
+import org.mybatis.dynamic.sql.select.SearchedCaseRenderer
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.Validator
 import java.util.ArrayList
 import java.util.Optional
-import java.util.stream.Stream
 
 /**
  * 搜索型 case 表达式模型。

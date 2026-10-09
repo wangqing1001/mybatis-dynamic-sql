@@ -18,9 +18,6 @@ package org.mybatis.dynamic.sql
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.StringUtilities
-import java.util.function.Function
-import java.util.function.Predicate
-import java.util.function.Supplier
 
 abstract class AbstractSingleValueCondition<T> protected constructor(protected val value: T) : RenderableCondition<T> {
 
@@ -28,20 +25,18 @@ abstract class AbstractSingleValueCondition<T> protected constructor(protected v
         return value
     }
 
-    protected fun <S : AbstractSingleValueCondition<T>> filterSupport(predicate: Predicate<in T>,emptySupplier: Supplier<S>, self: S): S {
-        return if (isEmpty()) {
-            self
-        } else {
-            if (predicate.test(value)) self else emptySupplier.get()
+    protected fun <S : AbstractSingleValueCondition<T>> filterSupport(predicate: (T)->Boolean,emptySupplier: ()->S, self: S): S {
+        if (isEmpty()) {
+            return self
         }
+        return if (predicate(value)) self else emptySupplier()
     }
 
-    protected fun <R, S : AbstractSingleValueCondition<R>> mapSupport(mapper: Function<in T, out R>,constructor: Function<R, S>, emptySupplier: Supplier<S>): S {
-        return if (isEmpty()) {
-            emptySupplier.get()
-        } else {
-            constructor.apply(mapper.apply(value))
+    protected fun <R, S : AbstractSingleValueCondition<R>> mapSupport(mapper:  (T)->R,constructor: (R)->S, emptySupplier: ()->S): S {
+        if (isEmpty()) {
+            return emptySupplier()
         }
+        return constructor(mapper(value))
     }
 
     abstract fun operator(): String
@@ -53,59 +48,15 @@ abstract class AbstractSingleValueCondition<T> protected constructor(protected v
         return FragmentAndParameters(finalFragment, parameters)
     }
 
-    /**
-     * Conditions may implement Filterable to add optionality to rendering.
-     *
-     *
-     * If a condition is Filterable, then a user may add a filter to the usage of the condition that makes a decision
-     * whether to render the condition at runtime. Conditions that fail the filter will be dropped from the
-     * rendered SQL.
-     *
-     *
-     * Implementations of Filterable may call
-     * [filterSupport] as
-     * a common implementation of the filtering algorithm.
-     *
-     * @param <T> the Java type related to the database column type
-    </T> */
     interface Filterable<T> {
-        /**
-         * If renderable and the value matches the predicate, returns this condition. Else returns a condition
-         * that will not render.
-         *
-         * @param predicate predicate applied to the value, if renderable
-         * @return this condition if renderable and the value matches the predicate, otherwise a condition
-         * that will not render.
-         */
-        fun filter(predicate: Predicate<in T>): AbstractSingleValueCondition<T>
+
+        fun filter(predicate: (T)->Boolean): AbstractSingleValueCondition<T>
+
     }
 
-    /**
-     * Conditions may implement Mappable to alter condition values or types during rendering.
-     *
-     *
-     * If a condition is Mappable, then a user may add a mapper to the usage of the condition that can alter the
-     * values of a condition, or change that datatype.
-     *
-     *
-     * Implementations of Mappable may call
-     * [mapSupport] as
-     * a common implementation of the mapping algorithm.
-     *
-     * @param <T> the Java type related to the database column type
-    </T> */
     interface Mappable<T> {
 
-        /**
-         * If renderable, apply the mapping to the value and return a new condition with the new value. Else return a
-         * condition that will not render (this).
-         *
-         * @param mapper a mapping function to apply to the value, if renderable
-         * @param <R> type of the new condition
-         * @return a new condition with the result of applying the mapper to the value of this condition,
-         * if renderable, otherwise a condition that will not render.
-        </R> */
-        fun <R> map(mapper: Function<in T, out R>): AbstractSingleValueCondition<R>
+        fun <R> map(mapper: (T)->R): AbstractSingleValueCondition<R>
 
     }
 }

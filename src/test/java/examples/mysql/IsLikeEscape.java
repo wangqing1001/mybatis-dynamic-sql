@@ -16,9 +16,8 @@
 package examples.mysql;
 
 import java.util.NoSuchElementException;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
+import kotlin.jvm.functions.Function1;
 import org.jspecify.annotations.Nullable;
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition;
 import org.mybatis.dynamic.sql.BindableColumn;
@@ -74,12 +73,12 @@ public class IsLikeEscape<T> extends AbstractSingleValueCondition<T>
     }
 
     @Override
-    public IsLikeEscape<T> filter(Predicate<? super T> predicate) {
+    public IsLikeEscape<T> filter(Function1<? super T, Boolean> predicate) {
         return filterSupport(predicate, IsLikeEscape::empty1, this);
     }
 
     @Override
-    public <R> IsLikeEscape<R> map(Function<? super T, ? extends R> mapper) {
+    public <R> IsLikeEscape<R> map(Function1<? super T, ? extends R> mapper) {
         return mapSupport(mapper, v -> new IsLikeEscape<>(v, escapeCharacter), IsLikeEscape::empty1);
     }
 

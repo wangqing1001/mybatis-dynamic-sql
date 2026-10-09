@@ -31,11 +31,11 @@ import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.mybatis.dynamic.sql.BasicColumn;
-import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider;
-import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider;
-import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider;
+import org.mybatis.dynamic.sql.insert.select.InsertSelectStatementProvider;
+import org.mybatis.dynamic.sql.insert.InsertStatementProvider;
+import org.mybatis.dynamic.sql.insert.batch.MultiRowInsertStatementProvider;
 import org.mybatis.dynamic.sql.dsl.SelectDSLCompleter;
-import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.select.SelectStatementProvider;
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 

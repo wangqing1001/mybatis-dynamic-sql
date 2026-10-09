@@ -19,11 +19,11 @@ package org.mybatis.dynamic.sql.util.kotlin.mybatis3
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.delete.DeleteStatementProvider
-import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider
-import org.mybatis.dynamic.sql.insert.render.InsertSelectStatementProvider
-import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
-import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider
-import org.mybatis.dynamic.sql.select.render.SelectStatementProvider
+import org.mybatis.dynamic.sql.insert.GeneralInsertStatementProvider
+import org.mybatis.dynamic.sql.insert.select.InsertSelectStatementProvider
+import org.mybatis.dynamic.sql.insert.InsertStatementProvider
+import org.mybatis.dynamic.sql.insert.batch.MultiRowInsertStatementProvider
+import org.mybatis.dynamic.sql.select.SelectStatementProvider
 import org.mybatis.dynamic.sql.update.UpdateStatementProvider
 import org.mybatis.dynamic.sql.util.kotlin.CountCompleter
 import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter

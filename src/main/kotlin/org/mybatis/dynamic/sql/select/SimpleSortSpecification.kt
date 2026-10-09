@@ -25,16 +25,10 @@ import java.util.Objects
  *
  * @author Jeff Butler
  */
-class SimpleSortSpecification private constructor(
+class SimpleSortSpecification @JvmOverloads constructor(
     private val name: String,
-    private val descendingPhrase: String
+    private val descendingPhrase: String = ""
 ) : SortSpecification {
-
-    private constructor(name: String) : this(name, "") //$NON-NLS-1$
-
-    init {
-        Objects.requireNonNull(name)
-    }
 
     override fun descending(): SortSpecification {
         return SimpleSortSpecification(name, " DESC") //$NON-NLS-1$
@@ -44,10 +38,4 @@ class SimpleSortSpecification private constructor(
         return FragmentAndParameters(name + descendingPhrase)
     }
 
-    companion object {
-        @JvmStatic
-        fun of(name: String): SimpleSortSpecification {
-            return SimpleSortSpecification(name)
-        }
-    }
 }

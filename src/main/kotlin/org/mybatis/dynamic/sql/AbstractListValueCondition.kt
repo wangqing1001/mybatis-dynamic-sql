@@ -17,13 +17,8 @@ package org.mybatis.dynamic.sql
 
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import org.mybatis.dynamic.sql.util.FragmentCollector
 import org.mybatis.dynamic.sql.util.toFragmentCollector
-import java.util.function.Function
-import java.util.function.Predicate
-import java.util.function.Supplier
-import java.util.stream.Collectors
-import java.util.stream.Stream
+
 
 abstract class AbstractListValueCondition<T>(private val values: Collection<T>) : RenderableCondition<T> {
 
@@ -35,19 +30,11 @@ abstract class AbstractListValueCondition<T>(private val values: Collection<T>) 
         return values.isEmpty()
     }
 
-    private fun <R> applyMapper(mapper: (T) -> R): Collection<R> {
-        return values.map(mapper)
-    }
-
-    private fun applyFilter(predicate: (T) -> Boolean): Collection<T> {
-        return values.filter(predicate)
-    }
-
     protected fun <S : AbstractListValueCondition<T>> filterSupport(predicate:(T) -> Boolean,constructor: (Collection<T>)->S,self: S,emptySupplier: ()->S): S {
         if (isEmpty()) {
             return self
         }
-        val filtered: Collection<T> = applyFilter(predicate)
+        val filtered: Collection<T> = values.filter(predicate)
         return if (filtered.isEmpty()) emptySupplier() else constructor(filtered)
     }
 
@@ -55,7 +42,7 @@ abstract class AbstractListValueCondition<T>(private val values: Collection<T>) 
         if (isEmpty()) {
             return emptySupplier()
         }
-        return constructor(applyMapper(mapper))
+        return constructor(values.map(mapper))
     }
 
     abstract fun operator(): String
@@ -74,13 +61,13 @@ abstract class AbstractListValueCondition<T>(private val values: Collection<T>) 
 
     interface Filterable<T> {
 
-        fun filter(predicate: (T) -> Boolean): AbstractListValueCondition<T>
+        fun filter(predicate: (T)-> Boolean): AbstractListValueCondition<T>
 
     }
 
     interface Mappable<T> {
 
-        fun <R> map(mapper: (T) -> R): AbstractListValueCondition<R>
+        fun <R> map(mapper: (T)->R): AbstractListValueCondition<R>
 
     }
 

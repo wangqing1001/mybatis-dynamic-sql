@@ -48,12 +48,7 @@ sealed class SubCriteriaCollector {
      */
     fun and(criteriaReceiver: GroupingCriteriaReceiver): Unit =
         GroupingCriteriaCollector().apply(criteriaReceiver).let {
-            subCriteria.add(
-                AndOrCriteriaGroup.Builder().withConnector("and") //$NON-NLS-1$
-                    .withInitialCriterion(it.initialCriterion)
-                    .withSubCriteria(it.subCriteria)
-                    .build()
-            )
+            subCriteria.add(AndOrCriteriaGroup("and",it.initialCriterion,it.subCriteria))
         }
 
     /**
@@ -68,12 +63,7 @@ sealed class SubCriteriaCollector {
      *
      */
     fun and(criteria: List<AndOrCriteriaGroup>) {
-        subCriteria.add(
-            AndOrCriteriaGroup.Builder().withConnector("and") //$NON-NLS-1$
-                .withInitialCriterion(NullCriterion())
-                .withSubCriteria(criteria)
-                .build()
-        )
+        subCriteria.add(AndOrCriteriaGroup("and",NullCriterion(),criteria))
     }
 
     /**
@@ -86,12 +76,7 @@ sealed class SubCriteriaCollector {
      */
     fun or(criteriaReceiver: GroupingCriteriaReceiver): Unit =
         GroupingCriteriaCollector().apply(criteriaReceiver).let {
-            subCriteria.add(
-                AndOrCriteriaGroup.Builder().withConnector("or") //$NON-NLS-1$
-                    .withInitialCriterion(it.initialCriterion)
-                    .withSubCriteria(it.subCriteria)
-                    .build()
-            )
+            subCriteria.add(AndOrCriteriaGroup("or",it.initialCriterion,it.subCriteria))
         }
 
     /**
@@ -106,12 +91,7 @@ sealed class SubCriteriaCollector {
      *
      */
     fun or(criteria: List<AndOrCriteriaGroup>) {
-        subCriteria.add(
-            AndOrCriteriaGroup.Builder().withConnector("or") //$NON-NLS-1$
-                .withInitialCriterion(NullCriterion())
-                .withSubCriteria(criteria)
-                .build()
-        )
+        subCriteria.add(AndOrCriteriaGroup("or",NullCriterion(),criteria))
     }
 }
 

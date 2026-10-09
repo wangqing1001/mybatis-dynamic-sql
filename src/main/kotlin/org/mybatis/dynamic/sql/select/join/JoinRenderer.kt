@@ -17,7 +17,7 @@ package org.mybatis.dynamic.sql.select.join
 
 import org.mybatis.dynamic.sql.exception.InvalidSqlException
 import org.mybatis.dynamic.sql.render.RenderingContext
-import org.mybatis.dynamic.sql.select.render.TableExpressionRenderer
+import org.mybatis.dynamic.sql.select.TableExpressionRenderer
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.Messages
 import org.mybatis.dynamic.sql.util.toFragmentCollector

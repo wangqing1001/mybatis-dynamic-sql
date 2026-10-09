@@ -3,12 +3,11 @@ package org.mybatis.dynamic.sql.dsl
 import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration
-import org.mybatis.dynamic.sql.insert.InsertColumnListModel
-import org.mybatis.dynamic.sql.insert.InsertSelectModel
+import org.mybatis.dynamic.sql.insert.select.InsertColumnListModel
+import org.mybatis.dynamic.sql.insert.select.InsertSelectModel
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.util.Buildable
 import org.mybatis.dynamic.sql.util.ConfigurableStatement
-import java.util.Arrays
 import java.util.Objects
 import java.util.function.Consumer
 

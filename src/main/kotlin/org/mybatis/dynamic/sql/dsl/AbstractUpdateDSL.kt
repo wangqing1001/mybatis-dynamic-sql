@@ -89,8 +89,8 @@ abstract class AbstractUpdateDSL<M, D : AbstractUpdateDSL<M, D>> protected const
         return getThis()
     }
 
-    override fun orderBy(columns: Collection<SortSpecification>): D {
-        orderByModel = OrderByModel.of(columns)
+    override fun orderBy(columns: List<SortSpecification>): D {
+        orderByModel = OrderByModel(columns)
         return getThis()
     }
 
@@ -193,8 +193,8 @@ abstract class AbstractUpdateDSL<M, D : AbstractUpdateDSL<M, D>> protected const
             return orderBy(listOf(*columns))
         }
 
-        fun orderBy(columns: Collection<SortSpecification>): D {
-            orderByModel = OrderByModel.of(columns)
+        fun orderBy(columns: List<SortSpecification>): D {
+            orderByModel = OrderByModel(columns)
             return this@AbstractUpdateDSL.getThis()
         }
 

@@ -17,8 +17,6 @@ package org.mybatis.dynamic.sql.where.condition
 
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition
 import java.util.NoSuchElementException
-import java.util.function.Function
-import java.util.function.Predicate
 
 /**
  * not like 条件,如 column not like value。
@@ -30,11 +28,11 @@ open class IsNotLike<T> private constructor(value: T) : AbstractSingleValueCondi
         return "not like" //$NON-NLS-1$
     }
 
-    override fun filter(predicate: Predicate<in T>): IsNotLike<T> {
+    override fun filter(predicate: (T) -> Boolean): IsNotLike<T> {
         return filterSupport(predicate, { empty() }, this)
     }
 
-    override fun <R> map(mapper: Function<in T, out R>): IsNotLike<R> {
+    override fun <R> map(mapper: (T) -> R): IsNotLike<R> {
         return mapSupport(mapper, { r: R -> IsNotLike(r) }, { empty() })
     }
 

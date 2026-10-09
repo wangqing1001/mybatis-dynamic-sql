@@ -71,7 +71,7 @@ abstract class AbstractLimitAndOffsetSupport<T, M> :
             return this@AbstractLimitAndOffsetSupport.delegate.setWaitClause(waitClause)
         }
 
-        override fun orderBy(columns: Collection<SortSpecification>): T {
+        override fun orderBy(columns: List<SortSpecification>): T {
             return this@AbstractLimitAndOffsetSupport.delegate.orderBy(columns)
         }
 

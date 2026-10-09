@@ -345,12 +345,12 @@ public class IsLikeEscape<T> extends AbstractSingleValueCondition<T>
     }
 
     @Override
-    public IsLikeEscape<T> filter(Predicate<? super T> predicate) {
+    public IsLikeEscape<T> filter(Function1<? super T, Boolean> predicate) {
         return filterSupport(predicate, IsLikeEscape::empty, this);
     }
 
     @Override
-    public <R> IsLikeEscape<R> map(Function<? super T, ? extends R> mapper) {
+    public <R> IsLikeEscape<R> map(Function1<? super T, ? extends R> mapper) {
         return mapSupport(mapper, v -> new IsLikeEscape<>(v, escapeCharacter), IsLikeEscape::empty);
     }
 

@@ -54,7 +54,7 @@ class UpdateModel @JvmOverloads constructor(
         return whereModel
     }
 
-    fun columnMappings(): Collection<AbstractColumnMapping> {
+    fun columnMappings(): List<AbstractColumnMapping> {
         return columnMappings
     }
 

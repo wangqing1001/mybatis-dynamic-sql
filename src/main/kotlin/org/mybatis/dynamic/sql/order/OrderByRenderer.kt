@@ -22,9 +22,12 @@ import org.mybatis.dynamic.sql.util.toFragmentCollector
 /**
  * order by 子句渲染器。
  */
-class OrderByRenderer(private val renderingContext: RenderingContext) {
+class OrderByRenderer(
+    private val orderByModel: OrderByModel,
+    private val renderingContext: RenderingContext
+) {
 
-    fun render(orderByModel: OrderByModel): FragmentAndParameters {
+    fun render(): FragmentAndParameters {
         return orderByModel.columns().map { it.renderForOrderBy(renderingContext) }.toFragmentCollector()
             .toFragmentAndParameters(", ", "order by ", "")
     }

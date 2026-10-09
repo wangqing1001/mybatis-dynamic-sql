@@ -15,12 +15,11 @@
  */
 package org.mybatis.dynamic.sql.where.render
 
-import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionModel
-import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionRenderer
+import org.mybatis.dynamic.sql.AbstractBooleanExpressionModel
+import org.mybatis.dynamic.sql.AbstractBooleanExpressionRenderer
 import org.mybatis.dynamic.sql.exception.NonRenderingWhereClauseException
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import java.util.Optional
 
 /**
  * where 子句渲染器。

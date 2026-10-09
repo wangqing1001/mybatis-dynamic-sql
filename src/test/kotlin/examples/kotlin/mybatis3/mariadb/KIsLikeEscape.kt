@@ -15,8 +15,6 @@
  */
 package examples.kotlin.mybatis3.mariadb
 
-import java.util.function.Predicate
-import java.util.function.Function
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition
 import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.render.RenderingContext
@@ -47,10 +45,10 @@ sealed class KIsLikeEscape<T>(
 
 
 
-    override fun filter(predicate: Predicate<in T>): KIsLikeEscape<T> =
+    override fun filter(predicate: (T) -> Boolean): KIsLikeEscape<T> =
         filterSupport(predicate, EmptyIsLikeEscape::empty, this)
 
-    override fun <R> map(mapper : Function<in T, out R>): KIsLikeEscape<R> =
+    override fun <R> map(mapper : (T) -> R): KIsLikeEscape<R> =
         mapSupport(mapper, { r -> ConcreteIsLikeEscape(r, escapeCharacter) }, EmptyIsLikeEscape::empty)
 
     companion object {

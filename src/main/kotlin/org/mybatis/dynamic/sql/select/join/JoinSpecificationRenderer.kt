@@ -15,8 +15,8 @@
  */
 package org.mybatis.dynamic.sql.select.join
 
-import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionModel
-import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionRenderer
+import org.mybatis.dynamic.sql.AbstractBooleanExpressionModel
+import org.mybatis.dynamic.sql.AbstractBooleanExpressionRenderer
 import org.mybatis.dynamic.sql.render.RenderingContext
 
 /**

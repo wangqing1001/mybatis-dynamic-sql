@@ -17,7 +17,6 @@ package org.mybatis.dynamic.sql.select
 
 import org.mybatis.dynamic.sql.TableExpression
 import org.mybatis.dynamic.sql.TableExpressionVisitor
-import java.util.Optional
 
 /**
  * 子查询表表达式。包装一个 SelectModel 并可选指定别名。

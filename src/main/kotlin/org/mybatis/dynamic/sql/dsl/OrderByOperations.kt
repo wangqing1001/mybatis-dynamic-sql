@@ -26,6 +26,6 @@ interface OrderByOperations<T> {
         return orderBy(listOf(*columns))
     }
 
-    fun orderBy(columns: Collection<SortSpecification>): T
+    fun orderBy(columns: List<SortSpecification>): T
 
 }

@@ -31,11 +31,8 @@ import java.util.Objects
 abstract class AbstractTypeConvertingFunction<T, R, U : AbstractTypeConvertingFunction<T, R, U>> protected constructor(
     protected val column: BasicColumn
 ) : BindableColumn<R> {
-    protected var alias: String? = null
 
-    init {
-        Objects.requireNonNull(column)
-    }
+    protected var alias: String? = null
 
     override fun alias(): String? {
         return alias

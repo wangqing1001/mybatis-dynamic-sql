@@ -26,11 +26,11 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.delete.DeleteModel;
-import org.mybatis.dynamic.sql.insert.BatchInsertModel;
+import org.mybatis.dynamic.sql.insert.batch.BatchInsertModel;
 import org.mybatis.dynamic.sql.insert.GeneralInsertModel;
 import org.mybatis.dynamic.sql.insert.InsertModel;
-import org.mybatis.dynamic.sql.insert.MultiRowInsertModel;
-import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider;
+import org.mybatis.dynamic.sql.insert.batch.MultiRowInsertModel;
+import org.mybatis.dynamic.sql.insert.GeneralInsertStatementProvider;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.update.UpdateModel;

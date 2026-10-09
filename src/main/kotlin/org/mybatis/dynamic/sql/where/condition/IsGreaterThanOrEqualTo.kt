@@ -17,8 +17,6 @@ package org.mybatis.dynamic.sql.where.condition
 
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition
 import java.util.NoSuchElementException
-import java.util.function.Function
-import java.util.function.Predicate
 
 /**
  * 大于等于条件,如 column >= value。
@@ -30,11 +28,11 @@ open class IsGreaterThanOrEqualTo<T> private constructor(value: T) : AbstractSin
         return ">=" //$NON-NLS-1$
     }
 
-    override fun filter(predicate: Predicate<in T>): IsGreaterThanOrEqualTo<T> {
+    override fun filter(predicate: (T) -> Boolean): IsGreaterThanOrEqualTo<T> {
         return filterSupport(predicate, { empty() }, this)
     }
 
-    override fun <R> map(mapper: Function<in T, out R>): IsGreaterThanOrEqualTo<R> {
+    override fun <R> map(mapper: (T) -> R): IsGreaterThanOrEqualTo<R> {
         return mapSupport(mapper, { r: R -> IsGreaterThanOrEqualTo(r) }, { empty() })
     }
 

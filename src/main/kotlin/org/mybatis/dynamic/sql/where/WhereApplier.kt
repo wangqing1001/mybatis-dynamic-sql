@@ -44,4 +44,5 @@ class WhereApplier: WhereOrHavingApplier<WhereApplier> {
     ): WhereApplier {
         return WhereApplier(initialCriterion, subCriteria, after)
     }
+
 }

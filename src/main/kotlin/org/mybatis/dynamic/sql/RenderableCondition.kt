@@ -21,58 +21,20 @@ import java.util.function.Supplier
 
 interface RenderableCondition<T> {
 
-    /**
-     * Render a condition - typically a condition in a WHERE clause.
-     *
-     *
-     * A rendered condition includes an SQL fragment, and any associated parameters. For example,
-     * the `isEqual` condition should be rendered as "= ?" where "?" is a properly formatted
-     * parameter marker (the parameter marker can be computed from the `RenderingContext`).
-     * Note that a rendered condition should NOT include the left side of the phrase - that is rendered
-     * by the [renderLeftColumn] method.
-     *
-     * @param renderingContext the current rendering context
-     * @param leftColumn the column related to this condition in a where clause
-     * @return the rendered condition. Should NOT include the column.
-     */
     fun renderCondition(renderingContext: RenderingContext, leftColumn: BindableColumn<T>): FragmentAndParameters
 
-    /**
-     * Render the column in a column and condition phrase - typically in a WHERE clause.
-     *
-     *
-     * By default, the column will be rendered as the column alias if it exists, or the column name.
-     * This can be complicated if the column has a table qualifier, or if the "column" is a function or
-     * part of a CASE expression. Columns know how to render themselves, so we just call their "render"
-     * methods.
-     *
-     * @param renderingContext the current rendering context
-     * @param leftColumn the column related to this condition in a where clause
-     * @return the rendered column
-     */
     fun renderLeftColumn(renderingContext: RenderingContext, leftColumn: BindableColumn<T>): FragmentAndParameters {
         val alias = leftColumn.alias() ?: return leftColumn.render(renderingContext)
         return FragmentAndParameters(alias)
     }
 
-    /**
-     * Subclasses can override this to inform the renderer if the condition should not be included
-     * in the rendered SQL.  Typically, conditions will not render if they are empty.
-     *
-     * @return true if the condition should render.
-     */
     fun shouldRender(renderingContext: RenderingContext): Boolean {
         return !this.isEmpty()
     }
-
 
     fun isEmpty(): Boolean{
         return false
     }
 
-    /**
-     * This method will be called during rendering when [shouldRender]
-     * returns false.
-     */
     fun renderingSkipped() {}
 }

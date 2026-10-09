@@ -19,13 +19,12 @@ import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.SortSpecification
 import org.mybatis.dynamic.sql.render.RenderingContext
-import org.mybatis.dynamic.sql.select.render.SimpleCaseRenderer
+import org.mybatis.dynamic.sql.select.SimpleCaseRenderer
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.Validator
 import java.util.ArrayList
 import java.util.Objects
 import java.util.Optional
-import java.util.stream.Stream
 
 /**
  * 简单 case 表达式模型。

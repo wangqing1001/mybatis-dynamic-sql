@@ -23,8 +23,8 @@ import org.apache.ibatis.annotations.InsertProvider
 import org.apache.ibatis.annotations.Options
 import org.apache.ibatis.annotations.Param
 import org.apache.ibatis.executor.BatchResult
-import org.mybatis.dynamic.sql.insert.render.GeneralInsertStatementProvider
-import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
+import org.mybatis.dynamic.sql.insert.GeneralInsertStatementProvider
+import org.mybatis.dynamic.sql.insert.InsertStatementProvider
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insert
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertBatch

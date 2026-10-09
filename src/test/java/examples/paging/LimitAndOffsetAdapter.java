@@ -22,7 +22,7 @@ import java.util.function.Function;
 
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.select.SelectModel;
-import org.mybatis.dynamic.sql.select.render.SelectStatementProvider;
+import org.mybatis.dynamic.sql.select.SelectStatementProvider;
 
 /**
  * This adapter modifies the generated SQL by adding a LIMIT and OFFSET clause at the end

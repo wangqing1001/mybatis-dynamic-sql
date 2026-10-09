@@ -18,8 +18,7 @@ package org.mybatis.dynamic.sql.select.caseexpression
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SqlCriterion
-import org.mybatis.dynamic.sql.common.AbstractBooleanExpressionModel
-import java.util.Objects
+import org.mybatis.dynamic.sql.AbstractBooleanExpressionModel
 
 /**
  * 搜索型 case when 条件。

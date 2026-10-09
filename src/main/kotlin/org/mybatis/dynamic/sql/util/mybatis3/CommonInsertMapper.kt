@@ -18,8 +18,8 @@ package org.mybatis.dynamic.sql.util.mybatis3
 import org.apache.ibatis.annotations.Flush
 import org.apache.ibatis.annotations.InsertProvider
 import org.apache.ibatis.executor.BatchResult
-import org.mybatis.dynamic.sql.insert.render.InsertStatementProvider
-import org.mybatis.dynamic.sql.insert.render.MultiRowInsertStatementProvider
+import org.mybatis.dynamic.sql.insert.InsertStatementProvider
+import org.mybatis.dynamic.sql.insert.batch.MultiRowInsertStatementProvider
 import org.mybatis.dynamic.sql.util.SqlProviderAdapter
 
 /**

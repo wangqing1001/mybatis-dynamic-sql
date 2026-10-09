@@ -303,80 +303,48 @@ interface SqlBuilder {
         @JvmStatic
         fun <T> or(column: BindableColumn<T>, condition: RenderableCondition<T>,vararg subCriteria: AndOrCriteriaGroup): AndOrCriteriaGroup {
             val initialCriterion = ColumnAndConditionCriterion(column,condition)
-            return AndOrCriteriaGroup.Builder()
-                .withInitialCriterion(initialCriterion)
-                .withConnector("or")
-                .withSubCriteria(listOf(*subCriteria))
-                .build()
+            return AndOrCriteriaGroup("or",initialCriterion,listOf(*subCriteria))
         }
 
         @JvmStatic
         fun or(existsPredicate: ExistsPredicate, vararg subCriteria: AndOrCriteriaGroup): AndOrCriteriaGroup {
-            return AndOrCriteriaGroup.Builder()
-                .withInitialCriterion(
-                    ExistsCriterion(existsPredicate)
-                )
-                .withConnector("or") //$NON-NLS-1$
-                .withSubCriteria(listOf(*subCriteria))
-                .build()
+            return AndOrCriteriaGroup("or",ExistsCriterion(existsPredicate),listOf(*subCriteria))
         }
 
         @JvmStatic
         fun or(initialCriterion: SqlCriterion, vararg subCriteria: AndOrCriteriaGroup): AndOrCriteriaGroup {
-            return AndOrCriteriaGroup.Builder()
-                .withConnector("or") //$NON-NLS-1$
-                .withInitialCriterion(initialCriterion)
-                .withSubCriteria(listOf(*subCriteria))
-                .build()
+            return AndOrCriteriaGroup("or",initialCriterion,listOf(*subCriteria))
         }
+
         @JvmStatic
         fun or(subCriteria: List<AndOrCriteriaGroup>): AndOrCriteriaGroup {
-            return AndOrCriteriaGroup.Builder()
-                .withConnector("or") //$NON-NLS-1$
-                .withInitialCriterion(NullCriterion())
-                .withSubCriteria(subCriteria)
-                .build()
+            return AndOrCriteriaGroup("or",NullCriterion(),subCriteria)
         }
+
         @JvmStatic
         fun <T> and(
             column: BindableColumn<T>, condition: RenderableCondition<T>,
             vararg subCriteria: AndOrCriteriaGroup
         ): AndOrCriteriaGroup {
             val initialCriterion = ColumnAndConditionCriterion(column,condition)
-            return AndOrCriteriaGroup.Builder()
-                .withInitialCriterion(initialCriterion)
-                .withConnector("and") //$NON-NLS-1$
-                .withSubCriteria(listOf(*subCriteria))
-                .build()
+            return AndOrCriteriaGroup("and",initialCriterion,listOf(*subCriteria))
         }
 
         @JvmStatic
         fun and(existsPredicate: ExistsPredicate, vararg subCriteria: AndOrCriteriaGroup): AndOrCriteriaGroup {
-            return AndOrCriteriaGroup.Builder()
-                .withInitialCriterion(
-                    ExistsCriterion(existsPredicate)
-                )
-                .withConnector("and")
-                .withSubCriteria(listOf(*subCriteria))
-                .build()
+            return AndOrCriteriaGroup("and",ExistsCriterion(existsPredicate),listOf(*subCriteria))
         }
 
         @JvmStatic
         fun and(initialCriterion: SqlCriterion, vararg subCriteria: AndOrCriteriaGroup): AndOrCriteriaGroup {
-            return AndOrCriteriaGroup.Builder()
-                .withConnector("and") //$NON-NLS-1$
-                .withInitialCriterion(initialCriterion)
-                .withSubCriteria(listOf(*subCriteria))
-                .build()
+            return AndOrCriteriaGroup("and",initialCriterion,listOf(*subCriteria))
         }
+
         @JvmStatic
         fun and(subCriteria: List<AndOrCriteriaGroup>): AndOrCriteriaGroup {
-            return AndOrCriteriaGroup.Builder()
-                .withConnector("and") //$NON-NLS-1$
-                .withInitialCriterion(NullCriterion())
-                .withSubCriteria(subCriteria)
-                .build()
+            return AndOrCriteriaGroup("and",NullCriterion(),subCriteria)
         }
+
         @JvmStatic
         fun <T> on(joinColumn: BindableColumn<T>,joinCondition: RenderableCondition<T>): ColumnAndConditionCriterion<T> {
             return ColumnAndConditionCriterion(joinColumn,joinCondition)
@@ -489,7 +457,7 @@ interface SqlBuilder {
 
         @JvmStatic
         fun cast(value: Double): CastFinisher {
-            return cast(constant<Any?>(value.toString()))
+            return cast(constant<Any>(value.toString()))
         }
 
         @JvmStatic
@@ -512,7 +480,7 @@ interface SqlBuilder {
             firstColumn: BindableColumn<T>, secondColumn: BasicColumn,
             vararg subsequentColumns: BasicColumn
         ): Concatenate<T> {
-            return Concatenate.concatenate(firstColumn, secondColumn, *subsequentColumns)
+            return Concatenate(firstColumn, secondColumn, listOf(*subsequentColumns))
         }
 
         /**
@@ -533,7 +501,7 @@ interface SqlBuilder {
             operator: String, firstColumn: BindableColumn<T>,
             secondColumn: BasicColumn, vararg subsequentColumns: BasicColumn
         ): OperatorFunction<T> {
-            return OperatorFunction.of(operator, firstColumn, secondColumn, *subsequentColumns)
+            return OperatorFunction(operator, firstColumn, secondColumn, listOf(*subsequentColumns))
         }
         @JvmStatic
         fun <T> lower(column: BindableColumn<T>): Lower<T> {
@@ -717,15 +685,18 @@ interface SqlBuilder {
         fun <T> isLessThanOrEqualToWhenPresent(valueSupplier: Supplier<T>): IsLessThanOrEqualToWhenPresent<T> {
             return isLessThanOrEqualToWhenPresent(valueSupplier.get())
         }
+
         @JvmStatic
         @SafeVarargs
         fun <T> isIn(vararg values: T): IsIn<T> {
             return IsIn.of(*values)
         }
+
         @JvmStatic
         fun <T> isIn(values: Collection<T>): IsIn<T> {
             return IsIn.of(values)
         }
+
         @JvmStatic
         fun <T> isIn(selectModelBuilder: Buildable<SelectModel>): IsInWithSubselect<T> {
             return IsInWithSubselect.of(selectModelBuilder)
@@ -932,7 +903,7 @@ interface SqlBuilder {
          */
         @JvmStatic
         fun sortColumn(name: String): SortSpecification {
-            return SimpleSortSpecification.of(name)
+            return SimpleSortSpecification(name)
         }
 
         /**
