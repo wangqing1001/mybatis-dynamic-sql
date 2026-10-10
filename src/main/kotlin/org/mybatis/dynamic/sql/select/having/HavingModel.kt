@@ -27,10 +27,4 @@ import org.mybatis.dynamic.sql.util.FragmentAndParameters
 class HavingModel(
     initialCriterion: SqlCriterion,
     subCriteria: List<AndOrCriteriaGroup> = mutableListOf()
-) : AbstractBooleanExpressionModel(initialCriterion,subCriteria) {
-
-    fun render(renderingContext: RenderingContext): FragmentAndParameters? {
-        return HavingRenderer(this,renderingContext).render()
-    }
-
-}
+) : AbstractBooleanExpressionModel("having",initialCriterion,subCriteria)

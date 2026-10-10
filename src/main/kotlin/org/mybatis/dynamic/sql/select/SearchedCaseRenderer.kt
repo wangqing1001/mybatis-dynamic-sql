@@ -57,7 +57,7 @@ class SearchedCaseRenderer(
     }
 
     private fun renderWhen(whenCondition: SearchedCaseWhenCondition): FragmentAndParameters {
-        return  SearchedCaseWhenConditionRenderer(whenCondition,renderingContext).render()
+        return whenCondition.render(renderingContext)
             ?: throw InvalidSqlException(Messages.getString("ERROR.39"))
     }
 

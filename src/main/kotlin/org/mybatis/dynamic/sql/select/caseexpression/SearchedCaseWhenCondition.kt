@@ -27,7 +27,7 @@ class SearchedCaseWhenCondition(
     private val thenValue: BasicColumn,
     initialCriterion: SqlCriterion,
     subCriteria: List<AndOrCriteriaGroup> = mutableListOf()
-) : AbstractBooleanExpressionModel(initialCriterion,subCriteria) {
+) : AbstractBooleanExpressionModel("when",initialCriterion,subCriteria) {
 
     fun thenValue(): BasicColumn {
         return thenValue

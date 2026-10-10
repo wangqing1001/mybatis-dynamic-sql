@@ -19,29 +19,21 @@ import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.SortSpecification
 import org.mybatis.dynamic.sql.render.RenderingContext
-import org.mybatis.dynamic.sql.select.SimpleCaseRenderer
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.Validator
-import java.util.ArrayList
-import java.util.Objects
-import java.util.Optional
 
 /**
  * 简单 case 表达式模型。
  */
-class SimpleCaseModel<T> private constructor(builder: Builder<T>) : BasicColumn, SortSpecification {
-    private val column: BindableColumn<T>
-    private val whenConditions: List<SimpleCaseWhenCondition<T>>
-    private val elseValue: BasicColumn?
-    private val alias: String?
-    private val descendingPhrase: String
+class SimpleCaseModel<T> @JvmOverloads constructor(
+    private val column: BindableColumn<T>,
+    private val whenConditions: List<SimpleCaseWhenCondition<T>> = emptyList(),
+    private val elseValue: BasicColumn? = null,
+    private val alias: String? = null,
+    private val descendingPhrase: String=""
+) : BasicColumn, SortSpecification {
 
     init {
-        column = Objects.requireNonNull(builder.column)
-        whenConditions = builder.whenConditions
-        elseValue = builder.elseValue
-        alias = builder.alias
-        descendingPhrase = builder.descendingPhrase
         Validator.assertNotEmpty(whenConditions, "ERROR.40") //$NON-NLS-1$
     }
 
@@ -53,8 +45,8 @@ class SimpleCaseModel<T> private constructor(builder: Builder<T>) : BasicColumn,
         return whenConditions
     }
 
-    fun elseValue(): Optional<BasicColumn> {
-        return Optional.ofNullable(elseValue)
+    fun elseValue(): BasicColumn? {
+        return elseValue
     }
 
     override fun alias(): String? {
@@ -62,23 +54,11 @@ class SimpleCaseModel<T> private constructor(builder: Builder<T>) : BasicColumn,
     }
 
     override fun `as`(alias: String): SimpleCaseModel<T> {
-        return Builder<T>()
-            .withColumn(column)
-            .withWhenConditions(whenConditions)
-            .withElseValue(elseValue)
-            .withAlias(alias)
-            .withDescendingPhrase(descendingPhrase)
-            .build()
+        return SimpleCaseModel(column, whenConditions, elseValue, alias,descendingPhrase)
     }
 
     override fun descending(): SimpleCaseModel<T> {
-        return Builder<T>()
-            .withColumn(column)
-            .withWhenConditions(whenConditions)
-            .withElseValue(elseValue)
-            .withAlias(alias)
-            .withDescendingPhrase(" DESC") //$NON-NLS-1$
-            .build()
+        return SimpleCaseModel(column, whenConditions, elseValue, alias," DESC")
     }
 
     override fun renderForOrderBy(renderingContext: RenderingContext): FragmentAndParameters {
@@ -89,41 +69,4 @@ class SimpleCaseModel<T> private constructor(builder: Builder<T>) : BasicColumn,
         return SimpleCaseRenderer(this, renderingContext).render()
     }
 
-    class Builder<T> {
-        // 字段公开,以便外部类访问(Kotlin 外部类不能访问嵌套类私有成员)
-        lateinit var column: BindableColumn<T>
-        val whenConditions: MutableList<SimpleCaseWhenCondition<T>> = ArrayList()
-        var elseValue: BasicColumn? = null
-        var alias: String? = null
-        var descendingPhrase: String = "" //$NON-NLS-1$
-
-        fun withColumn(column: BindableColumn<T>): Builder<T> {
-            this.column = column
-            return this
-        }
-
-        fun withWhenConditions(whenConditions: List<SimpleCaseWhenCondition<T>>): Builder<T> {
-            this.whenConditions.addAll(whenConditions)
-            return this
-        }
-
-        fun withElseValue(elseValue: BasicColumn?): Builder<T> {
-            this.elseValue = elseValue
-            return this
-        }
-
-        fun withAlias(alias: String?): Builder<T> {
-            this.alias = alias
-            return this
-        }
-
-        fun withDescendingPhrase(descendingPhrase: String): Builder<T> {
-            this.descendingPhrase = descendingPhrase
-            return this
-        }
-
-        fun build(): SimpleCaseModel<T> {
-            return SimpleCaseModel(this)
-        }
-    }
 }

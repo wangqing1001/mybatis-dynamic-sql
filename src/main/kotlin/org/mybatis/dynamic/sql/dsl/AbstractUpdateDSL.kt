@@ -25,6 +25,7 @@ import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.order.OrderByModel
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration
 import org.mybatis.dynamic.sql.select.SelectModel
+import org.mybatis.dynamic.sql.select.paging.LimitModel
 import org.mybatis.dynamic.sql.update.UpdateModel
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping
 import org.mybatis.dynamic.sql.util.Buildable
@@ -94,9 +95,12 @@ abstract class AbstractUpdateDSL<M, D : AbstractUpdateDSL<M, D>> protected const
         return getThis()
     }
 
+
+
     protected fun buildUpdateModel(): UpdateModel {
         val whereModel = whereBuilder?.buildWhereModel()
-        return UpdateModel(table,columnMappings,statementConfiguration,tableAlias,whereModel,orderByModel,limit)
+        val limitModel = limit?.let { LimitModel(it) }
+        return UpdateModel(table,columnMappings,statementConfiguration,tableAlias,whereModel,orderByModel,limitModel)
     }
 
     override fun configureStatement(consumer: Consumer<StatementConfiguration>): D {

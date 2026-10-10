@@ -17,7 +17,6 @@ package org.mybatis.dynamic.sql
 
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.select.SelectModel
-import org.mybatis.dynamic.sql.select.SubQueryRenderer
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
 
 class SubQueryColumn private constructor(private val selectModel: SelectModel) : BasicColumn {
@@ -35,7 +34,7 @@ class SubQueryColumn private constructor(private val selectModel: SelectModel) :
     }
 
     override fun render(renderingContext: RenderingContext): FragmentAndParameters {
-        return SubQueryRenderer(selectModel,renderingContext,"(",")").render()
+        return selectModel.render(renderingContext,"(",")")
     }
 
     companion object {

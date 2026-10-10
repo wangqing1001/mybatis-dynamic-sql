@@ -18,9 +18,15 @@ package org.mybatis.dynamic.sql.update
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.order.OrderByModel
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration
+import org.mybatis.dynamic.sql.render.ExplicitTableAliasCalculator
+import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.render.RenderingStrategy
+import org.mybatis.dynamic.sql.render.TableAliasCalculator
+import org.mybatis.dynamic.sql.select.paging.LimitModel
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping
+import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.Validator
+import org.mybatis.dynamic.sql.util.toFragmentCollector
 import org.mybatis.dynamic.sql.where.WhereModel
 import java.util.function.Function
 
@@ -34,7 +40,7 @@ class UpdateModel @JvmOverloads constructor(
     private val tableAlias: String? = null,
     private val whereModel: WhereModel? = null,
     private val orderByModel: OrderByModel? = null,
-    private val limit: Long? = null
+    private val limitModel: LimitModel? = null
 
 ) {
 
@@ -50,16 +56,16 @@ class UpdateModel @JvmOverloads constructor(
         return tableAlias
     }
 
-    fun whereModel(): WhereModel? {
-        return whereModel
-    }
-
     fun columnMappings(): List<AbstractColumnMapping> {
         return columnMappings
     }
 
-    fun limit(): Long? {
-        return limit
+    fun whereModel(): WhereModel? {
+        return whereModel
+    }
+
+    fun limitModel(): LimitModel? {
+        return limitModel
     }
 
     fun orderByModel(): OrderByModel? {
@@ -70,12 +76,33 @@ class UpdateModel @JvmOverloads constructor(
         return statementConfiguration
     }
 
-    fun render(renderingStrategy: RenderingStrategy): UpdateStatementProvider {
-        return UpdateRenderer(this,renderingStrategy).render()
-    }
-
     fun <R> map(mapper: Function<UpdateModel, R>): R {
         return mapper.apply(this)
+    }
+
+
+    fun render(renderingStrategy: RenderingStrategy): UpdateStatementProvider {
+        val tableAliasCalculator = tableAlias?.let {
+            ExplicitTableAliasCalculator(mapOf(table to it))
+        } ?:TableAliasCalculator.empty()
+        val renderingContext = RenderingContext(renderingStrategy,statementConfiguration,tableAliasCalculator)
+        val tableName = renderingContext.aliasedTableName(table)
+        val list = mutableListOf(FragmentAndParameters("update $tableName"))
+        list.add(calculateSetPhrase(renderingContext))
+        whereModel?.render(renderingContext)?.let { list.add(it) }
+        orderByModel?.render(renderingContext)?.let { list.add(it) }
+        limitModel?.render(renderingContext)?.let { list.add(it) }
+        val fragmentCollector = list.toFragmentCollector()
+        val updateStatement = fragmentCollector.collectFragments(" ")
+        val parameters = fragmentCollector.parameters()
+        return DefaultUpdateStatementProvider(updateStatement,parameters)
+    }
+
+    private fun calculateSetPhrase(renderingContext:RenderingContext): FragmentAndParameters {
+        val visitor = SetPhraseVisitor(renderingContext)
+        val fragmentCollector = columnMappings.mapNotNull { it.accept(visitor) }.toFragmentCollector()
+        Validator.assertFalse(fragmentCollector.isEmpty(), "ERROR.18")
+        return fragmentCollector.toFragmentAndParameters(", ", "set ", "")
     }
 
 }

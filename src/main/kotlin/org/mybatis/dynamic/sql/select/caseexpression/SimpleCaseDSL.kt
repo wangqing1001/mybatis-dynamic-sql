@@ -58,11 +58,7 @@ class SimpleCaseDSL<T> private constructor(
     }
 
     fun end(): SimpleCaseModel<T> {
-        return SimpleCaseModel.Builder<T>()
-            .withColumn(column)
-            .withWhenConditions(whenConditions)
-            .withElseValue(elseValue)
-            .build()
+        return SimpleCaseModel(column,whenConditions,elseValue)
     }
 
     inner class ConditionBasedWhenFinisher(

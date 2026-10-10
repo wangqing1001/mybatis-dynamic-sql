@@ -23,6 +23,7 @@ import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.order.OrderByModel
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration
 import org.mybatis.dynamic.sql.delete.DeleteModel
+import org.mybatis.dynamic.sql.select.paging.LimitModel
 import org.mybatis.dynamic.sql.util.Buildable
 import org.mybatis.dynamic.sql.util.ConfigurableStatement
 import org.mybatis.dynamic.sql.util.Validator
@@ -91,7 +92,8 @@ abstract class AbstractDeleteDSL<M, D : AbstractDeleteDSL<M, D>> protected const
      */
     protected fun buildDeleteModel(): DeleteModel {
         val whereModel = if (whereBuilder == null) null else whereBuilder!!.buildWhereModel()
-        return DeleteModel(table,statementConfiguration, tableAlias,whereModel,limit,orderByModel)
+        val limitModel = limit?.let { LimitModel(it) }
+        return DeleteModel(table,statementConfiguration, tableAlias,whereModel,limitModel,orderByModel)
     }
 
     override fun configureStatement(consumer: Consumer<StatementConfiguration>): D {

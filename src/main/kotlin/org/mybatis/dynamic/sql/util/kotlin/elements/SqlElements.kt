@@ -112,19 +112,12 @@ fun or(receiver: GroupingCriteriaReceiver): AndOrCriteriaGroup =
 // case expressions
 fun case(dslCompleter: KSearchedCaseDSL.() -> Unit): SearchedCaseModel =
     KSearchedCaseDSL().apply(dslCompleter).run {
-        SearchedCaseModel.Builder()
-            .withWhenConditions(whenConditions)
-            .withElseValue(elseValue)
-            .build()
+        SearchedCaseModel(whenConditions,elseValue)
     }
 
 fun <T : Any> case(column: BindableColumn<T>, dslCompleter: KSimpleCaseDSL<T>.() -> Unit) : SimpleCaseModel<T> =
     KSimpleCaseDSL<T>().apply(dslCompleter).run {
-        SimpleCaseModel.Builder<T>()
-            .withColumn(column)
-            .withWhenConditions(whenConditions)
-            .withElseValue(elseValue)
-            .build()
+        SimpleCaseModel(column,whenConditions,elseValue)
     }
 
 // aggregate support

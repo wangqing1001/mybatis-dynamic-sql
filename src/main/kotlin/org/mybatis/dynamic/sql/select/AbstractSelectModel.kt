@@ -24,9 +24,9 @@ import java.util.Optional
  * select 模型基类。封装 order by、分页和语句配置。
  */
 abstract class AbstractSelectModel protected constructor(
-    private val orderByModel: OrderByModel? = null,
-    private val pagingModel: PagingModel? = null,
-    private val statementConfiguration: StatementConfiguration
+    protected val orderByModel: OrderByModel? = null,
+    protected val pagingModel: PagingModel? = null,
+    protected val statementConfiguration: StatementConfiguration
 ) {
 
     fun orderByModel(): OrderByModel? {

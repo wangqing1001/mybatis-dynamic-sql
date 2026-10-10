@@ -23,7 +23,6 @@ import org.mybatis.dynamic.sql.CriteriaGroup
 import org.mybatis.dynamic.sql.RenderableCondition
 import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.dsl.BooleanOperations
-import java.util.Arrays
 
 /**
  * 搜索型 case 表达式 DSL。
@@ -53,27 +52,19 @@ class SearchedCaseDSL private constructor() : ElseDSL<SearchedCaseDSL.SearchedCa
         return WhenDSL(sqlCriterion)
     }
 
-    @Suppress("FunctionName")
     override fun else_(column: BasicColumn): SearchedCaseEnder {
         elseValue = column
         return SearchedCaseEnder()
     }
 
     fun end(): SearchedCaseModel {
-        return SearchedCaseModel.Builder()
-            .withElseValue(elseValue)
-            .withWhenConditions(whenConditions)
-            .build()
+        return SearchedCaseModel(whenConditions,elseValue)
     }
 
     inner class WhenDSL(sqlCriterion: SqlCriterion) :
         BooleanOperations<WhenDSL>, ThenDSL<SearchedCaseDSL> {
-        protected val initialCriterion: SqlCriterion
-        protected val subCriteria: MutableList<AndOrCriteriaGroup> = ArrayList()
-
-        init {
-            initialCriterion = sqlCriterion
-        }
+        private val initialCriterion: SqlCriterion = sqlCriterion
+        private val subCriteria: MutableList<AndOrCriteriaGroup> = ArrayList()
 
         override fun then(column: BasicColumn): SearchedCaseDSL {
             whenConditions.add(SearchedCaseWhenCondition(column,initialCriterion,subCriteria))

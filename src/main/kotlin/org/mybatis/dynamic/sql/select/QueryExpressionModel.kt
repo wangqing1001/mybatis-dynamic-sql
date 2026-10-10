@@ -18,10 +18,17 @@ package org.mybatis.dynamic.sql.select
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.TableExpression
+import org.mybatis.dynamic.sql.render.ExplicitTableAliasCalculator
+import org.mybatis.dynamic.sql.render.GuaranteedTableAliasCalculator
+import org.mybatis.dynamic.sql.render.RenderingContext
+import org.mybatis.dynamic.sql.render.TableAliasCalculator
 import org.mybatis.dynamic.sql.select.group.GroupByModel
 import org.mybatis.dynamic.sql.select.having.HavingModel
 import org.mybatis.dynamic.sql.select.join.JoinModel
+import org.mybatis.dynamic.sql.util.FragmentAndParameters
+import org.mybatis.dynamic.sql.util.StringUtilities
 import org.mybatis.dynamic.sql.util.Validator
+import org.mybatis.dynamic.sql.util.toFragmentCollector
 import org.mybatis.dynamic.sql.where.WhereModel
 
 
@@ -79,5 +86,63 @@ class QueryExpressionModel @JvmOverloads constructor(
     fun havingModel(): HavingModel? {
         return havingModel
     }
+
+    fun render(renderingContext0: RenderingContext): FragmentAndParameters{
+        val childTableAliasCalculator = calculateChildTableAliasCalculator()
+        val renderingContext = renderingContext0.withChildTableAliasCalculator(childTableAliasCalculator)
+        val tableExpressionRenderer = TableExpressionRenderer(renderingContext)
+        val list = mutableListOf(renderQueryExpressionStart(tableExpressionRenderer,renderingContext))
+        val joinClause = joinModel?.render(tableExpressionRenderer, renderingContext)
+        if(joinClause!=null) {
+            list.add(joinClause)
+        }
+        val whereClause = whereModel?.render(renderingContext)
+        if(whereClause!=null) {
+            list.add(whereClause)
+        }
+        val groupByClause = groupByModel?.render(renderingContext)
+        if(groupByClause!=null) {
+            list.add(groupByClause)
+        }
+        val havingClause = havingModel?.render(renderingContext)
+        if(havingClause!=null) {
+            list.add(havingClause)
+        }
+        return list.toFragmentCollector().toFragmentAndParameters(" ")
+
+    }
+
+
+
+    private fun calculateChildTableAliasCalculator(): TableAliasCalculator {
+        val hasSubQueries = joinModel?.containsSubQueries()?: return ExplicitTableAliasCalculator(tableAliases)
+        return if (hasSubQueries) {
+            ExplicitTableAliasCalculator(tableAliases)
+        } else {
+            GuaranteedTableAliasCalculator(tableAliases)
+        }
+    }
+
+    private fun renderQueryExpressionStart(tableExpressionRenderer :TableExpressionRenderer,renderingContext: RenderingContext): FragmentAndParameters {
+        val columns = renderColumns(renderingContext)
+        val table = this.table.accept(tableExpressionRenderer)
+        val start = connector?.let { StringUtilities.spaceAfter(it) } ?: ""
+        val distinct = if(isDistinct) "distinct " else ""
+        val startSQL = start + "select " + distinct + columns.fragment()+ " from " + table.fragment()
+        val parameters = table.parameters() + columns.parameters()
+        return FragmentAndParameters(startSQL, parameters)
+    }
+
+    private fun renderColumns(renderingContext: RenderingContext): FragmentAndParameters {
+        return selectList.map {
+            val renderedColumn = it.render(renderingContext)
+            val alias = it.alias() ?: return renderedColumn
+            renderedColumn.mapFragment {c-> "$c as $alias" }
+        }.toFragmentCollector().toFragmentAndParameters(", ")
+    }
+
+
+
+
 
 }

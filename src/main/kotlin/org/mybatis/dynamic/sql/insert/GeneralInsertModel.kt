@@ -17,9 +17,11 @@ package org.mybatis.dynamic.sql.insert
 
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration
+import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.render.RenderingStrategy
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping
 import org.mybatis.dynamic.sql.util.Validator
+import org.mybatis.dynamic.sql.util.toFieldAndValueCollector
 
 /**
  * 通用 insert 模型。
@@ -47,7 +49,12 @@ class GeneralInsertModel @JvmOverloads constructor(
     }
 
     fun render(renderingStrategy: RenderingStrategy): GeneralInsertStatementProvider {
-        return GeneralInsertRenderer(this,renderingStrategy).render()
+        val renderingContext = RenderingContext(renderingStrategy,statementConfiguration)
+        val visitor = GeneralInsertValuePhraseVisitor(renderingContext)
+        val collector = insertMappings.mapNotNull {  it.accept(visitor) }.toFieldAndValueCollector()
+        Validator.assertFalse(collector.isEmpty(), "ERROR.9")
+        val insertStatement = InsertRenderingUtilities.calculateInsertStatement(table, collector)
+        return DefaultGeneralInsertStatementProvider(insertStatement,collector.parameters())
     }
 
 }

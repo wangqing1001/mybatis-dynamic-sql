@@ -16,7 +16,10 @@
 package org.mybatis.dynamic.sql.order
 
 import org.mybatis.dynamic.sql.SortSpecification
+import org.mybatis.dynamic.sql.render.RenderingContext
+import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.Validator
+import org.mybatis.dynamic.sql.util.toFragmentCollector
 
 /**
  * order by 子句模型。
@@ -24,11 +27,16 @@ import org.mybatis.dynamic.sql.util.Validator
 class OrderByModel(private val columns: List<SortSpecification>) {
 
     init {
-        Validator.assertNotEmpty(columns, "ERROR.12") //$NON-NLS-1$
+        Validator.assertNotEmpty(columns, "ERROR.12")
     }
 
     fun columns(): List<SortSpecification> {
         return columns
+    }
+
+    fun render(renderingContext: RenderingContext): FragmentAndParameters {
+        return columns.map { it.renderForOrderBy(renderingContext) }.toFragmentCollector()
+            .toFragmentAndParameters(", ", "order by ", "")
     }
 
 }

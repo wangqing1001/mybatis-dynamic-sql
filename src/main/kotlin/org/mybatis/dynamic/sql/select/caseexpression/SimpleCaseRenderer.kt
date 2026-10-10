@@ -13,15 +13,11 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.select
+package org.mybatis.dynamic.sql.select.caseexpression
 
-import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.render.RenderingContext
-import org.mybatis.dynamic.sql.select.caseexpression.SimpleCaseModel
-import org.mybatis.dynamic.sql.select.caseexpression.SimpleCaseWhenCondition
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.toFragmentCollector
-import java.util.Optional
 
 
 /**
@@ -36,7 +32,10 @@ class SimpleCaseRenderer<T>(
 
     fun render(): FragmentAndParameters {
         val list = mutableListOf(renderCase(),renderWhenConditions())
-        renderElse().ifPresent { list.add(it) }
+        val elseClause = renderElse()
+        if(elseClause != null) {
+            list.add(elseClause)
+        }
         list.add(renderEnd())
         return list.toFragmentCollector().toFragmentAndParameters(" ") //$NON-NLS-1$
     }
@@ -79,13 +78,11 @@ class SimpleCaseRenderer<T>(
             .mapFragment { f: String -> "then $f" } //$NON-NLS-1$
     }
 
-    private fun renderElse(): Optional<FragmentAndParameters> {
-        return simpleCaseModel.elseValue().map { elseValue: BasicColumn -> renderElse(elseValue) }
+    private fun renderElse(): FragmentAndParameters? {
+        return simpleCaseModel.elseValue()?.render(renderingContext)?.mapFragment {  "else $it" } //$
     }
 
-    private fun renderElse(elseValue: BasicColumn): FragmentAndParameters {
-        return elseValue.render(renderingContext).mapFragment { f: String -> "else $f" } //$NON-NLS-1$
-    }
+
 
     private fun renderEnd(): FragmentAndParameters {
         return FragmentAndParameters("end") //$NON-NLS-1$

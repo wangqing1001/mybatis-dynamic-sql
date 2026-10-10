@@ -13,14 +13,11 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.select
+package org.mybatis.dynamic.sql.select.caseexpression
 
 import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.RenderableCondition
 import org.mybatis.dynamic.sql.render.RenderingContext
-import org.mybatis.dynamic.sql.select.caseexpression.BasicWhenCondition
-import org.mybatis.dynamic.sql.select.caseexpression.ConditionBasedWhenCondition
-import org.mybatis.dynamic.sql.select.caseexpression.SimpleCaseWhenConditionVisitor
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.Validator
 import org.mybatis.dynamic.sql.util.toFragmentCollector

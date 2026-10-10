@@ -34,4 +34,17 @@ class FragmentAndParameters @JvmOverloads constructor (
         return FragmentAndParameters(mapper.apply(fragment),parameters)
     }
 
+    operator fun plus(other: String): FragmentAndParameters {
+        val fragment = this.fragment() + other
+        return FragmentAndParameters(fragment, parameters)
+    }
+
+    operator fun plus(other: FragmentAndParameters): FragmentAndParameters {
+        val fragment = this.fragment() + other.fragment()
+        val map = mutableMapOf<String, Any?>()
+        map.putAll(this.parameters)
+        map.putAll(other.parameters)
+        return FragmentAndParameters(fragment, parameters)
+    }
+
 }

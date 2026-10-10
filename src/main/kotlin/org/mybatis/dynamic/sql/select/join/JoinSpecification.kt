@@ -28,7 +28,7 @@ class JoinSpecification(
     private val joinType: JoinType,
     initialCriterion: SqlCriterion,
     subCriteria: List<AndOrCriteriaGroup> = mutableListOf()
-) : AbstractBooleanExpressionModel(initialCriterion,subCriteria) {
+) : AbstractBooleanExpressionModel("on",initialCriterion,subCriteria) {
 
     fun table(): TableExpression {
         return table

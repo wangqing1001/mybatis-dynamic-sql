@@ -42,7 +42,6 @@ import org.mybatis.dynamic.sql.select.QueryExpressionModel;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.join.JoinModel;
 import org.mybatis.dynamic.sql.select.join.JoinSpecification;
-import org.mybatis.dynamic.sql.select.paging.FetchFirstPagingModelRenderer;
 import org.mybatis.dynamic.sql.update.UpdateModel;
 import org.mybatis.dynamic.sql.util.InternalError;
 import org.mybatis.dynamic.sql.util.Messages;
@@ -182,15 +181,10 @@ class InvalidSQLTest {
     @Test
     void testInvalidPagingModel() {
 
-
-
         PagingModel pagingModel = new PagingModel(22L);
-
         RenderingContext renderingContext = new RenderingContext(RenderingStrategies.MYBATIS3,new StatementConfiguration());
-
-        FetchFirstPagingModelRenderer renderer = new FetchFirstPagingModelRenderer(renderingContext, pagingModel);
         assertThatExceptionOfType(InvalidSqlException.class)
-                .isThrownBy(renderer::render)
+                .isThrownBy(()->pagingModel.render(renderingContext))
                 .withMessage(Messages.getInternalErrorString(InternalError.INTERNAL_ERROR_13));
 
     }

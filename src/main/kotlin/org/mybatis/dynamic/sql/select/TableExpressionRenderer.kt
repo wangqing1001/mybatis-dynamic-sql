@@ -37,7 +37,7 @@ class TableExpressionRenderer(
         if(alias != null) {
             suffix = "$suffix $alias"
         }
-        return SubQueryRenderer(subQuery.selectModel(),renderingContext,"(",suffix).render()
+        return subQuery.selectModel().render(renderingContext,"(",suffix)
     }
 
 }

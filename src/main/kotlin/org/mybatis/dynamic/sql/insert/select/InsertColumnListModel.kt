@@ -16,4 +16,8 @@ class InsertColumnListModel(private val columns: List<SqlColumn<*>>) {
         return columns
     }
 
+    fun render(): String {
+        return columns.joinToString(", ", " (", ")") { column -> column.name() }
+    }
+
 }

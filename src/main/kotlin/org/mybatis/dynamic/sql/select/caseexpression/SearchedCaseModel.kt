@@ -20,25 +20,17 @@ import org.mybatis.dynamic.sql.SortSpecification
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.select.SearchedCaseRenderer
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import org.mybatis.dynamic.sql.util.Validator
-import java.util.ArrayList
 import java.util.Optional
 
 /**
  * 搜索型 case 表达式模型。
  */
-class SearchedCaseModel private constructor(builder: Builder) : BasicColumn, SortSpecification {
-    private val whenConditions = builder.whenConditions
-    private val elseValue: BasicColumn?
-    private val alias: String?
-    private val descendingPhrase: String
-
-    init {
-        alias = builder.alias
-        elseValue = builder.elseValue
-        descendingPhrase = builder.descendingPhrase
-        Validator.assertNotEmpty(whenConditions, "ERROR.40") //$NON-NLS-1$
-    }
+class SearchedCaseModel @JvmOverloads constructor(
+    private val whenConditions: List<SearchedCaseWhenCondition>,
+    private val elseValue: BasicColumn? = null,
+    private val alias: String? = null,
+    private val descendingPhrase: String = ""
+) : BasicColumn, SortSpecification {
 
     fun whenConditions(): Collection<SearchedCaseWhenCondition> {
         return whenConditions
@@ -53,19 +45,11 @@ class SearchedCaseModel private constructor(builder: Builder) : BasicColumn, Sor
     }
 
     override fun `as`(alias: String): SearchedCaseModel {
-        return Builder().withWhenConditions(whenConditions)
-            .withElseValue(elseValue)
-            .withAlias(alias)
-            .withDescendingPhrase(descendingPhrase)
-            .build()
+        return SearchedCaseModel(whenConditions, elseValue,alias,descendingPhrase)
     }
 
     override fun descending(): SearchedCaseModel {
-        return Builder().withWhenConditions(whenConditions)
-            .withElseValue(elseValue)
-            .withAlias(alias)
-            .withDescendingPhrase(" DESC") //$NON-NLS-1$
-            .build()
+        return SearchedCaseModel(whenConditions, elseValue,alias," DESC")
     }
 
     override fun renderForOrderBy(renderingContext: RenderingContext): FragmentAndParameters {
@@ -76,35 +60,4 @@ class SearchedCaseModel private constructor(builder: Builder) : BasicColumn, Sor
         return SearchedCaseRenderer(this, renderingContext).render()
     }
 
-    class Builder {
-        // 字段公开,以便外部类访问(Kotlin 外部类不能访问嵌套类私有成员)
-        val whenConditions: MutableList<SearchedCaseWhenCondition> = ArrayList()
-        var elseValue: BasicColumn? = null
-        var alias: String? = null
-        var descendingPhrase: String = "" //$NON-NLS-1$
-
-        fun withWhenConditions(whenConditions: List<SearchedCaseWhenCondition>): Builder {
-            this.whenConditions.addAll(whenConditions)
-            return this
-        }
-
-        fun withElseValue(elseValue: BasicColumn?): Builder {
-            this.elseValue = elseValue
-            return this
-        }
-
-        fun withAlias(alias: String?): Builder {
-            this.alias = alias
-            return this
-        }
-
-        fun withDescendingPhrase(descendingPhrase: String): Builder {
-            this.descendingPhrase = descendingPhrase
-            return this
-        }
-
-        fun build(): SearchedCaseModel {
-            return SearchedCaseModel(this)
-        }
-    }
 }

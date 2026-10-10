@@ -24,7 +24,6 @@ import org.mybatis.dynamic.sql.NullCriterion
 import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.SqlCriterionVisitor
 import org.mybatis.dynamic.sql.render.RenderingContext
-import org.mybatis.dynamic.sql.select.SubQueryRenderer
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.FragmentCollector
 import org.mybatis.dynamic.sql.util.toFragmentCollector
@@ -99,7 +98,7 @@ class CriterionRenderer(private val renderingContext: RenderingContext) : SqlCri
         val existsPredicate = criterion.existsPredicate()
         val selectModel = existsPredicate.selectModelBuilder().build()
         val prefix = "${existsPredicate.operator()} ("
-        return SubQueryRenderer(selectModel,renderingContext,prefix,")").render()
+        return selectModel.render(renderingContext,prefix,")")
     }
 
     private fun renderSubCriteria(subCriteria: List<AndOrCriteriaGroup>): List<RenderedCriterion> {

@@ -18,9 +18,9 @@ package org.mybatis.dynamic.sql.where
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup
 import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.AbstractBooleanExpressionModel
+import org.mybatis.dynamic.sql.exception.NonRenderingWhereClauseException
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import org.mybatis.dynamic.sql.where.render.WhereRenderer
 
 /**
  * where 子句模型。
@@ -28,10 +28,14 @@ import org.mybatis.dynamic.sql.where.render.WhereRenderer
 class WhereModel(
     initialCriterion: SqlCriterion,
     subCriteria: List<AndOrCriteriaGroup> = mutableListOf()
-) : AbstractBooleanExpressionModel(initialCriterion,subCriteria) {
+) : AbstractBooleanExpressionModel("where",initialCriterion,subCriteria) {
 
-    fun render(renderingContext: RenderingContext): FragmentAndParameters? {
-        return WhereRenderer(this,renderingContext).render()
+    override fun render(renderingContext: RenderingContext): FragmentAndParameters? {
+        val whereClause = super.render(renderingContext)
+        if (whereClause!=null || renderingContext.isNonRenderingClauseAllowed()) {
+            return whereClause
+        }
+        throw NonRenderingWhereClauseException()
     }
 
 }

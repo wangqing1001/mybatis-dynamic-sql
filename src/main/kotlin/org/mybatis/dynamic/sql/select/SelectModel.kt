@@ -17,9 +17,12 @@ package org.mybatis.dynamic.sql.select
 
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration
 import org.mybatis.dynamic.sql.order.OrderByModel
+import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.render.RenderingStrategy
 import org.mybatis.dynamic.sql.select.paging.PagingModel
+import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.Validator
+import org.mybatis.dynamic.sql.util.toFragmentCollector
 import java.util.function.Function
 
 /**
@@ -50,12 +53,37 @@ class SelectModel @JvmOverloads constructor(
         return waitClause
     }
 
-    fun render(renderingStrategy: RenderingStrategy): SelectStatementProvider {
-        return SelectRenderer(this,renderingStrategy).render()
-    }
-
     fun <R> map(mapper: Function<SelectModel, R>): R {
         return mapper.apply(this)
+    }
+
+    fun render(renderingStrategy: RenderingStrategy): SelectStatementProvider {
+        val renderingContext = RenderingContext(renderingStrategy, statementConfiguration)
+        val fragmentAndParameters = render(renderingContext)
+        val selectStatement = fragmentAndParameters.fragment()
+        val parameters = fragmentAndParameters.parameters()
+        return DefaultSelectStatementProvider(selectStatement, parameters)
+    }
+
+    fun render(renderingContext: RenderingContext,prefix: String = "",suffix: String = ""): FragmentAndParameters {
+        val list = queryExpressions.map { it.render(renderingContext) }.toMutableList()
+        val orderClause = orderByModel?.render(renderingContext)
+        if(orderClause != null) {
+            list.add(orderClause)
+        }
+        val pagingClause = pagingModel?.render(renderingContext)
+        if(pagingClause != null) {
+            list.add(pagingClause)
+        }
+        val forClause = forClause
+        if(forClause != null) {
+            list.add(FragmentAndParameters(forClause))
+        }
+        val waitClause = waitClause
+        if(waitClause != null) {
+            list.add(FragmentAndParameters(waitClause))
+        }
+        return list.toFragmentCollector().toFragmentAndParameters(" ",prefix,suffix)
     }
 
 }

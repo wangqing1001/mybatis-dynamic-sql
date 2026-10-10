@@ -16,7 +16,6 @@
 package org.mybatis.dynamic.sql.update
 
 import org.mybatis.dynamic.sql.render.RenderingContext
-import org.mybatis.dynamic.sql.select.SubQueryRenderer
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping
 import org.mybatis.dynamic.sql.util.ColumnToColumnMapping
 import org.mybatis.dynamic.sql.util.ConstantMapping
@@ -70,7 +69,7 @@ class SetPhraseVisitor(private val renderingContext: RenderingContext) :
     override fun visit(mapping: SelectMapping): FragmentAndParameters? {
         val columnName = renderingContext.aliasedColumnName(mapping.column())
         val prefix = "$columnName = ("
-        return SubQueryRenderer(mapping.selectModel(),renderingContext,prefix,")").render()
+        return mapping.selectModel().render(renderingContext, prefix, ")")
     }
 
     override fun visit(mapping: ColumnToColumnMapping): FragmentAndParameters {

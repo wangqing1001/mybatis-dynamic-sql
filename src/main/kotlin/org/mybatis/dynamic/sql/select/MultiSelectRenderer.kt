@@ -15,10 +15,8 @@
  */
 package org.mybatis.dynamic.sql.select
 
-import org.mybatis.dynamic.sql.order.OrderByRenderer
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.render.RenderingStrategy
-import org.mybatis.dynamic.sql.select.paging.PagingModelRenderer
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.FragmentCollector
 import org.mybatis.dynamic.sql.util.toFragmentCollector
@@ -33,11 +31,11 @@ class MultiSelectRenderer(
     fun render(): SelectStatementProvider {
         val initialSelect = renderSelect(multiSelectModel.initialSelect())
         val list = multiSelectModel.unionQueries().map { renderSelect(it) }.toMutableList()
-        val orderBy = renderOrderBy()
+        val orderBy = multiSelectModel.orderByModel()?.render(renderingContext)
         if(orderBy != null) {
             list.add(orderBy)
         }
-        val paging = renderPagingModel()
+        val paging = multiSelectModel.pagingModel()?.render(renderingContext)
         if(paging != null) {
             list.add(paging)
         }
@@ -51,21 +49,13 @@ class MultiSelectRenderer(
     }
 
     private fun renderSelect(selectModel: SelectModel): FragmentAndParameters {
-        return SubQueryRenderer(selectModel,renderingContext,"(",")").render()
+        return selectModel.render(renderingContext,"(",")")
     }
 
     private fun renderSelect(unionQuery: UnionQuery): FragmentAndParameters {
-        return SubQueryRenderer(unionQuery.selectModel,renderingContext,"${unionQuery.connector} (",")").render()
+        return unionQuery.selectModel.render(renderingContext,"${unionQuery.connector} (",")")
     }
 
-    private fun renderOrderBy(): FragmentAndParameters? {
-        val orderByModel = multiSelectModel.orderByModel()?:return null
-        return OrderByRenderer(orderByModel,renderingContext).render()
-    }
 
-    private fun renderPagingModel(): FragmentAndParameters? {
-        val pagingModel = multiSelectModel.pagingModel()?:return null
-        return PagingModelRenderer(pagingModel,renderingContext).render()
-    }
 
 }

@@ -1,9 +1,11 @@
 package org.mybatis.dynamic.sql.insert.batch
 
 import org.mybatis.dynamic.sql.SqlTable
+import org.mybatis.dynamic.sql.insert.InsertRenderingUtilities
 import org.mybatis.dynamic.sql.render.RenderingStrategy
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping
 import org.mybatis.dynamic.sql.util.Validator
+import org.mybatis.dynamic.sql.util.toFieldAndValueCollector
 
 /**
  * 批量 insert 模型。
@@ -20,7 +22,10 @@ class BatchInsertModel<T> @JvmOverloads constructor(
     }
 
     fun render(renderingStrategy: RenderingStrategy): BatchInsert<T> {
-        return BatchInsertRenderer(this, renderingStrategy).render()
+        val visitor = MultiRowValuePhraseVisitor(renderingStrategy, "row")
+        val collector = columnMappings().map { m -> m.accept(visitor) }.toFieldAndValueCollector()
+        val insertStatement = InsertRenderingUtilities.calculateInsertStatement(table(), collector)
+        return BatchInsert(insertStatement,records())
     }
 
 }

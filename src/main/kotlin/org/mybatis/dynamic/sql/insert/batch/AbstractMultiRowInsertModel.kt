@@ -28,27 +28,4 @@ abstract class AbstractMultiRowInsertModel<T> protected constructor(
         return records.size
     }
 
-    abstract class AbstractBuilder<T, S : AbstractBuilder<T, S>> {
-        // 字段公开,以便外部类访问(Kotlin 外部类不能访问嵌套类私有成员)
-        lateinit var table: SqlTable
-        val records: MutableList<T> = mutableListOf()
-        val columnMappings: MutableList<AbstractColumnMapping> = mutableListOf()
-
-        fun withTable(table: SqlTable): S {
-            this.table = table
-            return getThis()
-        }
-
-        fun withRecords(records: Collection<T>): S {
-            this.records.addAll(records)
-            return getThis()
-        }
-
-        fun withColumnMappings(columnMappings: List<AbstractColumnMapping>): S {
-            this.columnMappings.addAll(columnMappings)
-            return getThis()
-        }
-
-        protected abstract fun getThis(): S
-    }
 }

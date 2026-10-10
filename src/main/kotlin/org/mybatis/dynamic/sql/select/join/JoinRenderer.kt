@@ -32,8 +32,7 @@ class JoinRenderer(
 ) {
 
     fun render(): FragmentAndParameters {
-        return joinModel.joinSpecifications()
-            .map {  renderJoinSpecification(it) }.toFragmentCollector()
+        return joinModel.joinSpecifications().map {  renderJoinSpecification(it) }.toFragmentCollector()
             .toFragmentAndParameters(" ")
     }
 
@@ -41,7 +40,8 @@ class JoinRenderer(
         val list = mutableListOf<FragmentAndParameters>()
         list.add(FragmentAndParameters(joinSpecification.joinType().type()))
         list.add(joinSpecification.table().accept(tableExpressionRenderer))
-        list.add(JoinSpecificationRenderer(joinSpecification,renderingContext).render() ?: throw InvalidSqlException(Messages.getString("ERROR.46")))
+        val fragmentAndParameters = joinSpecification.render(renderingContext) ?: throw InvalidSqlException(Messages.getString("ERROR.46"))
+        list.add(fragmentAndParameters)
         return list.toFragmentCollector().toFragmentAndParameters(" ")
     }
 

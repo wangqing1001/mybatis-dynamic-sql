@@ -15,11 +15,11 @@
  */
 package org.mybatis.dynamic.sql.select.join
 
-import org.mybatis.dynamic.sql.TableExpression
+import org.mybatis.dynamic.sql.render.RenderingContext
+import org.mybatis.dynamic.sql.select.TableExpressionRenderer
+import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.Validator
-import java.util.ArrayList
-import java.util.Objects
-import java.util.stream.Stream
+
 
 class JoinModel(
     private val joinSpecifications: List<JoinSpecification> = emptyList()
@@ -34,9 +34,12 @@ class JoinModel(
     }
 
     fun containsSubQueries(): Boolean {
-        return joinSpecifications.stream()
-            .map { joinSpecification: JoinSpecification -> joinSpecification.table() }
-            .anyMatch { tableExpression: TableExpression -> tableExpression.isSubQuery }
+        return joinSpecifications.any { it.table().isSubQuery }
     }
+
+    fun render(tableExpressionRenderer: TableExpressionRenderer,renderingContext: RenderingContext): FragmentAndParameters {
+        return JoinRenderer(this,tableExpressionRenderer,renderingContext).render()
+    }
+
 
 }
