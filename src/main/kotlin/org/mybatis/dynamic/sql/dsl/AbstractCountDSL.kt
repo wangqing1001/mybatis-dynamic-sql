@@ -22,6 +22,7 @@ import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.TableExpression
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration
+import org.mybatis.dynamic.sql.filter.buildFilteredWhereModel
 import org.mybatis.dynamic.sql.select.QueryExpressionModel
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.select.join.JoinType
@@ -92,12 +93,13 @@ abstract class AbstractCountDSL<M, D : AbstractCountDSL<M, D>> protected constru
     }
 
     protected fun buildSelectModel(): SelectModel {
-        val whereModel = whereBuilder?.buildWhereModel()
-        val queryExpressionModel = QueryExpressionModel(table(),listOf(countColumn),whereModel,
-            tableAliases(),buildJoinModel())
+        val whereApplier = whereBuilder?.toWhereApplier()
+        val enabledFilter = statementConfiguration.enabledFilter()
+        val whereModel = buildFilteredWhereModel(table(),whereApplier,enabledFilter)
+        val joinModel = buildJoinModel()
+        val queryExpressionModel = QueryExpressionModel(table(),listOf(countColumn),whereModel,tableAliases(),joinModel)
         return SelectModel(listOf(queryExpressionModel),statementConfiguration)
     }
-
     protected abstract fun getThis(): D
 
     override fun join(joinType: JoinType, joinTable: TableExpression, initialCriterion: SqlCriterion): JoinSpecificationFinisher {
@@ -198,5 +200,10 @@ abstract class AbstractCountDSL<M, D : AbstractCountDSL<M, D>> protected constru
         fun buildWhereModel(): WhereModel {
             return WhereModel(initialCriterion,subCriteria)
         }
+
+        /**
+         * 把当前累积的条件转换为 where 应用器,便于与过滤器贡献的条件合并。
+         */
+        fun toWhereApplier(): WhereApplier = WhereApplier(initialCriterion, subCriteria)
     }
 }

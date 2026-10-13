@@ -15,7 +15,7 @@
  */
 package org.mybatis.dynamic.sql
 
-import com.zl.data.dsl.filter.SQLFilter
+import org.mybatis.dynamic.sql.filter.SQLFilter
 
 interface TableExpression {
 

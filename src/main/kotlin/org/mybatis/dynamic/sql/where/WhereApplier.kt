@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql.where
 
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup
+import org.mybatis.dynamic.sql.NullCriterion
 import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.dsl.BooleanOperations
 import org.mybatis.dynamic.sql.dsl.WhereOrHavingApplier
@@ -43,6 +44,10 @@ class WhereApplier: WhereOrHavingApplier<WhereApplier> {
         after: Consumer<BooleanOperations<*>>
     ): WhereApplier {
         return WhereApplier(initialCriterion, subCriteria, after)
+    }
+
+    internal fun isEffectivelyEmpty(): Boolean {
+        return subCriteria().isEmpty() && initialCriterion() is NullCriterion
     }
 
 }

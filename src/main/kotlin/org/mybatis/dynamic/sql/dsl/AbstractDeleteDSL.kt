@@ -23,6 +23,7 @@ import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.order.OrderByModel
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration
 import org.mybatis.dynamic.sql.delete.DeleteModel
+import org.mybatis.dynamic.sql.filter.buildFilteredWhereModel
 import org.mybatis.dynamic.sql.select.paging.LimitModel
 import org.mybatis.dynamic.sql.util.Buildable
 import org.mybatis.dynamic.sql.util.ConfigurableStatement
@@ -47,8 +48,6 @@ abstract class AbstractDeleteDSL<M, D : AbstractDeleteDSL<M, D>> protected const
     private val statementConfiguration: StatementConfiguration = StatementConfiguration()
     private var limit: Long? = null
     private var orderByModel: OrderByModel? = null
-
-
 
     override fun where(): DeleteWhereBuilder {
         if(whereBuilder==null) {
@@ -91,7 +90,9 @@ abstract class AbstractDeleteDSL<M, D : AbstractDeleteDSL<M, D>> protected const
      * @return 模型类
      */
     protected fun buildDeleteModel(): DeleteModel {
-        val whereModel = if (whereBuilder == null) null else whereBuilder!!.buildWhereModel()
+        val whereApplier = whereBuilder?.toWhereApplier()
+        val enabledFilter = statementConfiguration.enabledFilter()
+        val whereModel = buildFilteredWhereModel(table,whereApplier,enabledFilter)
         val limitModel = limit?.let { LimitModel(it) }
         return DeleteModel(table,statementConfiguration, tableAlias,whereModel,limitModel,orderByModel)
     }
@@ -150,5 +151,10 @@ abstract class AbstractDeleteDSL<M, D : AbstractDeleteDSL<M, D>> protected const
         fun buildWhereModel(): WhereModel {
             return WhereModel(initialCriterion,subCriteria)
         }
+
+        /**
+         * 把当前累积的条件转换为 where 应用器,便于与过滤器贡献的条件合并。
+         */
+        fun toWhereApplier(): WhereApplier = WhereApplier(initialCriterion, subCriteria)
     }
 }

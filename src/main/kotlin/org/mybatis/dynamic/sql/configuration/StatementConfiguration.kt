@@ -29,12 +29,20 @@ import org.mybatis.dynamic.sql.exception.NonRenderingWhereClauseException
  *         例如,如果 "in" 条件指定了空值列表。如果 where 子句中没有指定条件,框架假定
  *         未打算使用 where 子句,不会抛出异常。
  *     </dd>
+ *     <dt>enabledFilter</dt>
+ *     <dd>是否启用 SQL 过滤器(如逻辑删除)。默认为 true,即表上声明的过滤器会参与
+ *         where 子句构建。如果为 false,则本次语句构建完全跳过过滤器,等价于该表
+ *         没有声明任何过滤器。该开关只影响当前语句,且仅在构建语句时生效。
+ *     </dd>
  * </dl>
  *
  * @see GlobalConfiguration
  */
 class StatementConfiguration {
+
     private var nonRenderingWhereClauseAllowed =  GlobalContext.getConfiguration().nonRenderingWhereClauseAllowed()
+
+    private var enabledFilter = GlobalContext.getConfiguration().enabledFilter()
 
     fun nonRenderingWhereClauseAllowed(): Boolean {
         return nonRenderingWhereClauseAllowed
@@ -42,6 +50,49 @@ class StatementConfiguration {
 
     fun nonRenderingWhereClauseAllowed(nonRenderingWhereClauseAllowed: Boolean): StatementConfiguration {
         this.nonRenderingWhereClauseAllowed = nonRenderingWhereClauseAllowed
+        return this
+    }
+
+    /**
+     * 是否启用 SQL 过滤器。
+     *
+     * @return 启用时返回 true
+     */
+    fun enabledFilter(): Boolean {
+        return enabledFilter
+    }
+
+    /**
+     * 设置是否启用 SQL 过滤器。
+     *
+     * <p>关闭后,当前语句在构建时将跳过表上声明的全部过滤器,等同于该表未声明过滤器。
+     * 这可用于排查问题,或在特定场景下临时绕过逻辑删除等自动条件。
+     *
+     * @param enable 是否启用过滤器
+     * @return 当前配置对象,便于链式调用
+     */
+    fun enabledFilter(enable: Boolean): StatementConfiguration {
+        this.enabledFilter = enable
+        return this
+    }
+
+    /**
+     * 是否启用 SQL 过滤器。为 [enabledFilter] 的别名,便于 Java 调用者书写。
+     *
+     * @return 启用时返回 true
+     */
+    fun enableFilter(): Boolean {
+        return enabledFilter
+    }
+
+    /**
+     * 设置是否启用 SQL 过滤器。为 [enabledFilter] 的别名,便于 Java 调用者书写。
+     *
+     * @param enable 是否启用过滤器
+     * @return 当前配置对象,便于链式调用
+     */
+    fun enableFilter(enable: Boolean): StatementConfiguration {
+        this.enabledFilter = enable
         return this
     }
 }

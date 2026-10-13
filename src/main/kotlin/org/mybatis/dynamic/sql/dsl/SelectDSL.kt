@@ -15,7 +15,7 @@
  */
 package org.mybatis.dynamic.sql.dsl
 
-import com.zl.data.dsl.filter.SQLFilterChain
+import org.mybatis.dynamic.sql.filter.buildFilteredWhereModel
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.NullCriterion
@@ -204,22 +204,16 @@ class SelectDSL(
 
         fun toQueryExpressionModel(): QueryExpressionModel {
             val table = table()
-            val whereModel = whereBuilder?.buildWhereModel(table)
-
-
-
-
-
-
-
-
-
-
+            val whereModel = buildWhereModel(table)
             val havingModel = havingBuilder?.buildHavingModel()
-
-
             val joinModel = buildJoinModel()
             return QueryExpressionModel(table(),selectList,whereModel,tableAliases(),joinModel,groupByModel,havingModel,isDistinct,connector)
+        }
+
+        private fun buildWhereModel(table: TableExpression): WhereModel?{
+            val whereApplier = whereBuilder?.toWhereApplier()
+            val enabledFilter = statementConfiguration.enabledFilter()
+            return buildFilteredWhereModel(table,whereApplier,enabledFilter)
         }
 
     }
@@ -280,16 +274,10 @@ class SelectDSL(
             return this@SelectDSL.build()
         }
 
-        fun buildWhereModel(table: TableExpression): WhereModel {
-            val filterChain = SQLFilterChain.createFilterChain(*table.filter())
-            val whereDSL = WhereDSL()
-            whereDSL.apply{
-                filterChain.doWhere({}).invoke(this)
-            }
-            val where = whereDSL.toWhereApplier()
-            subCriteria.add(AndOrCriteriaGroup("and",where.initialCriterion(),where.subCriteria()))
-            return WhereModel(initialCriterion,subCriteria)
-        }
+        /**
+         * 把当前累积的条件转换为 where 应用器,便于与过滤器贡献的条件合并。
+         */
+        fun toWhereApplier(): WhereApplier = WhereApplier(initialCriterion, subCriteria)
 
         override fun configureStatement(consumer: Consumer<StatementConfiguration>): QueryExpressionWhereBuilder {
             this@SelectDSL.configureStatement(consumer)

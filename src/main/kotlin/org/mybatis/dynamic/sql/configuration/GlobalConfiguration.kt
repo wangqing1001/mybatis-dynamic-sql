@@ -23,10 +23,25 @@ import java.util.*
 
 /**
  * 全局配置类。用于设置框架的全局行为。
+ *
+ * <p>配置有两个来源,优先级从高到低:
+ * <ol>
+ *     <li>属性文件(默认 {@code mybatis-dynamic-sql.properties},可通过系统属性
+ *         {@value #CONFIGURATION_FILE_PROPERTY} 指定);</li>
+ *     <li>代码中的默认值。</li>
+ * </ol>
+ *
+ * <dl>
+ *     <dt>nonRenderingWhereClauseAllowed</dt>
+ *     <dd>是否允许不渲染的 where 子句,默认为 false。</dd>
+ *     <dt>enabledFilter</dt>
+ *     <dd>是否启用 SQL 过滤器,默认为 true。</dd>
+ * </dl>
  */
 class GlobalConfiguration {
 
     private var nonRenderingWhereClauseAllowed = false
+    private var enabledFilter = true
     private val properties = Properties()
 
     init {
@@ -57,11 +72,21 @@ class GlobalConfiguration {
 
     private fun initializeKnownProperties() {
         nonRenderingWhereClauseAllowed = properties.getProperty("nonRenderingWhereClauseAllowed", "false")?.toBoolean() ?: false
+        enabledFilter = properties.getProperty("enabledFilter", "true")?.toBoolean() ?: true
     }
 
 
     fun nonRenderingWhereClauseAllowed(): Boolean {
         return this.nonRenderingWhereClauseAllowed
+    }
+
+    /**
+     * 是否全局启用 SQL 过滤器。
+     *
+     * @return 启用时返回 true;默认为 true
+     */
+    fun enabledFilter(): Boolean {
+        return this.enabledFilter
     }
 
 

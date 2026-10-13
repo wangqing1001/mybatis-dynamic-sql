@@ -95,17 +95,12 @@ class StatementConfigurationTest {
         DeleteStatementProvider deleteStatement = deleteFrom(person)
                 .build()
                 .render(RenderingStrategies.MYBATIS3);
-
         assertThat(deleteStatement.getDeleteStatement()).isEqualTo("delete from Person");
     }
 
     @Test
     void testSelectWhereCalledButNoCriteriaThrowsException() {
-        SelectModel selectModel = select(id, firstName, lastName)
-                .from(person)
-                .where()
-                .build();
-
+        SelectModel selectModel = select(id, firstName, lastName).from(person).where().build();
         assertThatExceptionOfType(NonRenderingWhereClauseException.class).isThrownBy(() ->
             selectModel.render(RenderingStrategies.MYBATIS3)
         );

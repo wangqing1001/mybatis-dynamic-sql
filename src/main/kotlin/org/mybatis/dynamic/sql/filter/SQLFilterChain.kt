@@ -1,81 +1,112 @@
-package com.zl.data.dsl.filter
+/*
+ *    Copyright 2016-2026 the original author or authors.
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *       https://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+package org.mybatis.dynamic.sql.filter
 
-import org.mybatis.dynamic.sql.dsl.CountDSLCompleter
-import org.mybatis.dynamic.sql.dsl.DeleteDSLCompleter
-import org.mybatis.dynamic.sql.dsl.SelectDSLCompleter
-import org.mybatis.dynamic.sql.dsl.UpdateDSLCompleter
-import org.mybatis.dynamic.sql.dsl.WhereDSL
-import org.mybatis.dynamic.sql.filter.DefaultSQLFilterChain
-import org.mybatis.dynamic.sql.util.kotlin.CountCompleter
-import org.mybatis.dynamic.sql.util.kotlin.DeleteCompleter
-import org.mybatis.dynamic.sql.util.kotlin.GeneralInsertCompleter
-import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
-import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
+import org.mybatis.dynamic.sql.NullCriterion
+import org.mybatis.dynamic.sql.TableExpression
 import org.mybatis.dynamic.sql.where.WhereApplier
-
+import org.mybatis.dynamic.sql.where.WhereModel
 
 /**
- * DSL 过滤器链接口。
+ * SQL 过滤器链。负责按顺序应用一组 [SQLFilter],把它们贡献的条件合并进原始 where 条件。
  *
- * 过滤器链是责任链模式中的“链路”抽象，负责把当前待处理的 SQL 构建器
- * （Completer）依次传递给链上的每一个 [SQLFilter] 进行处理。
+ * <p>本接口的实现是**无状态**的:每次调用 [filter] 都会重新遍历全部过滤器,
+ * 因此同一个链实例可以被安全地重复调用(多次 build、并发调用),不会出现条件丢失。
  *
- * 该接口的默认实现 [DefaultDSLFilterChain] 内部维护一个游标位置，每次调用
- * [doXXX()] 时取出下一个过滤器并调用其 `doXXX(completer, this)` 方法；
- * 过滤器处理完毕后，通过把自身（`this`）再次传入，实现链式向后传递。
- *
- * 与 [SQLFilter] 相同，这里也提供 Java DSL 与 Kotlin DSL 两套重载方法。
- * 默认（未做任何处理时）实现均为“原样返回 completer”，即空过滤链不改变任何内容。
- *
- * 使用方式（通过伴生对象工厂方法创建）：
- * ```kotlin
- * val chain = DSLFilterChain.createFilterChain(filter1, filter2)
- * val filtered = chain.doFilter(completer)
- * ```
+ * <p>过滤器贡献的条件始终追加在原始条件之后,并以 "and" 连接;若过滤器贡献了多个条件,
+ * 它们之间按各自声明的连接符(or/and)组合。
  */
-interface SQLFilterChain {
-
-    fun doWhere(completer: WhereDSL.()-> Unit):WhereDSL.()-> Unit{
-        return completer
-    }
-
-
+fun interface SQLFilterChain {
+    /**
+     * 应用全部过滤器,返回合并后的 where 应用器。
+     *
+     * @param where 原始 where 条件
+     * @param table 当前表表达式,供过滤器决策使用
+     * @return 合并了所有过滤条件的 where 应用器;无过滤器时原样返回 [where]
+     */
+    fun filter(where: WhereApplier, table: TableExpression): WhereApplier
 
     companion object {
 
         /**
-         * 空过滤器链单例。
-         *
-         * 该实例不包含任何过滤器，对任何 completer 均原样返回，
-         * 用于“无过滤需求”的场景，避免每次创建新对象。
+         * 空过滤器链单例。不附加任何条件,原样返回输入。
          */
-        private val NON_FILTER_CHAIN: SQLFilterChain = object : SQLFilterChain {}
+        private val NON_FILTER_CHAIN: SQLFilterChain = SQLFilterChain { where, _ -> where }
 
         /**
-         * 获取一个不做任何处理的空过滤器链（单例）。
+         * 获取一个不做任何处理的空过滤器链(单例)。
          *
          * @return 空过滤器链实例
          */
-        fun nonFilterChain(): SQLFilterChain {
-            return NON_FILTER_CHAIN
-        }
+        @JvmStatic
+        fun nonFilterChain(): SQLFilterChain = NON_FILTER_CHAIN
 
         /**
          * 根据给定的过滤器数组创建过滤器链。
          *
-         * 当 [filters] 为空时返回空过滤器链（[nonFilterChain]），
-         * 否则返回 [SQLFilterChain] 实例。
+         * 当 [filters] 为空时返回空过滤器链([nonFilterChain]);否则返回真实链实例。
          *
-         * @param filters 参与过滤的过滤器集合（可省略，表示无需过滤）
+         * @param filters 参与过滤的过滤器集合(可省略,表示无需过滤)
          * @return 组装好的过滤器链
          */
+        @JvmStatic
         fun createFilterChain(vararg filters: SQLFilter): SQLFilterChain {
             if (filters.isEmpty()) {
                 return nonFilterChain()
             }
-            return DefaultSQLFilterChain(filters)
+            return DefaultSQLFilterChain(filters.toList())
         }
-
     }
+}
 
+/**
+ * 构建带过滤器支持的 where 模型。这是所有语句 DSL 接入 SQL 过滤器的统一入口,
+ * 保证 select / count / delete / update 对过滤器的处理语义完全一致。
+ *
+ * <p>处理流程:
+ * <ol>
+ *     <li>把原始 where 条件(可能不存在)规整为 [WhereApplier];</li>
+ *     <li>当且仅当过滤器开关为 true 时,执行表上声明的过滤器链,把其贡献的条件
+ *         并入原始条件;开关为 false 时完全跳过过滤器;</li>
+ *     <li>按下方规则决定是否生成 [WhereModel]。</li>
+ * </ol>
+ *
+ * <p>关于"空"的处理,需要区分两种情形,否则会破坏既有的校验行为:
+ * <ul>
+ *     <li>用户<b>从未调用</b> {@code where()},且过滤器也未贡献条件 —— 返回 null,
+ *         完全省略 where 子句;</li>
+ *     <li>用户<b>显式调用过</b> {@code where()} 但未附加任何条件 —— 仍需构造 WhereModel,
+ *         以保留原有的 {@code NonRenderingWhereClauseException} 校验语义。</li>
+ * </ul>
+ *
+ * @param table             当前表表达式,过滤器据此决策
+ * @param whereApplier      已累积的 where 条件,无显式 where 时传 null
+ * @param enabledFilter    是否启用过滤器
+ * @return 构建好的 where 模型;无任何条件且无显式 where 时返回 null
+ */
+internal fun buildFilteredWhereModel(table: TableExpression, whereApplier: WhereApplier?,enabledFilter: Boolean): WhereModel? {
+    if(!enabledFilter || table.filter().isEmpty()){
+        if (whereApplier==null){
+            return null
+        }
+        val initialCriterion = whereApplier.initialCriterion()
+        val subCriterion = whereApplier.subCriteria()
+        return WhereModel(initialCriterion,subCriterion)
+    }
+    val whereApplier =  whereApplier?:WhereApplier(NullCriterion(), emptyList())
+    val filtered = SQLFilterChain.createFilterChain(*table.filter()).filter(whereApplier,table)
+    return WhereModel(filtered.initialCriterion(), filtered.subCriteria())
 }
