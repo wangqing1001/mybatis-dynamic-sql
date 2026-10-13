@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql.dsl
 
+import com.zl.data.dsl.filter.SQLFilterChain
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.NullCriterion
@@ -36,7 +37,6 @@ import org.mybatis.dynamic.sql.util.ConfigurableStatement
 import org.mybatis.dynamic.sql.util.Validator
 import org.mybatis.dynamic.sql.where.WhereApplier
 import org.mybatis.dynamic.sql.where.WhereModel
-import java.util.Objects
 import java.util.function.Consumer
 
 /**
@@ -107,8 +107,8 @@ class SelectDSL(
     }
 
     override fun where(): QueryExpressionWhereBuilder {
-        currentQueryValues.whereBuilder = Objects.requireNonNullElseGet(currentQueryValues.whereBuilder) {
-            QueryExpressionWhereBuilder(NullCriterion())
+        if(currentQueryValues.whereBuilder==null){
+            currentQueryValues.whereBuilder = QueryExpressionWhereBuilder(NullCriterion())
         }
         return currentQueryValues.whereBuilder!!
     }
@@ -203,8 +203,21 @@ class SelectDSL(
         var havingBuilder: QueryExpressionHavingBuilder? = null
 
         fun toQueryExpressionModel(): QueryExpressionModel {
-            val whereModel = whereBuilder?.buildWhereModel()
+            val table = table()
+            val whereModel = whereBuilder?.buildWhereModel(table)
+
+
+
+
+
+
+
+
+
+
             val havingModel = havingBuilder?.buildHavingModel()
+
+
             val joinModel = buildJoinModel()
             return QueryExpressionModel(table(),selectList,whereModel,tableAliases(),joinModel,groupByModel,havingModel,isDistinct,connector)
         }
@@ -267,7 +280,14 @@ class SelectDSL(
             return this@SelectDSL.build()
         }
 
-        fun buildWhereModel(): WhereModel {
+        fun buildWhereModel(table: TableExpression): WhereModel {
+            val filterChain = SQLFilterChain.createFilterChain(*table.filter())
+            val whereDSL = WhereDSL()
+            whereDSL.apply{
+                filterChain.doWhere({}).invoke(this)
+            }
+            val where = whereDSL.toWhereApplier()
+            subCriteria.add(AndOrCriteriaGroup("and",where.initialCriterion(),where.subCriteria()))
             return WhereModel(initialCriterion,subCriteria)
         }
 

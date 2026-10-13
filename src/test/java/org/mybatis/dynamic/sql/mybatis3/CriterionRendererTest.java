@@ -33,13 +33,13 @@ import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
 import org.mybatis.dynamic.sql.where.condition.IsEqualTo;
-import org.mybatis.dynamic.sql.where.render.CriterionRenderer;
-import org.mybatis.dynamic.sql.where.render.RenderedCriterion;
+import org.mybatis.dynamic.sql.where.CriterionRenderer;
+import org.mybatis.dynamic.sql.where.RenderedCriterion;
 
 class CriterionRendererTest {
+
     @Test
     void testAliasWithIgnore() {
-
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER);
         IsEqualTo<Integer> condition = SqlBuilder.isEqualTo(() -> 3);
@@ -51,7 +51,6 @@ class CriterionRendererTest {
         FragmentAndParameters fp = rc.fragmentAndParametersWithConnector();
         assertThat(fp.fragment()).isEqualTo("id = #{parameters.p1,jdbcType=INTEGER}");
         assertThat(fp.parameters()).hasSize(1);
-
     }
 
     @Test
@@ -66,7 +65,7 @@ class CriterionRendererTest {
 
         RenderingContext renderingContext = new RenderingContext(RenderingStrategies.MYBATIS3,new StatementConfiguration(),new ExplicitTableAliasCalculator(tableAliases));
         CriterionRenderer renderer = new CriterionRenderer(renderingContext);
-        RenderedCriterion rc = criterion.accept(renderer);
+        var rc = criterion.accept(renderer);
         assertThat(rc).isNotNull();
         FragmentAndParameters fp = rc.fragmentAndParametersWithConnector();
         assertThat(fp.fragment()).isEqualTo("a.id = #{parameters.p1,jdbcType=INTEGER}");

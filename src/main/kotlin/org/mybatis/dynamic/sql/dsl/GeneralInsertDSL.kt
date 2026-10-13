@@ -19,7 +19,10 @@ import java.util.function.Supplier
 /**
  * 通用 insert DSL,支持 set 子句的各种映射方式。
  */
-class GeneralInsertDSL private constructor(builder: Builder) : Buildable<GeneralInsertModel> {
+class GeneralInsertDSL private constructor(
+    builder: Builder
+) : Buildable<GeneralInsertModel> {
+
     private val columnMappings: MutableList<AbstractColumnMapping> = builder.columnMappings
     private val table: SqlTable = builder.table
 

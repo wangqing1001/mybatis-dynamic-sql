@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql
 
 
+
 class ColumnAndConditionCriterion<T> @JvmOverloads constructor(
     private val column: BindableColumn<T> ,
     private val condition: RenderableCondition<T> ,

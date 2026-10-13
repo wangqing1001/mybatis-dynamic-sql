@@ -16,6 +16,7 @@
 package org.mybatis.dynamic.sql
 
 
+
 /**
  * This class represents a criteria group without an AND or an OR connector. This is useful
  * in situations where the initial SqlCriterion in a list should be further grouped
@@ -37,5 +38,7 @@ open class CriteriaGroup @JvmOverloads constructor(
     override fun <R> accept(visitor: SqlCriterionVisitor<R>): R {
         return visitor.visit(this)
     }
+
+
 
 }

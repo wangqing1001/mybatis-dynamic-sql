@@ -15,11 +15,15 @@
  */
 package org.mybatis.dynamic.sql
 
+import com.zl.data.dsl.filter.SQLFilter
+
 interface TableExpression {
 
     fun <R> accept(visitor: TableExpressionVisitor<R>): R
 
     val isSubQuery: Boolean
         get() = false
+
+    fun filter():Array<SQLFilter> = emptyArray()
 
 }

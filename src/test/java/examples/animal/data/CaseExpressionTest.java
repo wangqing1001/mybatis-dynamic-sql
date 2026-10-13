@@ -734,7 +734,6 @@ class CaseExpressionTest {
                 .when(isEqualToWhenPresent((String) null)).then("Fred").end())
                 .from(animalData)
                 .build();
-
         assertThatExceptionOfType(InvalidSqlException.class)
                 .isThrownBy(() -> model.render(RenderingStrategies.MYBATIS3))
                 .withMessage(Messages.getString("ERROR.39"));
@@ -743,7 +742,6 @@ class CaseExpressionTest {
     @Test
     void testInvalidSearchedCaseNoWhenConditions() {
         SearchedCaseDSL dsl = case_();
-
         assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(dsl::end)
                 .withMessage(Messages.getString("ERROR.40"));
     }

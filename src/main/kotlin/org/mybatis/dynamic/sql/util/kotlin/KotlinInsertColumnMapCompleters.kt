@@ -30,13 +30,15 @@ import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping
 @MyBatisDslMarker
 sealed class AbstractInsertColumnMapCompleter<T>(
     internal val column: SqlColumn<T>,
-    internal val mappingConsumer: (AbstractColumnMapping) -> Unit) {
+    internal val mappingConsumer: (AbstractColumnMapping) -> Unit
+) {
 
     fun toNull() = mappingConsumer.invoke(NullMapping.of(column))
 
     infix fun toConstant(constant: String) = mappingConsumer.invoke(ConstantMapping.of(column, constant))
 
     infix fun toStringConstant(constant: String) = mappingConsumer.invoke(StringConstantMapping.of(column, constant))
+
 }
 
 class MultiRowInsertColumnMapCompleter<T : Any>(
@@ -62,10 +64,10 @@ class SingleRowInsertColumnMapCompleter<T>(
     fun toRow() = mappingConsumer.invoke(RowMapping.of(column))
 }
 
-class GeneralInsertColumnSetCompleter<T : Any>(
+class GeneralInsertColumnSetCompleter<T>(
     column: SqlColumn<T>,
-    mappingConsumer: (AbstractColumnMapping) -> Unit)
-    : AbstractInsertColumnMapCompleter<T>(column, mappingConsumer) {
+    mappingConsumer: (AbstractColumnMapping) -> Unit
+) : AbstractInsertColumnMapCompleter<T>(column, mappingConsumer) {
 
     infix fun toValue(value: T) = toValue { value }
 

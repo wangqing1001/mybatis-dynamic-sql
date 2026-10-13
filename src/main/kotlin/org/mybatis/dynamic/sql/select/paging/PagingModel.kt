@@ -22,7 +22,7 @@ class PagingModel @JvmOverloads constructor(
     }
 
     fun render(renderingContext: RenderingContext): FragmentAndParameters {
-        val limit = limit ?: return FetchFirstAndOffsetModel(fetchFirstRows, fetchFirstRows).render(renderingContext)
+        val limit = limit ?: return FetchFirstAndOffsetModel(offset, fetchFirstRows).render(renderingContext)
         return LimitAndOffsetModel(limit,offset).render(renderingContext)
     }
 

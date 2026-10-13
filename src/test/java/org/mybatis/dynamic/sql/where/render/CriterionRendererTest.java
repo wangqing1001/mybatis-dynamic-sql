@@ -31,6 +31,8 @@ import org.mybatis.dynamic.sql.render.ExplicitTableAliasCalculator;
 import org.mybatis.dynamic.sql.render.RenderingContext;
 import org.mybatis.dynamic.sql.render.RenderingStrategies;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.where.CriterionRenderer;
+import org.mybatis.dynamic.sql.where.RenderedCriterion;
 import org.mybatis.dynamic.sql.where.condition.IsEqualTo;
 
 class CriterionRendererTest {

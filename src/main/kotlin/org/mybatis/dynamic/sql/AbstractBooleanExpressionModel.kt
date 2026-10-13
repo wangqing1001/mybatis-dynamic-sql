@@ -19,12 +19,12 @@ import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.FragmentCollector
 import org.mybatis.dynamic.sql.util.StringUtilities
-import org.mybatis.dynamic.sql.where.render.CriterionRenderer
+import org.mybatis.dynamic.sql.where.CriterionRenderer
 
 abstract class AbstractBooleanExpressionModel protected constructor(
     private val prefix: String,
     private val initialCriterion: SqlCriterion,
-    private val subCriteria: List<AndOrCriteriaGroup> = mutableListOf(),
+    private val subCriteria: List<AndOrCriteriaGroup> = emptyList(),
 ) {
 
     fun initialCriterion(): SqlCriterion {
@@ -39,7 +39,6 @@ abstract class AbstractBooleanExpressionModel protected constructor(
         val criterionRenderer = CriterionRenderer(renderingContext)
         return criterionRenderer.render(initialCriterion,subCriteria,::calculateClause)?.fragmentAndParameters()
     }
-
 
     private fun calculateClause(collector: FragmentCollector): String {
         if (collector.hasMultipleFragments()) {

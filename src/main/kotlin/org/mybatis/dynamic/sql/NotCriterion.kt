@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql
 
+
 /**
  * This class represents a criteria group with a NOT.
  *
@@ -27,8 +28,13 @@ class NotCriterion @JvmOverloads constructor(
     subCriteria: List<AndOrCriteriaGroup> = emptyList()
 ) : CriteriaGroup(initialCriterion, subCriteria) {
 
+
+
+
     override fun <R> accept(visitor: SqlCriterionVisitor<R>): R {
         return visitor.visit(this)
     }
+
+
 
 }

@@ -22,7 +22,7 @@ import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.select.function.AbstractUniTypeFunction
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.Validator
-import org.mybatis.dynamic.sql.where.render.ColumnAndConditionRenderer
+import org.mybatis.dynamic.sql.where.ColumnAndConditionRenderer
 import java.util.function.Function
 
 /**

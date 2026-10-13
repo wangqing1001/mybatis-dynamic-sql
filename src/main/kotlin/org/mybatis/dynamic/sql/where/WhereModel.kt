@@ -27,7 +27,7 @@ import org.mybatis.dynamic.sql.util.FragmentAndParameters
  */
 class WhereModel(
     initialCriterion: SqlCriterion,
-    subCriteria: List<AndOrCriteriaGroup> = mutableListOf()
+    subCriteria: List<AndOrCriteriaGroup> = emptyList()
 ) : AbstractBooleanExpressionModel("where",initialCriterion,subCriteria) {
 
     override fun render(renderingContext: RenderingContext): FragmentAndParameters? {

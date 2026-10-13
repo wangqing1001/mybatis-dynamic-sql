@@ -18,10 +18,9 @@ package org.mybatis.dynamic.sql.where.render;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import java.util.Collections;
-
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.util.FragmentAndParameters;
+import org.mybatis.dynamic.sql.where.RenderedCriterion;
 
 class RenderedCriterionTest {
 

@@ -48,6 +48,7 @@ import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.dynamic.sql.BasicColumn;
+import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.SqlTable;
 import org.mybatis.dynamic.sql.delete.DeleteStatementProvider;
 import org.mybatis.dynamic.sql.exception.NonRenderingWhereClauseException;
@@ -60,6 +61,7 @@ import org.mybatis.dynamic.sql.dsl.SelectDSLCompleter;
 import org.mybatis.dynamic.sql.select.SelectModel;
 import org.mybatis.dynamic.sql.select.SelectStatementProvider;
 import org.mybatis.dynamic.sql.update.UpdateStatementProvider;
+import org.mybatis.dynamic.sql.util.kotlin.model.ModelBuilderFunctionsKt;
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper;
 import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 
@@ -2105,6 +2107,8 @@ class AnimalDataTest {
         try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
             SqlTable animalDataCopy = SqlTable.of("AnimalDataCopy");
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
+
+
 
             InsertSelectStatementProvider insertSelectStatement = insertInto(animalDataCopy)
                     .withSelectStatement(select(id, animalName, bodyWeight, brainWeight).from(animalData).where(id, isLessThan(33)))

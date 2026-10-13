@@ -29,7 +29,6 @@ public class PersonDynamicSqlSupport {
         public final SqlColumn<Integer> id = column("id");
         public final SqlColumn<String> firstName = column("first_name");
         public final SqlColumn<String> lastName = column("last_name");
-
         public Person() {
             super("person");
         }

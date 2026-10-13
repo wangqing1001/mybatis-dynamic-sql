@@ -161,19 +161,26 @@ class EmptyWhereTest {
         SelectDSL.QueryExpressionWhereBuilder builder = select(id, firstName, PersonDynamicSqlSupport.lastName, orderDate)
                 .from(person).join(order).on(person.id, isEqualTo(order.personId))
                 .where(id, isEqualTo(3));
-
         builder.and(firstName, isEqualTo(FIRST_NAME));
         builder.and(PersonDynamicSqlSupport.lastName, isEqualTo(LAST_NAME));
-
         SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
-
         String expected = "select person.id, person.first_name, person.last_name, order.order_date"
                 + " from person"
                 + " join order on person.id = order.person_id"
                 + " where person.id = #{parameters.p1}"
                 + " and person.first_name = #{parameters.p2}"
                 + " and person.last_name = #{parameters.p3}";
+        assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
+    }
 
+    @Test
+    void testJoinThreeConditions1() {
+        SelectDSL.QueryExpressionWhereBuilder builder = select(id, firstName, orderDate)
+                .from(person).where(id, isEqualTo(3));
+        SelectStatementProvider selectStatement = builder.build().render(RenderingStrategies.MYBATIS3);
+        String expected = "select id, first_name, order_date"
+                + " from person"
+                + " where id = #{parameters.p1}";
         assertThat(selectStatement.getSelectStatement()).isEqualTo(expected);
     }
 

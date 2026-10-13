@@ -20,7 +20,8 @@ import org.mybatis.dynamic.sql.SortSpecification
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.select.SearchedCaseRenderer
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import java.util.Optional
+import org.mybatis.dynamic.sql.util.Validator.Companion.assertNotEmpty
+import java.util.*
 
 /**
  * 搜索型 case 表达式模型。
@@ -31,6 +32,10 @@ class SearchedCaseModel @JvmOverloads constructor(
     private val alias: String? = null,
     private val descendingPhrase: String = ""
 ) : BasicColumn, SortSpecification {
+
+    init {
+        assertNotEmpty(whenConditions, "ERROR.40") //$NON-NLS-1$
+    }
 
     fun whenConditions(): Collection<SearchedCaseWhenCondition> {
         return whenConditions

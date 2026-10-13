@@ -15,10 +15,13 @@
  */
 package org.mybatis.dynamic.sql.select.join
 
+import org.mybatis.dynamic.sql.exception.InvalidSqlException
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.select.TableExpressionRenderer
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
+import org.mybatis.dynamic.sql.util.Messages
 import org.mybatis.dynamic.sql.util.Validator
+import org.mybatis.dynamic.sql.util.toFragmentCollector
 
 
 class JoinModel(
@@ -38,8 +41,17 @@ class JoinModel(
     }
 
     fun render(tableExpressionRenderer: TableExpressionRenderer,renderingContext: RenderingContext): FragmentAndParameters {
-        return JoinRenderer(this,tableExpressionRenderer,renderingContext).render()
+        return joinSpecifications.map {  renderJoinSpecification(it,tableExpressionRenderer,renderingContext) }
+            .toFragmentCollector().toFragmentAndParameters(" ")
     }
 
+    private fun renderJoinSpecification(joinSpecification: JoinSpecification,tableExpressionRenderer: TableExpressionRenderer,renderingContext: RenderingContext): FragmentAndParameters {
+        val list = mutableListOf<FragmentAndParameters>()
+        list.add(FragmentAndParameters(joinSpecification.joinType().type()))
+        list.add(joinSpecification.table().accept(tableExpressionRenderer))
+        val fragmentAndParameters = joinSpecification.render(renderingContext) ?: throw InvalidSqlException(Messages.getString("ERROR.46"))
+        list.add(fragmentAndParameters)
+        return list.toFragmentCollector().toFragmentAndParameters(" ")
+    }
 
 }

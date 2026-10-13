@@ -15,7 +15,6 @@
  */
 package org.mybatis.dynamic.sql.util
 
-import java.util.Optional
 import java.util.stream.Collector
 
 /**

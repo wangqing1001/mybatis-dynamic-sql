@@ -13,37 +13,27 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.select.join
+package org.mybatis.dynamic.sql.where
 
-import org.mybatis.dynamic.sql.exception.InvalidSqlException
+import org.mybatis.dynamic.sql.BindableColumn
+import org.mybatis.dynamic.sql.RenderableCondition
 import org.mybatis.dynamic.sql.render.RenderingContext
-import org.mybatis.dynamic.sql.select.TableExpressionRenderer
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import org.mybatis.dynamic.sql.util.Messages
 import org.mybatis.dynamic.sql.util.toFragmentCollector
 
 /**
- * join 渲染器。
+ * 列与条件渲染器。将左列和条件组合渲染为一个完整的条件片段。
  */
-class JoinRenderer(
-    private val joinModel: JoinModel,
-    private val tableExpressionRenderer: TableExpressionRenderer,
+class ColumnAndConditionRenderer<T>(
+    private val column: BindableColumn<T>,
+    private val condition: RenderableCondition<T>,
     private val renderingContext: RenderingContext
 ) {
 
     fun render(): FragmentAndParameters {
-        return joinModel.joinSpecifications().map {  renderJoinSpecification(it) }.toFragmentCollector()
-            .toFragmentAndParameters(" ")
-    }
-
-    private fun renderJoinSpecification(joinSpecification: JoinSpecification): FragmentAndParameters {
         val list = mutableListOf<FragmentAndParameters>()
-        list.add(FragmentAndParameters(joinSpecification.joinType().type()))
-        list.add(joinSpecification.table().accept(tableExpressionRenderer))
-        val fragmentAndParameters = joinSpecification.render(renderingContext) ?: throw InvalidSqlException(Messages.getString("ERROR.46"))
-        list.add(fragmentAndParameters)
+        list.add(condition.renderLeftColumn(renderingContext, column))
+        list.add(condition.renderCondition(renderingContext, column))
         return list.toFragmentCollector().toFragmentAndParameters(" ")
     }
-
-
 }

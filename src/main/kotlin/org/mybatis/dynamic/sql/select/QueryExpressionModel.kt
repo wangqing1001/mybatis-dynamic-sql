@@ -136,7 +136,7 @@ class QueryExpressionModel @JvmOverloads constructor(
     private fun renderColumns(renderingContext: RenderingContext): FragmentAndParameters {
         return selectList.map {
             val renderedColumn = it.render(renderingContext)
-            val alias = it.alias() ?: return renderedColumn
+            val alias = it.alias() ?: return@map renderedColumn
             renderedColumn.mapFragment {c-> "$c as $alias" }
         }.toFragmentCollector().toFragmentAndParameters(", ")
     }

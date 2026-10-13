@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package org.mybatis.dynamic.sql.where.render
+package org.mybatis.dynamic.sql.where
 
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup
 import org.mybatis.dynamic.sql.ColumnAndConditionCriterion
@@ -26,6 +26,7 @@ import org.mybatis.dynamic.sql.SqlCriterionVisitor
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.FragmentCollector
+import org.mybatis.dynamic.sql.util.StringUtilities
 import org.mybatis.dynamic.sql.util.toFragmentCollector
 import java.util.function.Function
 

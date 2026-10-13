@@ -180,13 +180,11 @@ class InvalidSQLTest {
 
     @Test
     void testInvalidPagingModel() {
-
-        PagingModel pagingModel = new PagingModel(22L);
+        PagingModel pagingModel = new PagingModel();
         RenderingContext renderingContext = new RenderingContext(RenderingStrategies.MYBATIS3,new StatementConfiguration());
         assertThatExceptionOfType(InvalidSqlException.class)
                 .isThrownBy(()->pagingModel.render(renderingContext))
                 .withMessage(Messages.getInternalErrorString(InternalError.INTERNAL_ERROR_13));
-
     }
 
     @Test

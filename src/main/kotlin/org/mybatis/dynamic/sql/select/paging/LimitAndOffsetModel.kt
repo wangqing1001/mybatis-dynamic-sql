@@ -15,7 +15,7 @@ class LimitAndOffsetModel(
         val fragment = "offset ${offsetParameterInfo.renderedPlaceHolder}"
         val parameters = mapOf(offsetParameterInfo.parameterMapKey to offset)
         val offsetClause = FragmentAndParameters(fragment, parameters)
-        return limitClause + "" + offsetClause
+        return limitClause + " " + offsetClause
     }
 
 

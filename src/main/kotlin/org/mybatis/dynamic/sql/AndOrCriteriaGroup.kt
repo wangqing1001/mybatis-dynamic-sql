@@ -15,7 +15,13 @@
  */
 package org.mybatis.dynamic.sql
 
-import java.util.*
+import org.mybatis.dynamic.sql.util.FragmentAndParameters
+import org.mybatis.dynamic.sql.util.FragmentCollector
+import org.mybatis.dynamic.sql.util.StringUtilities
+import org.mybatis.dynamic.sql.util.toFragmentCollector
+import org.mybatis.dynamic.sql.where.RenderedCriterion
+import java.awt.image.renderable.RenderContext
+import java.util.function.Function
 
 /**
  * This class represents a criteria group with either an AND or an OR connector.
@@ -43,5 +49,6 @@ class AndOrCriteriaGroup @JvmOverloads constructor(
     fun subCriteria(): List<AndOrCriteriaGroup> {
         return subCriteria
     }
+
 
 }

@@ -15,6 +15,7 @@
  */
 package org.mybatis.dynamic.sql
 
+
 /**
  * A simple SqlCriterion that does nothing and will not render. This is to solve the problem of
  * awkward nullability operations in various classes. We can now say that an initial criterion is never null.
@@ -24,5 +25,7 @@ class NullCriterion : SqlCriterion() {
     override fun <R> accept(visitor: SqlCriterionVisitor<R>): R {
         return visitor.visit(this)
     }
+
+
 
 }

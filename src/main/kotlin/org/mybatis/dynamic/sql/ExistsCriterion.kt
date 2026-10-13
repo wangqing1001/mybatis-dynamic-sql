@@ -13,7 +13,11 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
+
+
+
 package org.mybatis.dynamic.sql
+
 
 class ExistsCriterion @JvmOverloads constructor(
     private val existsPredicate: ExistsPredicate,
@@ -27,5 +31,7 @@ class ExistsCriterion @JvmOverloads constructor(
     override fun <R> accept(visitor: SqlCriterionVisitor<R>): R {
         return visitor.visit(this)
     }
+
+
 
 }
