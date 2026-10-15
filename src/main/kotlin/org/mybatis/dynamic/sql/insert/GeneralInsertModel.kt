@@ -36,7 +36,7 @@ class GeneralInsertModel @JvmOverloads constructor(
         Validator.assertNotEmpty(insertMappings, "ERROR.6") //$NON-NLS-1$
     }
 
-    fun columnMappings(): List<AbstractColumnMapping> {
+    fun insertMappings(): List<AbstractColumnMapping> {
         return insertMappings
     }
 

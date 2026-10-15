@@ -16,7 +16,6 @@
 package org.mybatis.dynamic.sql
 
 
-
 abstract class SqlCriterion(private val subCriteria: List<AndOrCriteriaGroup> = emptyList()) {
 
     abstract fun <R> accept(visitor: SqlCriterionVisitor<R>): R
@@ -24,8 +23,5 @@ abstract class SqlCriterion(private val subCriteria: List<AndOrCriteriaGroup> = 
     fun subCriteria(): List<AndOrCriteriaGroup> {
         return subCriteria
     }
-
-
-
 
 }

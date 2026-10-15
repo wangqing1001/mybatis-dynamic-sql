@@ -16,7 +16,9 @@
 package org.mybatis.dynamic.sql.filter
 
 import org.mybatis.dynamic.sql.NullCriterion
+import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.TableExpression
+import org.mybatis.dynamic.sql.util.AbstractColumnMapping
 import org.mybatis.dynamic.sql.where.WhereApplier
 import org.mybatis.dynamic.sql.where.WhereModel
 
@@ -29,7 +31,8 @@ import org.mybatis.dynamic.sql.where.WhereModel
  * <p>过滤器贡献的条件始终追加在原始条件之后,并以 "and" 连接;若过滤器贡献了多个条件,
  * 它们之间按各自声明的连接符(or/and)组合。
  */
-fun interface SQLFilterChain {
+interface SQLFilterChain {
+
     /**
      * 应用全部过滤器,返回合并后的 where 应用器。
      *
@@ -37,27 +40,26 @@ fun interface SQLFilterChain {
      * @param table 当前表表达式,供过滤器决策使用
      * @return 合并了所有过滤条件的 where 应用器;无过滤器时原样返回 [where]
      */
-    fun filter(where: WhereApplier, table: TableExpression): WhereApplier
+    fun filterWhere(where: WhereApplier, table: TableExpression): WhereApplier{
+        return where
+    }
+
+    fun filterGeneralInsert(columnMappings: List<AbstractColumnMapping>,table: SqlTable):List<AbstractColumnMapping>{
+        return columnMappings
+    }
+
+    fun filterUpdate(columnMappings: List<AbstractColumnMapping>,table: SqlTable):List<AbstractColumnMapping>{
+        return columnMappings
+    }
 
     companion object {
 
-        /**
-         * 空过滤器链单例。不附加任何条件,原样返回输入。
-         */
-        private val NON_FILTER_CHAIN: SQLFilterChain = SQLFilterChain { where, _ -> where }
-
-        /**
-         * 获取一个不做任何处理的空过滤器链(单例)。
-         *
-         * @return 空过滤器链实例
-         */
-        @JvmStatic
-        fun nonFilterChain(): SQLFilterChain = NON_FILTER_CHAIN
+        private val NON_FILTER_CHAIN: SQLFilterChain = object : SQLFilterChain {}
 
         /**
          * 根据给定的过滤器数组创建过滤器链。
          *
-         * 当 [filters] 为空时返回空过滤器链([nonFilterChain]);否则返回真实链实例。
+         * 当 [filters] 为空时返回空过滤器链([NON_FILTER_CHAIN]);否则返回真实链实例。
          *
          * @param filters 参与过滤的过滤器集合(可省略,表示无需过滤)
          * @return 组装好的过滤器链
@@ -65,10 +67,11 @@ fun interface SQLFilterChain {
         @JvmStatic
         fun createFilterChain(vararg filters: SQLFilter): SQLFilterChain {
             if (filters.isEmpty()) {
-                return nonFilterChain()
+                return NON_FILTER_CHAIN
             }
             return DefaultSQLFilterChain(filters.toList())
         }
+
     }
 }
 
@@ -98,15 +101,34 @@ fun interface SQLFilterChain {
  * @return 构建好的 where 模型;无任何条件且无显式 where 时返回 null
  */
 internal fun buildFilteredWhereModel(table: TableExpression, whereApplier: WhereApplier?,enabledFilter: Boolean): WhereModel? {
-    if(!enabledFilter || table.filter().isEmpty()){
-        if (whereApplier==null){
+    if(!enabledFilter || table.filter().isEmpty()) {
+        if (whereApplier == null) {
             return null
         }
         val initialCriterion = whereApplier.initialCriterion()
         val subCriterion = whereApplier.subCriteria()
-        return WhereModel(initialCriterion,subCriterion)
+        return WhereModel(initialCriterion, subCriterion)
     }
-    val whereApplier =  whereApplier?:WhereApplier(NullCriterion(), emptyList())
-    val filtered = SQLFilterChain.createFilterChain(*table.filter()).filter(whereApplier,table)
+    val where =  whereApplier?:WhereApplier(NullCriterion(), emptyList())
+    val filtered = SQLFilterChain.createFilterChain(*table.filter()).filterWhere(where,table)
+    if(filtered.isEffectivelyEmpty() && whereApplier == null ){
+        return null
+    }
     return WhereModel(filtered.initialCriterion(), filtered.subCriteria())
+}
+
+internal fun buildInsertColumnFilters(table: SqlTable, columnMappings: List<AbstractColumnMapping>,enabledFilter: Boolean): List<AbstractColumnMapping> {
+    val filters = table.filter()
+    if (!enabledFilter || filters.isEmpty()) {
+        return columnMappings
+    }
+    return SQLFilterChain.createFilterChain(*table.filter()).filterGeneralInsert(columnMappings,table)
+}
+
+internal fun buildUpdateColumnFilters(table: SqlTable, columnMappings: List<AbstractColumnMapping>,enabledFilter: Boolean): List<AbstractColumnMapping> {
+    val filters = table.filter()
+    if (!enabledFilter || filters.isEmpty()) {
+        return columnMappings
+    }
+    return SQLFilterChain.createFilterChain(*table.filter()).filterUpdate(columnMappings,table)
 }

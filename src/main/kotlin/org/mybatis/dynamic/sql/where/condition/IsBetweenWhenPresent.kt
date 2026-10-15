@@ -62,6 +62,7 @@ open class IsBetweenWhenPresent<T> private constructor(value1: T, value2: T) : A
     }
 
     companion object {
+
         private val EMPTY: IsBetweenWhenPresent<Any> = object : IsBetweenWhenPresent<Any>(-1, -1) {
             override fun value1(): Any {
                 throw NoSuchElementException("No value present") //$NON-NLS-1$

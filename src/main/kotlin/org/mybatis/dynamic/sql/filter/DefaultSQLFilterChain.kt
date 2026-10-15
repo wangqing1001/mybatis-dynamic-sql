@@ -16,7 +16,9 @@
 package org.mybatis.dynamic.sql.filter
 
 import org.mybatis.dynamic.sql.AndOrCriteriaGroup
+import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.TableExpression
+import org.mybatis.dynamic.sql.util.AbstractColumnMapping
 import org.mybatis.dynamic.sql.where.WhereApplier
 
 /**
@@ -30,7 +32,7 @@ internal class DefaultSQLFilterChain(
     private val filters: List<SQLFilter>
 ) : SQLFilterChain {
 
-    override fun filter(where: WhereApplier, table: TableExpression): WhereApplier {
+    override fun filterWhere(where: WhereApplier, table: TableExpression): WhereApplier {
         val context = DefaultWhereFilterContext(table)
         filters.forEach { it.doWhere(context) }
         val contributed = context.toWhereApplier()
@@ -40,4 +42,32 @@ internal class DefaultSQLFilterChain(
         val andGroup = AndOrCriteriaGroup("and", contributed.initialCriterion(), contributed.subCriteria())
         return where.andThen { operations -> operations.addSubCriterion(andGroup) }
     }
+
+    override fun filterGeneralInsert(columnMappings: List<AbstractColumnMapping>,table: SqlTable): List<AbstractColumnMapping> {
+        return filterInsertOrUpdate(columnMappings,table){ filter, context -> filter.doGeneralInsert(context) }
+    }
+
+    override fun filterUpdate(columnMappings: List<AbstractColumnMapping>,table: SqlTable): List<AbstractColumnMapping> {
+        return filterInsertOrUpdate(columnMappings,table){ filter, context -> filter.doUpdate(context) }
+    }
+
+    private fun filterInsertOrUpdate(columnMappings: List<AbstractColumnMapping>,table: SqlTable,consumer:(SQLFilter,ColumnFilterContext)->Unit):List<AbstractColumnMapping> {
+        val context = DefaultColumnFilterContext(table)
+        filters.forEach { consumer(it,context) }
+        if (context.toColumnMappings().isEmpty()) {
+            return columnMappings
+        }
+        val seenColumns = columnMappings.mapTo(mutableSetOf()) { it.columnName() }
+        val contributed = mutableListOf<AbstractColumnMapping>()
+        context.toColumnMappings().forEach {
+            if (seenColumns.add(it.columnName())) {
+                contributed.add(it)
+            }
+        }
+        if (contributed.isEmpty()) {
+            return columnMappings
+        }
+        return columnMappings + contributed
+    }
+
 }

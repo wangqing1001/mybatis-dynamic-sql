@@ -26,13 +26,8 @@ class ValueMapping<T> private constructor(
     column: SqlColumn<T>,
     private val valueSupplier: Supplier<T>
 ) : AbstractColumnMapping(column) {
-    // 保留对列的引用,以免丢失类型
-    private val localColumn: SqlColumn<T>
 
-    init {
-        Objects.requireNonNull(valueSupplier)
-        localColumn = Objects.requireNonNull(column)
-    }
+    private val localColumn: SqlColumn<T> = column
 
     fun value(): Any? {
         return localColumn.convertParameterType(valueSupplier.get())

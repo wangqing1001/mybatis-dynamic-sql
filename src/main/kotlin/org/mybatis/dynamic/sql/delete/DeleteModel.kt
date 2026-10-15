@@ -40,30 +40,6 @@ class DeleteModel @JvmOverloads constructor(
     private val orderByModel: OrderByModel? = null,
 ) {
 
-    fun table(): SqlTable {
-        return table
-    }
-
-    fun tableAlias(): String? {
-        return tableAlias
-    }
-
-    fun whereModel(): WhereModel? {
-        return whereModel
-    }
-
-    fun limitModel(): LimitModel? {
-        return limitModel
-    }
-
-    fun orderByModel(): OrderByModel? {
-        return orderByModel
-    }
-
-    fun statementConfiguration(): StatementConfiguration {
-        return statementConfiguration
-    }
-
     fun <R> map(adapterFunction: Function<DeleteModel, R>): R {
         return adapterFunction.apply(this)
     }

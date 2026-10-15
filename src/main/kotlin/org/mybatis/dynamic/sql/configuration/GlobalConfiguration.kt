@@ -91,6 +91,7 @@ class GlobalConfiguration {
 
 
     companion object {
+
         const val CONFIGURATION_FILE_PROPERTY = "mybatis-dynamic-sql.configurationFile" //$NON-NLS-1$
         private const val DEFAULT_PROPERTY_FILE = "mybatis-dynamic-sql.properties" //$NON-NLS-1$
     }

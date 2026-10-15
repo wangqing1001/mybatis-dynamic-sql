@@ -23,19 +23,19 @@ open class SqlTable protected constructor(protected var tableName: String) : Tab
         return tableName
     }
 
-    fun allColumns(): BasicColumn {
+    open fun allColumns(): BasicColumn {
         return SqlColumn.of<Any>("*", this) //$NON-NLS-1$
     }
 
-    fun <T: Any> column(name: String): SqlColumn<T> {
+    open fun <T: Any> column(name: String): SqlColumn<T> {
         return SqlColumn.of(name, this)
     }
 
-    fun <T: Any> column(name: String, jdbcType: JDBCType): SqlColumn<T> {
+    open fun <T: Any> column(name: String, jdbcType: JDBCType): SqlColumn<T> {
         return SqlColumn.of(name, this, jdbcType)
     }
 
-    fun <T: Any> column(name: String, jdbcType: JDBCType, typeHandler: String): SqlColumn<T> {
+    open fun <T: Any> column(name: String, jdbcType: JDBCType, typeHandler: String): SqlColumn<T> {
         return SqlColumn.Builder<T>().withTable(this).withName(name).withJdbcType(jdbcType).withTypeHandler(typeHandler).build()
     }
 

@@ -37,7 +37,11 @@ class SQLFilterChainTest {
         val deleted = column<Boolean>("deleted")
 
         private val filters: Array<SQLFilter> = arrayOf(
-            SQLFilter { context -> context.and { deleted isEqualTo false } }
+            object : SQLFilter {
+                override fun doWhere(context: WhereFilterContext) {
+                    context.and { deleted isEqualTo false }
+                }
+            }
         )
 
         override fun filter(): Array<SQLFilter> = filters
@@ -49,7 +53,6 @@ class SQLFilterChainTest {
             from(person)
             where { person.id isEqualTo 3 }
         }.render(RenderingStrategies.MYBATIS3).selectStatement
-
         assertThat(statement).isEqualTo(
             "select id, first_name from person where id = #{parameters.p1} and deleted = #{parameters.p2}"
         )
@@ -94,8 +97,8 @@ class SQLFilterChainTest {
     fun repeatedUseOfSameChainInstanceIsStable() {
         val chain = SQLFilterChain.createFilterChain(person.filter()[0])
 
-        val first = chain.filter(WhereApplier(NullCriterion(), emptyList()), person)
-        val second = chain.filter(WhereApplier(NullCriterion(), emptyList()), person)
+        val first = chain.filterWhere(WhereApplier(NullCriterion(), emptyList()), person)
+        val second = chain.filterWhere(WhereApplier(NullCriterion(), emptyList()), person)
 
         assertThat(first.subCriteria()).hasSize(1)
         assertThat(second.subCriteria()).hasSize(1)
@@ -104,10 +107,9 @@ class SQLFilterChainTest {
 
     @Test
     fun emptyFilterChainReturnsOriginalWhereApplier() {
-        val chain = SQLFilterChain.nonFilterChain()
+        val chain = SQLFilterChain.createFilterChain()
         val where = WhereApplier(NullCriterion(), emptyList())
-
-        assertThat(chain.filter(where, person)).isSameAs(where)
+        assertThat(chain.filterWhere(where, person)).isSameAs(where)
     }
 
     @Test
@@ -115,12 +117,18 @@ class SQLFilterChainTest {
         val table = object : SqlTable("person") {
             val id = column<Int>("id")
             val firstName = column<String>("first_name")
-
             private val filters: Array<SQLFilter> = arrayOf(
-                SQLFilter { context -> context.and { id isEqualTo 1 } },
-                SQLFilter { context -> context.and { firstName isEqualTo "Fred" } }
+                object : SQLFilter {
+                    override fun doWhere(context: WhereFilterContext) {
+                        context.and { id isEqualTo 1 }
+                    }
+                },
+                object : SQLFilter {
+                    override fun doWhere(context: WhereFilterContext) {
+                        context.and { firstName isEqualTo "Fred" }
+                    }
+                }
             )
-
             override fun filter(): Array<SQLFilter> = filters
         }
 

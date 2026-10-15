@@ -3,17 +3,18 @@ package org.mybatis.dynamic.sql.dsl
 import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration
+import org.mybatis.dynamic.sql.filter.buildInsertColumnFilters
 import org.mybatis.dynamic.sql.insert.GeneralInsertModel
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping
 import org.mybatis.dynamic.sql.util.Buildable
+import org.mybatis.dynamic.sql.util.ConfigurableStatement
 import org.mybatis.dynamic.sql.util.ConstantMapping
 import org.mybatis.dynamic.sql.util.NullMapping
 import org.mybatis.dynamic.sql.util.StringConstantMapping
 import org.mybatis.dynamic.sql.util.ValueMapping
 import org.mybatis.dynamic.sql.util.ValueOrNullMapping
 import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping
-import java.util.ArrayList
-import java.util.Objects
+import java.util.function.Consumer
 import java.util.function.Supplier
 
 /**
@@ -21,17 +22,25 @@ import java.util.function.Supplier
  */
 class GeneralInsertDSL private constructor(
     builder: Builder
-) : Buildable<GeneralInsertModel> {
+) : Buildable<GeneralInsertModel>, ConfigurableStatement<GeneralInsertDSL> {
 
     private val columnMappings: MutableList<AbstractColumnMapping> = builder.columnMappings
     private val table: SqlTable = builder.table
+    private val statementConfiguration: StatementConfiguration = StatementConfiguration()
 
     fun <T> set(column: SqlColumn<T>): SetClauseFinisher<T> {
         return SetClauseFinisher(column)
     }
 
+    override fun configureStatement(consumer: Consumer<StatementConfiguration>): GeneralInsertDSL {
+        consumer.accept(statementConfiguration)
+        return this
+    }
+
     override fun build(): GeneralInsertModel {
-        return GeneralInsertModel(table, StatementConfiguration(), columnMappings)
+        val enabledFilter = statementConfiguration.enabledFilter()
+        val insertMappings = buildInsertColumnFilters(table,columnMappings,enabledFilter)
+        return GeneralInsertModel(table, statementConfiguration, insertMappings)
     }
 
     companion object {

@@ -17,10 +17,12 @@ package org.mybatis.dynamic.sql.util.kotlin
 
 import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.SqlTable
+import org.mybatis.dynamic.sql.configuration.StatementConfiguration
 import org.mybatis.dynamic.sql.dsl.GeneralInsertDSL
 import org.mybatis.dynamic.sql.insert.GeneralInsertModel
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping
 import org.mybatis.dynamic.sql.util.Buildable
+import java.util.function.Consumer
 
 typealias GeneralInsertCompleter = @MyBatisDslMarker KotlinGeneralInsertBuilder.() -> Unit
 
@@ -28,13 +30,25 @@ typealias GeneralInsertCompleter = @MyBatisDslMarker KotlinGeneralInsertBuilder.
 class KotlinGeneralInsertBuilder(private val table: SqlTable) : Buildable<GeneralInsertModel> {
 
     private val columnMappings = mutableListOf<AbstractColumnMapping>()
+    private var statementConfigurator: (StatementConfiguration.() -> Unit)? = null
 
     fun <T : Any> set(column: SqlColumn<T>) = GeneralInsertColumnSetCompleter(column) {
         columnMappings.add(it)
     }
 
-    override fun build(): GeneralInsertModel{
-        return GeneralInsertDSL.Builder(table).withColumnMappings(columnMappings).build().build()
+    /**
+     * 配置当前语句的行为,例如关闭 SQL 过滤器。
+     */
+    fun configureStatement(c: StatementConfiguration.() -> Unit) {
+        statementConfigurator = c
+    }
+
+    override fun build(): GeneralInsertModel {
+        val dsl = GeneralInsertDSL.Builder(table).withColumnMappings(columnMappings).build()
+        statementConfigurator?.let { configurator ->
+            dsl.configureStatement(Consumer { config -> configurator(config) })
+        }
+        return dsl.build()
     }
 
 }

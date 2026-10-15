@@ -25,6 +25,7 @@ import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.order.OrderByModel
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration
 import org.mybatis.dynamic.sql.filter.buildFilteredWhereModel
+import org.mybatis.dynamic.sql.filter.buildUpdateColumnFilters
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.select.paging.LimitModel
 import org.mybatis.dynamic.sql.update.UpdateModel
@@ -100,8 +101,9 @@ abstract class AbstractUpdateDSL<M, D : AbstractUpdateDSL<M, D>> protected const
         val whereApplier = whereBuilder?.toWhereApplier()
         val enabledFilter = statementConfiguration.enabledFilter()
         val whereModel = buildFilteredWhereModel(table,whereApplier,enabledFilter)
+        val filteredMappings = buildUpdateColumnFilters(table, columnMappings,enabledFilter)
         val limitModel = limit?.let { LimitModel(it) }
-        return UpdateModel(table,columnMappings,statementConfiguration,tableAlias,whereModel,orderByModel,limitModel)
+        return UpdateModel(table,filteredMappings,statementConfiguration,tableAlias,whereModel,orderByModel,limitModel)
     }
 
     override fun configureStatement(consumer: Consumer<StatementConfiguration>): D {
