@@ -28,7 +28,8 @@ import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.select.join.JoinType
 import org.mybatis.dynamic.sql.util.Buildable
 import org.mybatis.dynamic.sql.util.ConfigurableStatement
-import org.mybatis.dynamic.sql.util.Validator
+import org.mybatis.dynamic.sql.util.ERROR_32
+import org.mybatis.dynamic.sql.util.assertNull
 import org.mybatis.dynamic.sql.where.WhereApplier
 import org.mybatis.dynamic.sql.where.WhereModel
 import java.util.ArrayList
@@ -74,13 +75,13 @@ abstract class AbstractCountDSL<M, D : AbstractCountDSL<M, D>> protected constru
     }
 
     override fun where(initialCriterion: SqlCriterion): CountWhereBuilder {
-        Validator.assertNull(whereBuilder, Validator.ERROR_32)
+        assertNull(whereBuilder, ERROR_32)
         whereBuilder = CountWhereBuilder(initialCriterion)
         return whereBuilder!!
     }
 
     override fun applyWhere(whereApplier: WhereApplier): CountWhereBuilder {
-        Validator.assertNull(whereBuilder, Validator.ERROR_32)
+        assertNull(whereBuilder, ERROR_32)
         whereBuilder = CountWhereBuilder(whereApplier.initialCriterion(), whereApplier.subCriteria())
         return whereBuilder!!
     }

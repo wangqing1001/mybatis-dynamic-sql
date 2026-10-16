@@ -17,8 +17,7 @@ package org.mybatis.dynamic.sql.where.condition
 
 import org.mybatis.dynamic.sql.AbstractListValueCondition
 import org.mybatis.dynamic.sql.render.RenderingContext
-import org.mybatis.dynamic.sql.util.Validator
-import java.util.Arrays
+import org.mybatis.dynamic.sql.util.assertNotEmpty
 import java.util.Collections
 import java.util.function.Function
 import java.util.function.Predicate
@@ -30,7 +29,7 @@ class IsIn<T> private constructor(values: Collection<T>) : AbstractListValueCond
     AbstractListValueCondition.Filterable<T>, AbstractListValueCondition.Mappable<T> {
 
     override fun shouldRender(renderingContext: RenderingContext): Boolean {
-        Validator.assertNotEmpty(values(), "ERROR.44", "IsIn") //$NON-NLS-1$ //$NON-NLS-2$
+        assertNotEmpty(values(), "ERROR.44", "IsIn") //$NON-NLS-1$ //$NON-NLS-2$
         return true
     }
 

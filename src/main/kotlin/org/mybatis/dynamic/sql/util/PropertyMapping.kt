@@ -20,12 +20,10 @@ import org.mybatis.dynamic.sql.SqlColumn
 /**
  * 表示将列映射到属性名的映射。
  */
-open class PropertyMapping protected constructor(
+open class PropertyMapping(
     column: SqlColumn<*>,
     private val property: String
 ) : AbstractColumnMapping(column) {
-
-
 
     fun property(): String {
         return property
@@ -35,10 +33,4 @@ open class PropertyMapping protected constructor(
         return visitor.visit(this)
     }
 
-    companion object {
-        @JvmStatic
-        fun of(column: SqlColumn<*>, property: String): PropertyMapping {
-            return PropertyMapping(column, property)
-        }
-    }
 }

@@ -27,13 +27,9 @@ import org.mybatis.dynamic.sql.util.MappedColumnWhenPresentMapping
 typealias KotlinInsertCompleter<T> = KotlinInsertBuilder<T>.() -> Unit
 
 @MyBatisDslMarker
-class KotlinInsertBuilder<T> (private val row: T): Buildable<InsertModel<T>> {
-    private var table: SqlTable? = null
-    private val columnMappings = mutableListOf<AbstractColumnMapping>()
+class KotlinInsertBuilder<T> (private val table: SqlTable,private val row: T): Buildable<InsertModel<T>> {
 
-    fun into(table: SqlTable) {
-        this.table = table
-    }
+    private val columnMappings = mutableListOf<AbstractColumnMapping>()
 
     fun <C> map(column: SqlColumn<C>) = SingleRowInsertColumnMapCompleter(column) {
         columnMappings.add(it)
@@ -48,7 +44,6 @@ class KotlinInsertBuilder<T> (private val row: T): Buildable<InsertModel<T>> {
     }
 
     override fun build(): InsertModel<T> {
-        assertNotNull(table, "ERROR.25")
-        return InsertDSL.Builder(row,table!!).withColumnMappings(columnMappings).build().build()
+        return InsertDSL.Builder(row,table).withColumnMappings(columnMappings).build().build()
     }
 }

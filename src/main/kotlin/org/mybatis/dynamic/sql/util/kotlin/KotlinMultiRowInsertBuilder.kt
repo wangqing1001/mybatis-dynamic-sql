@@ -26,13 +26,11 @@ import org.mybatis.dynamic.sql.util.MappedColumnMapping
 typealias KotlinMultiRowInsertCompleter<T> = KotlinMultiRowInsertBuilder<T>.() -> Unit
 
 @MyBatisDslMarker
-class KotlinMultiRowInsertBuilder<T : Any> (private val rows: Collection<T>): Buildable<MultiRowInsertModel<T>> {
-    private var table: SqlTable? = null
+class KotlinMultiRowInsertBuilder<T : Any> (
+    private val table: SqlTable,
+    private val rows: Collection<T>
+): Buildable<MultiRowInsertModel<T>> {
     private val columnMappings = mutableListOf<AbstractColumnMapping>()
-
-    fun into(table: SqlTable) {
-        this.table = table
-    }
 
     fun <C : Any> map(column: SqlColumn<C>) = MultiRowInsertColumnMapCompleter(column) {
         columnMappings.add(it)
@@ -43,7 +41,6 @@ class KotlinMultiRowInsertBuilder<T : Any> (private val rows: Collection<T>): Bu
     }
 
     override fun build(): MultiRowInsertModel<T> {
-        assertNotNull(table, "ERROR.26") //$NON-NLS-1$
-        return MultiRowInsertDSL.Builder<T>(table!!).withRecords(rows).withColumnMappings(columnMappings).build().build()
+        return MultiRowInsertDSL.Builder<T>(table).withRecords(rows).withColumnMappings(columnMappings).build().build()
     }
 }

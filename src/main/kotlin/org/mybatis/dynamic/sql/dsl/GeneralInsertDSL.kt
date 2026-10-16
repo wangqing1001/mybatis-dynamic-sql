@@ -53,17 +53,17 @@ class GeneralInsertDSL private constructor(
     inner class SetClauseFinisher<T>(private val column: SqlColumn<T>) {
 
         fun toNull(): GeneralInsertDSL {
-            columnMappings.add(NullMapping.of(column))
+            columnMappings.add(NullMapping(column))
             return this@GeneralInsertDSL
         }
 
         fun toConstant(constant: String): GeneralInsertDSL {
-            columnMappings.add(ConstantMapping.of(column, constant))
+            columnMappings.add(ConstantMapping(column, constant))
             return this@GeneralInsertDSL
         }
 
         fun toStringConstant(constant: String): GeneralInsertDSL {
-            columnMappings.add(StringConstantMapping.of(column, constant))
+            columnMappings.add(StringConstantMapping(column, constant))
             return this@GeneralInsertDSL
         }
 
@@ -72,7 +72,7 @@ class GeneralInsertDSL private constructor(
         }
 
         fun toValue(valueSupplier: Supplier<T>): GeneralInsertDSL {
-            columnMappings.add(ValueMapping.of(column, valueSupplier))
+            columnMappings.add(ValueMapping(column, valueSupplier))
             return this@GeneralInsertDSL
         }
 
@@ -81,7 +81,7 @@ class GeneralInsertDSL private constructor(
         }
 
         fun toValueOrNull(valueSupplier: Supplier<T?>): GeneralInsertDSL {
-            columnMappings.add(ValueOrNullMapping.of(column, valueSupplier))
+            columnMappings.add(ValueOrNullMapping(column, valueSupplier))
             return this@GeneralInsertDSL
         }
 

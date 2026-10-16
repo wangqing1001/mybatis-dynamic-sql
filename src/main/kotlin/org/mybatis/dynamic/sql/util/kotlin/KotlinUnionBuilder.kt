@@ -20,6 +20,7 @@ import org.mybatis.dynamic.sql.dsl.SelectDSL
 
 @MyBatisDslMarker
 class KotlinUnionBuilder(private val unionBuilder: SelectDSL.UnionBuilder) {
+
     fun select(vararg selectList: BasicColumn, completer: SelectCompleter): Unit =
         select(selectList.toList(), completer)
 
@@ -31,4 +32,5 @@ class KotlinUnionBuilder(private val unionBuilder: SelectDSL.UnionBuilder) {
 
     fun selectDistinct(selectList: List<BasicColumn>, completer: SelectCompleter): Unit =
         completer(KotlinSelectBuilder(unionBuilder.selectDistinct(selectList)))
+
 }

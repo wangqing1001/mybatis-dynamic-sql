@@ -18,7 +18,8 @@ package org.mybatis.dynamic.sql.where.condition
 import org.mybatis.dynamic.sql.AbstractListValueCondition
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.StringUtilities
-import org.mybatis.dynamic.sql.util.Validator
+import org.mybatis.dynamic.sql.util.assertNotEmpty
+import org.mybatis.dynamic.sql.util.upperCaseIfPossible
 import java.util.Arrays
 import java.util.Collections
 import java.util.function.Function
@@ -28,11 +29,11 @@ import java.util.function.Predicate
  * 不区分大小写的 not in 条件,如 column not in (upper(values))。
  */
 class IsNotInCaseInsensitive<T> private constructor(values: Collection<T>) : AbstractListValueCondition<T>(
-    values.map { StringUtilities.upperCaseIfPossible(it) }
+    values.map { upperCaseIfPossible(it) }
 ), CaseInsensitiveRenderableCondition<T>, AbstractListValueCondition.Filterable<T>, AbstractListValueCondition.Mappable<T> {
 
     override fun shouldRender(renderingContext: RenderingContext): Boolean {
-        Validator.assertNotEmpty(values(), "ERROR.44", "IsNotInCaseInsensitive") //$NON-NLS-1$ //$NON-NLS-2$
+        assertNotEmpty(values(), "ERROR.44", "IsNotInCaseInsensitive") //$NON-NLS-1$ //$NON-NLS-2$
         return true
     }
 

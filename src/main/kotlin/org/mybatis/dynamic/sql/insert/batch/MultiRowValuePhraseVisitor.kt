@@ -12,6 +12,7 @@ import org.mybatis.dynamic.sql.util.PropertyMapping
 import org.mybatis.dynamic.sql.util.RowMapping
 import org.mybatis.dynamic.sql.util.StringConstantMapping
 import org.mybatis.dynamic.sql.util.StringUtilities
+import org.mybatis.dynamic.sql.util.formatConstantForSQL
 
 /**
  * 多行 insert 值短语访问器。
@@ -30,7 +31,7 @@ open class MultiRowValuePhraseVisitor internal constructor(
     }
 
     override fun visit(mapping: StringConstantMapping): FieldAndValueAndParameters {
-        val valuePhrase = StringUtilities.formatConstantForSQL(mapping.constant())
+        val valuePhrase = formatConstantForSQL(mapping.constant())
         return FieldAndValueAndParameters(mapping.columnName(), valuePhrase)
     }
 

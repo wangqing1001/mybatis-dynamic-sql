@@ -20,7 +20,8 @@ import org.mybatis.dynamic.sql.configuration.StatementConfiguration
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.render.RenderingStrategy
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping
-import org.mybatis.dynamic.sql.util.Validator
+import org.mybatis.dynamic.sql.util.assertFalse
+import org.mybatis.dynamic.sql.util.assertNotEmpty
 import org.mybatis.dynamic.sql.util.toFieldAndValueCollector
 
 /**
@@ -33,7 +34,7 @@ class GeneralInsertModel @JvmOverloads constructor(
 ) {
 
     init {
-        Validator.assertNotEmpty(insertMappings, "ERROR.6") //$NON-NLS-1$
+        assertNotEmpty(insertMappings, "ERROR.6") //$NON-NLS-1$
     }
 
     fun insertMappings(): List<AbstractColumnMapping> {
@@ -52,7 +53,7 @@ class GeneralInsertModel @JvmOverloads constructor(
         val renderingContext = RenderingContext(renderingStrategy,statementConfiguration)
         val visitor = GeneralInsertValuePhraseVisitor(renderingContext)
         val collector = insertMappings.mapNotNull {  it.accept(visitor) }.toFieldAndValueCollector()
-        Validator.assertFalse(collector.isEmpty(), "ERROR.9")
+        assertFalse(collector.isEmpty(), "ERROR.9")
         val insertStatement = InsertRenderingUtilities.calculateInsertStatement(table, collector)
         return DefaultGeneralInsertStatementProvider(insertStatement,collector.parameters())
     }

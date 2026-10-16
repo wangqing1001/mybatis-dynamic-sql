@@ -33,11 +33,11 @@ sealed class AbstractInsertColumnMapCompleter<T>(
     internal val mappingConsumer: (AbstractColumnMapping) -> Unit
 ) {
 
-    fun toNull() = mappingConsumer.invoke(NullMapping.of(column))
+    fun toNull() = mappingConsumer.invoke(NullMapping(column))
 
-    infix fun toConstant(constant: String) = mappingConsumer.invoke(ConstantMapping.of(column, constant))
+    infix fun toConstant(constant: String) = mappingConsumer.invoke(ConstantMapping(column, constant))
 
-    infix fun toStringConstant(constant: String) = mappingConsumer.invoke(StringConstantMapping.of(column, constant))
+    infix fun toStringConstant(constant: String) = mappingConsumer.invoke(StringConstantMapping(column, constant))
 
 }
 
@@ -46,9 +46,9 @@ class MultiRowInsertColumnMapCompleter<T : Any>(
     mappingConsumer: (AbstractColumnMapping) -> Unit)
     : AbstractInsertColumnMapCompleter<T>(column, mappingConsumer) {
 
-    infix fun toProperty(property: String) = mappingConsumer.invoke(PropertyMapping.of(column, property))
+    infix fun toProperty(property: String) = mappingConsumer.invoke(PropertyMapping(column, property))
 
-    fun toRow() = mappingConsumer.invoke(RowMapping.of(column))
+    fun toRow() = mappingConsumer.invoke(RowMapping(column))
 }
 
 class SingleRowInsertColumnMapCompleter<T>(
@@ -56,12 +56,12 @@ class SingleRowInsertColumnMapCompleter<T>(
     mappingConsumer: (AbstractColumnMapping) -> Unit)
     : AbstractInsertColumnMapCompleter<T>(column, mappingConsumer) {
 
-    infix fun toProperty(property: String) = mappingConsumer.invoke(PropertyMapping.of(column, property))
+    infix fun toProperty(property: String) = mappingConsumer.invoke(PropertyMapping(column, property))
 
     fun toPropertyWhenPresent(property: String, valueSupplier: () -> T?) =
-        mappingConsumer.invoke(PropertyWhenPresentMapping.of(column, property, valueSupplier))
+        mappingConsumer.invoke(PropertyWhenPresentMapping(column, property, valueSupplier))
 
-    fun toRow() = mappingConsumer.invoke(RowMapping.of(column))
+    fun toRow() = mappingConsumer.invoke(RowMapping(column))
 }
 
 class GeneralInsertColumnSetCompleter<T>(
@@ -71,11 +71,11 @@ class GeneralInsertColumnSetCompleter<T>(
 
     infix fun toValue(value: T) = toValue { value }
 
-    infix fun toValue(value: () -> T) = mappingConsumer.invoke(ValueMapping.of(column, value))
+    infix fun toValue(value: () -> T) = mappingConsumer.invoke(ValueMapping(column, value))
 
     infix fun toValueOrNull(value: T?) = toValueOrNull { value }
 
-    infix fun toValueOrNull(value: () -> T?) = mappingConsumer.invoke(ValueOrNullMapping.of(column, value))
+    infix fun toValueOrNull(value: () -> T?) = mappingConsumer.invoke(ValueOrNullMapping(column, value))
 
     infix fun toValueWhenPresent(value: T?) = toValueWhenPresent { value }
 

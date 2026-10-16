@@ -21,7 +21,7 @@ import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.render.RenderingStrategy
 import org.mybatis.dynamic.sql.select.paging.PagingModel
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import org.mybatis.dynamic.sql.util.Validator
+import org.mybatis.dynamic.sql.util.assertNotEmpty
 import org.mybatis.dynamic.sql.util.toFragmentCollector
 import java.util.function.Function
 
@@ -38,7 +38,7 @@ class SelectModel @JvmOverloads constructor(
 ) : AbstractSelectModel(orderByModel,pagingModel,statementConfiguration) {
 
     init {
-        Validator.assertNotEmpty(queryExpressions, "ERROR.14") //$NON-NLS-1$
+        assertNotEmpty(queryExpressions, "ERROR.14") //$NON-NLS-1$
     }
 
     fun queryExpressions(): List<QueryExpressionModel> {

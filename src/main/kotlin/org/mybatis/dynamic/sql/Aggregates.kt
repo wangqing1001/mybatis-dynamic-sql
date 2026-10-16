@@ -29,7 +29,7 @@ import org.mybatis.dynamic.sql.util.kotlin.KotlinSubQueryBuilder
 import org.mybatis.dynamic.sql.util.kotlin.elements.CastDSL
 import org.mybatis.dynamic.sql.util.kotlin.elements.KSearchedCaseDSL
 import org.mybatis.dynamic.sql.util.kotlin.elements.KSimpleCaseDSL
-import org.mybatis.dynamic.sql.util.kotlin.invalidIfNull
+import org.mybatis.dynamic.sql.util.invalidIfNull
 
 fun subQuery(subQuery: Buildable<SelectModel>) = SubQueryColumn.of(subQuery.build())
 

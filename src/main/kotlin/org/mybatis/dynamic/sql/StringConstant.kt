@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.StringUtilities
+import org.mybatis.dynamic.sql.util.formatConstantForSQL
 import java.util.*
 
 class StringConstant private constructor(
@@ -32,7 +33,7 @@ class StringConstant private constructor(
     }
 
     override fun render(renderingContext: RenderingContext): FragmentAndParameters {
-        return FragmentAndParameters(StringUtilities.formatConstantForSQL(value))
+        return FragmentAndParameters(formatConstantForSQL(value))
     }
 
     override fun `as`(alias: String): StringConstant {

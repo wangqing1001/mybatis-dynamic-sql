@@ -27,7 +27,7 @@ class ColumnMappingVisitorTest {
     void testThatGeneralInsertVisitorErrorsForColumnToColumnMapping() {
         TestTable table = new TestTable();
         GeneralInsertVisitor tv = new GeneralInsertVisitor();
-        ColumnToColumnMapping mapping = ColumnToColumnMapping.of(table.id, table.description);
+        ColumnToColumnMapping mapping = new ColumnToColumnMapping(table.id, table.description);
 
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping))
                 .withMessage("Internal Error 4");
@@ -37,7 +37,7 @@ class ColumnMappingVisitorTest {
     void testThatGeneralInsertVisitorErrorsForSelectMapping() {
         TestTable table = new TestTable();
         GeneralInsertVisitor tv = new GeneralInsertVisitor();
-        SelectMapping mapping = SelectMapping.of(table.id, SqlBuilder.select(table.id).from(table));
+        SelectMapping mapping = new SelectMapping(table.id, SqlBuilder.select(table.id).from(table));
 
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping))
                 .withMessage("Internal Error 1");
@@ -47,7 +47,7 @@ class ColumnMappingVisitorTest {
     void testThatGeneralInsertVisitorErrorsForPropertyMapping() {
         TestTable table = new TestTable();
         GeneralInsertVisitor tv = new GeneralInsertVisitor();
-        PropertyMapping mapping = PropertyMapping.of(table.id, "id");
+        PropertyMapping mapping = new PropertyMapping(table.id, "id");
 
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping))
                 .withMessage("Internal Error 2");
@@ -57,7 +57,7 @@ class ColumnMappingVisitorTest {
     void testThatGeneralInsertVisitorErrorsForPropertyWhenPresentMapping() {
         TestTable table = new TestTable();
         GeneralInsertVisitor tv = new GeneralInsertVisitor();
-        PropertyWhenPresentMapping mapping = PropertyWhenPresentMapping.of(table.id, "id", () -> 3);
+        PropertyWhenPresentMapping mapping = new PropertyWhenPresentMapping(table.id, "id", () -> 3);
 
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping))
                 .withMessage("Internal Error 3");
@@ -67,7 +67,7 @@ class ColumnMappingVisitorTest {
     void testThatGeneralInsertVisitorErrorsForRowMapping() {
         TestTable table = new TestTable();
         GeneralInsertVisitor tv = new GeneralInsertVisitor();
-        RowMapping mapping = RowMapping.of(table.id);
+        RowMapping mapping = new RowMapping(table.id);
 
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping))
                 .withMessage("Internal Error 14");
@@ -77,7 +77,7 @@ class ColumnMappingVisitorTest {
     void testThatInsertVisitorErrorsForColumnToColumnMapping() {
         TestTable table = new TestTable();
         InsertVisitor tv = new InsertVisitor();
-        ColumnToColumnMapping mapping = ColumnToColumnMapping.of(table.id, table.description);
+        ColumnToColumnMapping mapping = new ColumnToColumnMapping(table.id, table.description);
 
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping))
                 .withMessage("Internal Error 9");
@@ -87,7 +87,7 @@ class ColumnMappingVisitorTest {
     void testThatInsertVisitorErrorsForSelectMapping() {
         TestTable table = new TestTable();
         InsertVisitor tv = new InsertVisitor();
-        SelectMapping mapping = SelectMapping.of(table.id, SqlBuilder.select(table.id).from(table));
+        SelectMapping mapping = new SelectMapping(table.id, SqlBuilder.select(table.id).from(table));
 
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping))
                 .withMessage("Internal Error 8");
@@ -97,7 +97,7 @@ class ColumnMappingVisitorTest {
     void testThatInsertVisitorErrorsForValueMapping() {
         TestTable table = new TestTable();
         InsertVisitor tv = new InsertVisitor();
-        ValueMapping<Integer> mapping = ValueMapping.of(table.id, () -> 3);
+        ValueMapping<Integer> mapping = new ValueMapping<>(table.id, () -> 3);
 
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping))
                 .withMessage("Internal Error 5");
@@ -107,7 +107,7 @@ class ColumnMappingVisitorTest {
     void testThatInsertVisitorErrorsForValueOrNullMapping() {
         TestTable table = new TestTable();
         InsertVisitor tv = new InsertVisitor();
-        ValueOrNullMapping<Integer> mapping = ValueOrNullMapping.of(table.id, () -> 3);
+        ValueOrNullMapping<Integer> mapping = new ValueOrNullMapping<>(table.id, () -> 3);
 
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping))
                 .withMessage("Internal Error 6");
@@ -127,7 +127,7 @@ class ColumnMappingVisitorTest {
     void testThatMultiRowInsertVisitorErrorsForColumnToColumnMapping() {
         TestTable table = new TestTable();
         MultiRowInsertVisitor tv = new MultiRowInsertVisitor();
-        ColumnToColumnMapping mapping = ColumnToColumnMapping.of(table.id, table.description);
+        ColumnToColumnMapping mapping = new ColumnToColumnMapping(table.id, table.description);
 
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping))
                 .withMessage("Internal Error 9");
@@ -137,7 +137,7 @@ class ColumnMappingVisitorTest {
     void testThatMultiRowInsertVisitorErrorsForSelectMapping() {
         TestTable table = new TestTable();
         MultiRowInsertVisitor tv = new MultiRowInsertVisitor();
-        SelectMapping mapping = SelectMapping.of(table.id, SqlBuilder.select(table.id).from(table));
+        SelectMapping mapping = new SelectMapping(table.id, SqlBuilder.select(table.id).from(table));
 
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping))
                 .withMessage("Internal Error 8");
@@ -147,7 +147,7 @@ class ColumnMappingVisitorTest {
     void testThatMultiRowInsertVisitorErrorsForValueMapping() {
         TestTable table = new TestTable();
         MultiRowInsertVisitor tv = new MultiRowInsertVisitor();
-        ValueMapping<Integer> mapping = ValueMapping.of(table.id, () -> 3);
+        ValueMapping<Integer> mapping = new ValueMapping<>(table.id, () -> 3);
 
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping))
                 .withMessage("Internal Error 5");
@@ -167,7 +167,7 @@ class ColumnMappingVisitorTest {
     void testThatMultiRowInsertVisitorErrorsForPropertyWhenPresentMapping() {
         TestTable table = new TestTable();
         MultiRowInsertVisitor tv = new MultiRowInsertVisitor();
-        PropertyWhenPresentMapping mapping = PropertyWhenPresentMapping.of(table.id, "id", () -> 3);
+        PropertyWhenPresentMapping mapping = new PropertyWhenPresentMapping(table.id, "id", () -> 3);
 
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping))
                 .withMessage("Internal Error 12");
@@ -177,7 +177,7 @@ class ColumnMappingVisitorTest {
     void testThatUpdateVisitorErrorsForPropertyMapping() {
         TestTable table = new TestTable();
         UpdateVisitor tv = new UpdateVisitor();
-        PropertyMapping mapping = PropertyMapping.of(table.id, "id");
+        PropertyMapping mapping = new PropertyMapping(table.id, "id");
 
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping))
                 .withMessage("Internal Error 10");
@@ -187,7 +187,7 @@ class ColumnMappingVisitorTest {
     void testThatUpdateVisitorErrorsForPropertyWhenPresentMapping() {
         TestTable table = new TestTable();
         UpdateVisitor tv = new UpdateVisitor();
-        PropertyWhenPresentMapping mapping = PropertyWhenPresentMapping.of(table.id, "id", () -> 3);
+        PropertyWhenPresentMapping mapping = new PropertyWhenPresentMapping(table.id, "id", () -> 3);
 
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping))
                 .withMessage("Internal Error 11");
@@ -197,7 +197,7 @@ class ColumnMappingVisitorTest {
     void testThatUpdateVisitorErrorsForRowMapping() {
         TestTable table = new TestTable();
         UpdateVisitor tv = new UpdateVisitor();
-        RowMapping mapping = RowMapping.of(table.id);
+        RowMapping mapping = new RowMapping(table.id);
 
         assertThatExceptionOfType(UnsupportedOperationException.class).isThrownBy(() -> tv.visit(mapping))
                 .withMessage("Internal Error 15");

@@ -19,6 +19,7 @@ import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.render.RenderingStrategy
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.StringUtilities
+import org.mybatis.dynamic.sql.util.toCamelCase
 import java.sql.JDBCType
 import java.util.*
 
@@ -201,7 +202,7 @@ open class SqlColumn<T> protected constructor(builder: AbstractBuilder<T, *>) : 
      */
     open fun asCamelCase(): SqlColumn<T> {
         return copyBuilder()
-            .withAlias("\"" + StringUtilities.toCamelCase(name) + "\"")
+            .withAlias("\"" + toCamelCase(name) + "\"")
             .build()
     }
 

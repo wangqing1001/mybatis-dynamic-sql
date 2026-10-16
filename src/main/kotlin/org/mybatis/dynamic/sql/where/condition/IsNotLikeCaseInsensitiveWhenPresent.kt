@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.where.condition
 
 import org.mybatis.dynamic.sql.AbstractSingleValueCondition
 import org.mybatis.dynamic.sql.util.StringUtilities
+import org.mybatis.dynamic.sql.util.upperCaseIfPossible
 import java.util.NoSuchElementException
 import java.util.function.Function
 import java.util.function.Predicate
@@ -25,7 +26,7 @@ import java.util.function.Predicate
  * 不区分大小写的 not like when present 条件。当值为 null 时渲染为空条件。
  */
 open class IsNotLikeCaseInsensitiveWhenPresent<T> private constructor(value: T) : AbstractSingleValueCondition<T>(
-    StringUtilities.upperCaseIfPossible(value)
+    upperCaseIfPossible(value)
 ), CaseInsensitiveRenderableCondition<T>, AbstractSingleValueCondition.Filterable<T>, AbstractSingleValueCondition.Mappable<T> {
 
     override fun operator(): String {

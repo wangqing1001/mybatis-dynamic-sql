@@ -21,7 +21,7 @@ import org.mybatis.dynamic.sql.SqlColumn
 /**
  * 将列映射到另一列的映射(仅用于 update 语句)。
  */
-class ColumnToColumnMapping private constructor(
+class ColumnToColumnMapping(
     column: SqlColumn<*>,
     private val rightColumn: BasicColumn
 ) : AbstractColumnMapping(column) {
@@ -34,10 +34,5 @@ class ColumnToColumnMapping private constructor(
         return visitor.visit(this)
     }
 
-    companion object {
-        @JvmStatic
-        fun of(column: SqlColumn<*>, rightColumn: BasicColumn): ColumnToColumnMapping {
-            return ColumnToColumnMapping(column, rightColumn)
-        }
-    }
+
 }

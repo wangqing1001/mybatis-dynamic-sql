@@ -34,13 +34,14 @@ import org.mybatis.dynamic.sql.util.Buildable
 import org.mybatis.dynamic.sql.util.ColumnToColumnMapping
 import org.mybatis.dynamic.sql.util.ConfigurableStatement
 import org.mybatis.dynamic.sql.util.ConstantMapping
+import org.mybatis.dynamic.sql.util.ERROR_32
 import org.mybatis.dynamic.sql.util.NullMapping
 import org.mybatis.dynamic.sql.util.SelectMapping
 import org.mybatis.dynamic.sql.util.StringConstantMapping
-import org.mybatis.dynamic.sql.util.Validator
 import org.mybatis.dynamic.sql.util.ValueMapping
 import org.mybatis.dynamic.sql.util.ValueOrNullMapping
 import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping
+import org.mybatis.dynamic.sql.util.assertNull
 import org.mybatis.dynamic.sql.where.WhereApplier
 import org.mybatis.dynamic.sql.where.WhereModel
 import java.util.ArrayList
@@ -73,13 +74,13 @@ abstract class AbstractUpdateDSL<M, D : AbstractUpdateDSL<M, D>> protected const
     }
 
     override fun where(initialCriterion: SqlCriterion): UpdateWhereBuilder {
-        Validator.assertNull(whereBuilder, Validator.ERROR_32)
+        assertNull(whereBuilder, ERROR_32)
         whereBuilder = UpdateWhereBuilder(initialCriterion)
         return whereBuilder!!
     }
 
     override fun applyWhere(whereApplier: WhereApplier): UpdateWhereBuilder {
-        Validator.assertNull(whereBuilder, Validator.ERROR_32)
+        assertNull(whereBuilder, ERROR_32)
         whereBuilder = UpdateWhereBuilder(whereApplier.initialCriterion(), whereApplier.subCriteria())
         return whereBuilder!!
     }
@@ -117,17 +118,17 @@ abstract class AbstractUpdateDSL<M, D : AbstractUpdateDSL<M, D>> protected const
     inner class SetClauseFinisher<T : Any>(private val column: SqlColumn<T>) {
 
         fun equalToNull(): D {
-            columnMappings.add(NullMapping.of(column))
+            columnMappings.add(NullMapping(column))
             return this@AbstractUpdateDSL.getThis()
         }
 
         fun equalToConstant(constant: String): D {
-            columnMappings.add(ConstantMapping.of(column, constant))
+            columnMappings.add(ConstantMapping(column, constant))
             return this@AbstractUpdateDSL.getThis()
         }
 
         fun equalToStringConstant(constant: String): D {
-            columnMappings.add(StringConstantMapping.of(column, constant))
+            columnMappings.add(StringConstantMapping(column, constant))
             return this@AbstractUpdateDSL.getThis()
         }
 
@@ -136,17 +137,17 @@ abstract class AbstractUpdateDSL<M, D : AbstractUpdateDSL<M, D>> protected const
         }
 
         fun equalTo(valueSupplier: Supplier<T>): D {
-            columnMappings.add(ValueMapping.of(column, valueSupplier))
+            columnMappings.add(ValueMapping(column, valueSupplier))
             return this@AbstractUpdateDSL.getThis()
         }
 
         fun equalTo(buildable: Buildable<SelectModel>): D {
-            columnMappings.add(SelectMapping.of(column, buildable))
+            columnMappings.add(SelectMapping(column, buildable))
             return this@AbstractUpdateDSL.getThis()
         }
 
         fun equalTo(rightColumn: BasicColumn): D {
-            columnMappings.add(ColumnToColumnMapping.of(column, rightColumn))
+            columnMappings.add(ColumnToColumnMapping(column, rightColumn))
             return this@AbstractUpdateDSL.getThis()
         }
 
@@ -155,7 +156,7 @@ abstract class AbstractUpdateDSL<M, D : AbstractUpdateDSL<M, D>> protected const
         }
 
         fun equalToOrNull(valueSupplier: Supplier<T?>): D {
-            columnMappings.add(ValueOrNullMapping.of(column, valueSupplier))
+            columnMappings.add(ValueOrNullMapping(column, valueSupplier))
             return this@AbstractUpdateDSL.getThis()
         }
 

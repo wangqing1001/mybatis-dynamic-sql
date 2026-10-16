@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.where
 
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.StringUtilities
+import org.mybatis.dynamic.sql.util.spaceBefore
 
 /**
  * 渲染后的条件。包含可选的连接符(and/or)与片段参数。
@@ -34,7 +35,7 @@ class RenderedCriterion @JvmOverloads constructor(
         if (connector == null) {
             return fragmentAndParameters
         }
-        return fragmentAndParameters.mapFragment { connector + StringUtilities.spaceBefore(it) }
+        return fragmentAndParameters.mapFragment { connector + spaceBefore(it) }
     }
 
     fun withConnector(connector: String): RenderedCriterion {

@@ -27,7 +27,6 @@ import org.assertj.core.api.Assertions.entry
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.exception.InvalidSqlException
 import org.mybatis.dynamic.sql.util.Messages
-import org.mybatis.dynamic.sql.util.kotlin.KInvalidSQLException
 import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
 import org.mybatis.dynamic.sql.case
 import org.mybatis.dynamic.sql.cast
@@ -886,7 +885,7 @@ class KCaseExpressionTest {
 
     @Test
     fun testInvalidDoubleElseSimple() {
-        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
+        assertThatExceptionOfType(InvalidSqlException::class.java).isThrownBy {
             case(animalName) {
                 `when`(isEqualTo("Artic fox"), isEqualTo("Red fox")) then "yes"
                 `else`("Fred")
@@ -897,7 +896,7 @@ class KCaseExpressionTest {
 
     @Test
     fun testInvalidDoubleElseSearched() {
-        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
+        assertThatExceptionOfType(InvalidSqlException::class.java).isThrownBy {
             case {
                 `when` {
                     id isEqualTo 22
@@ -911,7 +910,7 @@ class KCaseExpressionTest {
 
     @Test
     fun testInvalidDoubleThenSearched() {
-        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
+        assertThatExceptionOfType(InvalidSqlException::class.java).isThrownBy {
             case {
                 `when` {
                     id isEqualTo 22
@@ -924,7 +923,7 @@ class KCaseExpressionTest {
 
     @Test
     fun testInvalidMissingThen() {
-        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
+        assertThatExceptionOfType(InvalidSqlException::class.java).isThrownBy {
             case {
                 `when` {
                     id isEqualTo 22
@@ -949,14 +948,14 @@ class KCaseExpressionTest {
 
     @Test
     fun testInvalidCastMissingAs() {
-        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
+        assertThatExceptionOfType(InvalidSqlException::class.java).isThrownBy {
             cast {}
         }.withMessage(Messages.getString("ERROR.43"))
     }
 
     @Test
     fun testInvalidCastDoubleAs() {
-        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
+        assertThatExceptionOfType(InvalidSqlException::class.java).isThrownBy {
             cast {
                 "Fred" `as` "VARCHAR"
                 "Wilma" `as` "VARCHAR"

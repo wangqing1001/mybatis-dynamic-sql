@@ -18,7 +18,7 @@ package org.mybatis.dynamic.sql.util.kotlin.elements
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.cast
 import org.mybatis.dynamic.sql.select.function.Cast
-import org.mybatis.dynamic.sql.util.kotlin.assertNull
+import org.mybatis.dynamic.sql.util.assertNull
 
 class CastDSL {
 

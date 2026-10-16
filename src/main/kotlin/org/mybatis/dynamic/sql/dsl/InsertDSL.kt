@@ -59,32 +59,32 @@ class InsertDSL<T>(
     inner class ColumnMappingFinisher<F>(private val column: SqlColumn<F>) {
 
         fun toProperty(property: String): InsertDSL<T> {
-            columnMappings.add(PropertyMapping.of(column, property))
+            columnMappings.add(PropertyMapping(column, property))
             return this@InsertDSL
         }
 
         fun toPropertyWhenPresent(property: String, valueSupplier: Supplier<*>): InsertDSL<T> {
-            columnMappings.add(PropertyWhenPresentMapping.of(column, property, valueSupplier))
+            columnMappings.add(PropertyWhenPresentMapping(column, property, valueSupplier))
             return this@InsertDSL
         }
 
         fun toNull(): InsertDSL<T> {
-            columnMappings.add(NullMapping.of(column))
+            columnMappings.add(NullMapping(column))
             return this@InsertDSL
         }
 
         fun toConstant(constant: String): InsertDSL<T> {
-            columnMappings.add(ConstantMapping.of(column, constant))
+            columnMappings.add(ConstantMapping(column, constant))
             return this@InsertDSL
         }
 
         fun toStringConstant(constant: String): InsertDSL<T> {
-            columnMappings.add(StringConstantMapping.of(column, constant))
+            columnMappings.add(StringConstantMapping(column, constant))
             return this@InsertDSL
         }
 
         fun toRow(): InsertDSL<T> {
-            columnMappings.add(RowMapping.of(column))
+            columnMappings.add(RowMapping(column))
             return this@InsertDSL
         }
     }

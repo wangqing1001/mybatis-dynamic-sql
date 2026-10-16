@@ -20,16 +20,10 @@ import org.mybatis.dynamic.sql.SqlColumn
 /**
  * 表示将列映射为 null 的映射。
  */
-class NullMapping private constructor(column: SqlColumn<*>) : AbstractColumnMapping(column) {
+class NullMapping(column: SqlColumn<*>) : AbstractColumnMapping(column) {
 
     override fun <R> accept(visitor: ColumnMappingVisitor<R>): R {
         return visitor.visit(this)
     }
 
-    companion object {
-        @JvmStatic
-        fun of(column: SqlColumn<*>): NullMapping {
-            return NullMapping(column)
-        }
-    }
 }

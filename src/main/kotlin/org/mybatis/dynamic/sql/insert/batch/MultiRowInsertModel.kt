@@ -6,7 +6,8 @@ import org.mybatis.dynamic.sql.render.RenderingStrategy
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping
 import org.mybatis.dynamic.sql.util.FieldAndValueCollector
 import org.mybatis.dynamic.sql.util.StringUtilities
-import org.mybatis.dynamic.sql.util.Validator
+import org.mybatis.dynamic.sql.util.assertNotEmpty
+import org.mybatis.dynamic.sql.util.spaceBefore
 import org.mybatis.dynamic.sql.util.toFieldAndValueCollector
 
 /**
@@ -19,8 +20,8 @@ class MultiRowInsertModel<T> @JvmOverloads constructor(
 ) : AbstractMultiRowInsertModel<T>(table,records,columnMappings) {
 
     init {
-        Validator.assertNotEmpty(records(), "ERROR.20") //$NON-NLS-1$
-        Validator.assertNotEmpty(columnMappings(), "ERROR.8") //$NON-NLS-1$
+        assertNotEmpty(records(), "ERROR.20") //$NON-NLS-1$
+        assertNotEmpty(columnMappings(), "ERROR.8") //$NON-NLS-1$
     }
 
     fun render(renderingStrategy: RenderingStrategy): MultiRowInsertStatementProvider<T> {
@@ -34,7 +35,7 @@ class MultiRowInsertModel<T> @JvmOverloads constructor(
         val statementStart = InsertRenderingUtilities.calculateInsertStatementStart(table())
         val columnsPhrase = collector.columnsPhrase()
         val valuesPhrase = collector.multiRowInsertValuesPhrase(recordCount())
-        return statementStart + StringUtilities.spaceBefore(columnsPhrase) + StringUtilities.spaceBefore(valuesPhrase)
+        return statementStart + spaceBefore(columnsPhrase) + spaceBefore(valuesPhrase)
     }
 
 }

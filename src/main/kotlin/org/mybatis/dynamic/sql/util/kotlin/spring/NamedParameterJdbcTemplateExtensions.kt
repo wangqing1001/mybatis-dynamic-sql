@@ -69,16 +69,18 @@ fun <T : Any> NamedParameterJdbcTemplate.insertBatch(insertStatement: BatchInser
     batchUpdate(insertStatement.insertStatement, BatchInsertUtility.createBatch(insertStatement.records))
 
 fun <T : Any> NamedParameterJdbcTemplate.insertBatch(
+    table: SqlTable,
     vararg records: T,
     completer: KotlinBatchInsertCompleter<T>
 ): IntArray =
-    insertBatch(records.asList(), completer)
+    insertBatch(table,records.asList(), completer)
 
 fun <T : Any> NamedParameterJdbcTemplate.insertBatch(
+    table: SqlTable,
     records: List<T>,
     completer: KotlinBatchInsertCompleter<T>
 ): IntArray =
-    insertBatch(org.mybatis.dynamic.sql.util.kotlin.spring.insertBatch(records, completer))
+    insertBatch(org.mybatis.dynamic.sql.util.kotlin.spring.insertBatch(table,records,completer))
 
 // single row insert
 fun <T : Any> NamedParameterJdbcTemplate.insert(insertStatement: InsertStatementProvider<T>): Int =
@@ -90,8 +92,8 @@ fun <T : Any> NamedParameterJdbcTemplate.insert(
 ): Int =
     update(insertStatement.insertStatement, BeanPropertySqlParameterSource(insertStatement), keyHolder)
 
-fun <T : Any> NamedParameterJdbcTemplate.insert(row: T, completer: KotlinInsertCompleter<T>): Int =
-    insert(org.mybatis.dynamic.sql.util.kotlin.spring.insert(row, completer))
+fun <T : Any> NamedParameterJdbcTemplate.insert(table: SqlTable, row: T, completer: KotlinInsertCompleter<T>): Int =
+    insert(org.mybatis.dynamic.sql.util.kotlin.spring.insert(table,row,completer))
 
 // general insert
 fun NamedParameterJdbcTemplate.generalInsert(insertStatement: GeneralInsertStatementProvider): Int =
@@ -108,16 +110,18 @@ fun NamedParameterJdbcTemplate.insertInto(table: SqlTable, completer: GeneralIns
 
 // multiple row insert
 fun <T : Any> NamedParameterJdbcTemplate.insertMultiple(
+    table: SqlTable,
     vararg records: T,
     completer: KotlinMultiRowInsertCompleter<T>
 ): Int =
-    insertMultiple(records.asList(), completer)
+    insertMultiple(table,records.asList(), completer)
 
 fun <T : Any> NamedParameterJdbcTemplate.insertMultiple(
+    table: SqlTable,
     records: List<T>,
     completer: KotlinMultiRowInsertCompleter<T>
 ): Int =
-    insertMultiple(org.mybatis.dynamic.sql.util.kotlin.spring.insertMultiple(records, completer))
+    insertMultiple(org.mybatis.dynamic.sql.util.kotlin.spring.insertMultiple(table,records, completer))
 
 fun <T : Any> NamedParameterJdbcTemplate.insertMultiple(insertStatement: MultiRowInsertStatementProvider<T>): Int =
     update(insertStatement.insertStatement, BeanPropertySqlParameterSource(insertStatement))
@@ -264,14 +268,14 @@ class KeyHolderHelper(private val keyHolder: KeyHolder, private val template: Na
     fun insertInto(table: SqlTable, completer: GeneralInsertCompleter): Int =
         template.generalInsert(org.mybatis.dynamic.sql.util.kotlin.spring.insertInto(table, completer), keyHolder)
 
-    fun <T : Any> insert(row: T, completer: KotlinInsertCompleter<T>): Int =
-        template.insert(org.mybatis.dynamic.sql.util.kotlin.spring.insert(row, completer), keyHolder)
+    fun <T : Any> insert(table: SqlTable,row: T,completer: KotlinInsertCompleter<T>): Int =
+        template.insert(org.mybatis.dynamic.sql.util.kotlin.spring.insert(table,row,completer), keyHolder)
 
-    fun <T : Any> insertMultiple(vararg records: T, completer: KotlinMultiRowInsertCompleter<T>): Int =
-        insertMultiple(records.asList(), completer)
+    fun <T : Any> insertMultiple(table: SqlTable,vararg records: T, completer: KotlinMultiRowInsertCompleter<T>): Int =
+        insertMultiple(table,listOf(*records), completer)
 
-    fun <T : Any> insertMultiple(records: List<T>, completer: KotlinMultiRowInsertCompleter<T>): Int =
-        template.insertMultiple(org.mybatis.dynamic.sql.util.kotlin.spring.insertMultiple(records, completer),
+    fun <T : Any> insertMultiple(table: SqlTable, records: List<T>, completer: KotlinMultiRowInsertCompleter<T>): Int =
+        template.insertMultiple(org.mybatis.dynamic.sql.util.kotlin.spring.insertMultiple(table,records,completer),
             keyHolder)
 
     fun insertSelect(table: SqlTable,completer: InsertSelectCompleter): Int =

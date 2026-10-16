@@ -37,7 +37,6 @@ import org.mybatis.dynamic.sql.util.kotlin.KotlinMultiRowInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.MultiSelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
-import org.mybatis.dynamic.sql.count
 import org.mybatis.dynamic.sql.countDistinctFrom
 import org.mybatis.dynamic.sql.countFrom
 import org.mybatis.dynamic.sql.deleteFrom
@@ -65,20 +64,18 @@ fun deleteFrom(table: SqlTable, completer: DeleteCompleter): DeleteStatementProv
 fun deleteFrom(table: SqlTable, tableAlias: String, completer: DeleteCompleter): DeleteStatementProvider =
     deleteFrom(table, tableAlias, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
-fun <T : Any> insert(row: T, completer: KotlinInsertCompleter<T>): InsertStatementProvider<T> =
-    insert(row, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+fun <T : Any> insert(table: SqlTable,row: T, completer: KotlinInsertCompleter<T>): InsertStatementProvider<T> =
+    insert(table,row, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
-fun <T : Any> insertBatch(rows: Collection<T>, completer: KotlinBatchInsertCompleter<T>): BatchInsert<T> =
-    insertBatch(rows, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+fun <T : Any> insertBatch(table: SqlTable,rows: Collection<T>, completer: KotlinBatchInsertCompleter<T>): BatchInsert<T> =
+    insertBatch(table,rows,completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
 fun insertInto(table: SqlTable, completer: GeneralInsertCompleter): GeneralInsertStatementProvider =
     insertInto(table, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
 
-fun <T : Any> insertMultiple(
-    rows: Collection<T>,
-    completer: KotlinMultiRowInsertCompleter<T>
-): MultiRowInsertStatementProvider<T> =
-    insertMultiple(rows, completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+fun <T : Any> insertMultiple(table: SqlTable, rows: Collection<T>,completer: KotlinMultiRowInsertCompleter<T>): MultiRowInsertStatementProvider<T>{
+    return insertMultiple(table,rows,completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)
+}
 
 fun insertSelect(table: SqlTable,completer: InsertSelectCompleter): InsertSelectStatementProvider =
     insertSelect(table,completer).render(RenderingStrategies.SPRING_NAMED_PARAMETER)

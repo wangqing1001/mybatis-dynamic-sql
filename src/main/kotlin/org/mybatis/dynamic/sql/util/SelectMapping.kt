@@ -21,15 +21,11 @@ import org.mybatis.dynamic.sql.select.SelectModel
 /**
  * 表示将列映射到子查询结果的映射。
  */
-class SelectMapping private constructor(
+class SelectMapping(
     column: SqlColumn<*>,
     selectModelBuilder: Buildable<SelectModel>
 ) : AbstractColumnMapping(column) {
-    private val selectModel: SelectModel
-
-    init {
-        selectModel = selectModelBuilder.build()
-    }
+    private val selectModel: SelectModel = selectModelBuilder.build()
 
     fun selectModel(): SelectModel {
         return selectModel
@@ -39,10 +35,4 @@ class SelectMapping private constructor(
         return visitor.visit(this)
     }
 
-    companion object {
-        @JvmStatic
-        fun of(column: SqlColumn<*>, selectModelBuilder: Buildable<SelectModel>): SelectMapping {
-            return SelectMapping(column, selectModelBuilder)
-        }
-    }
 }

@@ -4,7 +4,7 @@ import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.insert.InsertRenderingUtilities
 import org.mybatis.dynamic.sql.render.RenderingStrategy
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping
-import org.mybatis.dynamic.sql.util.Validator
+import org.mybatis.dynamic.sql.util.assertNotEmpty
 import org.mybatis.dynamic.sql.util.toFieldAndValueCollector
 
 /**
@@ -17,8 +17,8 @@ class BatchInsertModel<T> @JvmOverloads constructor(
 ) : AbstractMultiRowInsertModel<T>(table,records,columnMappings) {
 
     init {
-        Validator.assertNotEmpty(records(), "ERROR.19") //$NON-NLS-1$
-        Validator.assertNotEmpty(columnMappings(), "ERROR.5") //$NON-NLS-1$
+        assertNotEmpty(records(), "ERROR.19") //$NON-NLS-1$
+        assertNotEmpty(columnMappings(), "ERROR.5") //$NON-NLS-1$
     }
 
     fun render(renderingStrategy: RenderingStrategy): BatchInsert<T> {

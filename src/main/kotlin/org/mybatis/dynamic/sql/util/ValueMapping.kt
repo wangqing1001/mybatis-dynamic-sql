@@ -21,7 +21,7 @@ import java.util.function.Supplier
 /**
  * 表示将列映射到值的映射。
  */
-class ValueMapping<T> private constructor(
+class ValueMapping<T>(
     column: SqlColumn<T>,
     private val valueSupplier: Supplier<T>
 ) : AbstractColumnMapping(column) {
@@ -36,10 +36,4 @@ class ValueMapping<T> private constructor(
         return visitor.visit(this)
     }
 
-    companion object {
-        @JvmStatic
-        fun <T> of(column: SqlColumn<T>, valueSupplier: Supplier<T>): ValueMapping<T> {
-            return ValueMapping(column, valueSupplier)
-        }
-    }
 }

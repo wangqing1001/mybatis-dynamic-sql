@@ -25,6 +25,7 @@ import org.mybatis.dynamic.sql.NotCriterion
 import org.mybatis.dynamic.sql.NullCriterion
 import org.mybatis.dynamic.sql.RenderableCondition
 import org.mybatis.dynamic.sql.SqlCriterion
+import org.mybatis.dynamic.sql.util.assertNull
 
 typealias GroupingCriteriaReceiver = GroupingCriteriaCollector.() -> Unit
 

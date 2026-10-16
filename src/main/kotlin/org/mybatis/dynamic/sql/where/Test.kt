@@ -26,6 +26,7 @@ import org.mybatis.dynamic.sql.SqlCriterionVisitor
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.StringUtilities
+import org.mybatis.dynamic.sql.util.spaceBefore
 import java.util.function.Function
 
 /**
@@ -150,6 +151,6 @@ class Test(private val renderingContext: RenderingContext) : SqlCriterionVisitor
 
     private fun merge(pair: Pair<String?, FragmentAndParameters>): FragmentAndParameters {
         val connector = pair.first?:return pair.second
-        return pair.second.mapFragment{ connector + StringUtilities.spaceBefore(it) }
+        return pair.second.mapFragment{ connector + spaceBefore(it) }
     }
 }

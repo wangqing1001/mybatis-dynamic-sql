@@ -24,6 +24,7 @@ import org.mybatis.dynamic.sql.dsl.SelectDSL
 import org.mybatis.dynamic.sql.insert.select.InsertSelectModel
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.util.Buildable
+import org.mybatis.dynamic.sql.util.invalidIfNull
 
 @MyBatisDslMarker
 sealed class KotlinBaseSubQueryBuilder {

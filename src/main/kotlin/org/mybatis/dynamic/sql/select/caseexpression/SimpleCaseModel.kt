@@ -20,7 +20,7 @@ import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.SortSpecification
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import org.mybatis.dynamic.sql.util.Validator
+import org.mybatis.dynamic.sql.util.assertNotEmpty
 
 /**
  * 简单 case 表达式模型。
@@ -34,7 +34,7 @@ class SimpleCaseModel<T> @JvmOverloads constructor(
 ) : BasicColumn, SortSpecification {
 
     init {
-        Validator.assertNotEmpty(whenConditions, "ERROR.40") //$NON-NLS-1$
+        assertNotEmpty(whenConditions, "ERROR.40") //$NON-NLS-1$
     }
 
     fun column(): BindableColumn<T> {

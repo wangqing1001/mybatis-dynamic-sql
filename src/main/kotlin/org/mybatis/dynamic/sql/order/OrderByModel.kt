@@ -18,7 +18,7 @@ package org.mybatis.dynamic.sql.order
 import org.mybatis.dynamic.sql.SortSpecification
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import org.mybatis.dynamic.sql.util.Validator
+import org.mybatis.dynamic.sql.util.assertNotEmpty
 import org.mybatis.dynamic.sql.util.toFragmentCollector
 
 /**
@@ -27,7 +27,7 @@ import org.mybatis.dynamic.sql.util.toFragmentCollector
 class OrderByModel(private val columns: List<SortSpecification>) {
 
     init {
-        Validator.assertNotEmpty(columns, "ERROR.12")
+        assertNotEmpty(columns, "ERROR.12")
     }
 
     fun columns(): List<SortSpecification> {

@@ -22,7 +22,8 @@ import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.select.SubQuery
 import org.mybatis.dynamic.sql.select.join.JoinModel
 import org.mybatis.dynamic.sql.util.Buildable
-import org.mybatis.dynamic.sql.util.Validator
+import org.mybatis.dynamic.sql.util.assertNull
+import org.mybatis.dynamic.sql.util.assertTrue
 
 /**
  * 查询 DSL 的抽象基类。
@@ -55,28 +56,28 @@ abstract class AbstractQueryingDSL {
     }
 
     protected fun table(): TableExpression {
-        Validator.assertTrue(table != null, ERROR_27)
+        assertTrue(table != null, ERROR_27)
         return table!!
     }
 
     fun setTable(table: SqlTable) {
-        Validator.assertNull(this.table, ERROR_27)
+        assertNull(this.table, ERROR_27)
         this.table = table
     }
 
     fun setTable(table: SqlTable, tableAlias: String) {
-        Validator.assertNull(this.table, ERROR_27)
+        assertNull(this.table, ERROR_27)
         this.table = table
         addTableAlias(table, tableAlias)
     }
 
     fun setTable(select: Buildable<SelectModel>) {
-        Validator.assertNull(this.table, ERROR_27)
+        assertNull(this.table, ERROR_27)
         table = buildSubQuery(select)
     }
 
     fun setTable(select: Buildable<SelectModel>, tableAlias: String) {
-        Validator.assertNull(this.table, ERROR_27)
+        assertNull(this.table, ERROR_27)
         table = buildSubQuery(select, tableAlias)
     }
 

@@ -26,6 +26,7 @@ import org.mybatis.dynamic.sql.util.StringUtilities
 import org.mybatis.dynamic.sql.util.ValueMapping
 import org.mybatis.dynamic.sql.util.ValueOrNullMapping
 import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping
+import org.mybatis.dynamic.sql.util.formatConstantForSQL
 
 /**
  * 通用 insert 值短语访问器。
@@ -43,7 +44,7 @@ class GeneralInsertValuePhraseVisitor(
     }
 
     override fun visit(mapping: StringConstantMapping): FieldAndValueAndParameters {
-        val valuePhrase = StringUtilities.formatConstantForSQL(mapping.constant())
+        val valuePhrase = formatConstantForSQL(mapping.constant())
         return FieldAndValueAndParameters(mapping.columnName(), valuePhrase)
     }
 

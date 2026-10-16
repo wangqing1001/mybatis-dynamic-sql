@@ -27,7 +27,8 @@ import org.mybatis.dynamic.sql.select.having.HavingModel
 import org.mybatis.dynamic.sql.select.join.JoinModel
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.StringUtilities
-import org.mybatis.dynamic.sql.util.Validator
+import org.mybatis.dynamic.sql.util.assertNotEmpty
+import org.mybatis.dynamic.sql.util.spaceAfter
 import org.mybatis.dynamic.sql.util.toFragmentCollector
 import org.mybatis.dynamic.sql.where.WhereModel
 
@@ -48,7 +49,7 @@ class QueryExpressionModel @JvmOverloads constructor(
 ) {
 
     init {
-        Validator.assertNotEmpty(selectList, "ERROR.13") //$NON-NLS-1$
+        assertNotEmpty(selectList, "ERROR.13") //$NON-NLS-1$
     }
 
     fun connector(): String? {
@@ -126,7 +127,7 @@ class QueryExpressionModel @JvmOverloads constructor(
     private fun renderQueryExpressionStart(tableExpressionRenderer :TableExpressionRenderer,renderingContext: RenderingContext): FragmentAndParameters {
         val columns = renderColumns(renderingContext)
         val table = this.table.accept(tableExpressionRenderer)
-        val start = connector?.let { StringUtilities.spaceAfter(it) } ?: ""
+        val start = connector?.let { spaceAfter(it) } ?: ""
         val distinct = if(isDistinct) "distinct " else ""
         val startSQL = start + "select " + distinct + columns.fragment()+ " from " + table.fragment()
         val parameters = table.parameters() + columns.parameters()

@@ -21,7 +21,7 @@ import org.mybatis.dynamic.sql.RenderableCondition
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.select.function.AbstractUniTypeFunction
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import org.mybatis.dynamic.sql.util.Validator
+import org.mybatis.dynamic.sql.util.assertTrue
 import org.mybatis.dynamic.sql.where.ColumnAndConditionRenderer
 import java.util.function.Function
 
@@ -40,7 +40,7 @@ class Sum<T> private constructor(
     private constructor(column: BindableColumn<T>, condition: RenderableCondition<T>) : this(
         column,
         Function { rc: RenderingContext ->
-            Validator.assertTrue(condition.shouldRender(rc), "ERROR.37", "sum") //$NON-NLS-1$ //$NON-NLS-2$
+            assertTrue(condition.shouldRender(rc), "ERROR.37", "sum") //$NON-NLS-1$ //$NON-NLS-2$
             return@Function ColumnAndConditionRenderer(column,condition,rc).render().mapFragment {  "sum($it)" }
         }
     )

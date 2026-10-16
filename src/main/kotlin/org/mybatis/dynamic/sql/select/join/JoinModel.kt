@@ -20,7 +20,7 @@ import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.select.TableExpressionRenderer
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.Messages
-import org.mybatis.dynamic.sql.util.Validator
+import org.mybatis.dynamic.sql.util.assertNotEmpty
 import org.mybatis.dynamic.sql.util.toFragmentCollector
 
 
@@ -29,7 +29,7 @@ class JoinModel(
 ) {
 
     init {
-        Validator.assertNotEmpty(joinSpecifications, "ERROR.15") //$NON-NLS-1$
+        assertNotEmpty(joinSpecifications, "ERROR.15") //$NON-NLS-1$
     }
 
     fun joinSpecifications(): List<JoinSpecification> {

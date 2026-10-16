@@ -17,6 +17,7 @@ package org.mybatis.dynamic.sql.where.condition
 
 import org.mybatis.dynamic.sql.AbstractListValueCondition
 import org.mybatis.dynamic.sql.util.StringUtilities
+import org.mybatis.dynamic.sql.util.upperCaseIfPossible
 import java.util.Collections
 import java.util.function.Function
 import java.util.function.Predicate
@@ -25,7 +26,7 @@ import java.util.function.Predicate
  * 不区分大小写的 in when present 条件。当值为 null 时渲染为空条件,并过滤集合中的 null 值后转大写。
  */
 class IsInCaseInsensitiveWhenPresent<T> private constructor(values: Collection<T>) : AbstractListValueCondition<T>(
-    values.filterNotNull().map { StringUtilities.upperCaseIfPossible(it) }
+    values.filterNotNull().map { upperCaseIfPossible(it) }
 ), CaseInsensitiveRenderableCondition<T>, AbstractListValueCondition.Filterable<T>, AbstractListValueCondition.Mappable<T> {
 
     override fun operator(): String {

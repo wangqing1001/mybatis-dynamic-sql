@@ -28,6 +28,7 @@ import org.mybatis.dynamic.sql.util.UpdateMappingVisitor
 import org.mybatis.dynamic.sql.util.ValueMapping
 import org.mybatis.dynamic.sql.util.ValueOrNullMapping
 import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping
+import org.mybatis.dynamic.sql.util.formatConstantForSQL
 
 /**
  * set 短语访问器,负责将列映射转换为 update 语句中的 set 短语。
@@ -47,7 +48,7 @@ class SetPhraseVisitor(private val renderingContext: RenderingContext) :
 
     override fun visit(mapping: StringConstantMapping): FragmentAndParameters {
         val columnName = renderingContext.aliasedColumnName(mapping.column())
-        val constant = StringUtilities.formatConstantForSQL(mapping.constant())
+        val constant = formatConstantForSQL(mapping.constant())
         return FragmentAndParameters("$columnName = $constant")
     }
 

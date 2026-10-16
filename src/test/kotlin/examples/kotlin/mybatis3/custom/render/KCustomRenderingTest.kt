@@ -70,8 +70,7 @@ class KCustomRenderingTest {
                 info = "{\"firstName\": \"Fred\", \"lastName\": \"Flintstone\", \"age\": 30}"
             )
 
-            var insertStatement = insert(row) {
-                into(jsonTest)
+            var insertStatement = insert(jsonTest,row) {
                 map(id) toProperty "id"
                 map(description) toProperty "description"
                 map(info) toProperty "info"
@@ -88,8 +87,7 @@ class KCustomRenderingTest {
                 info = "{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 25}"
             )
 
-            insertStatement = insert(row) {
-                into(jsonTest)
+            insertStatement = insert(jsonTest,row) {
                 map(id) toProperty "id"
                 map(description) toProperty "description"
                 map(info) toProperty "info"

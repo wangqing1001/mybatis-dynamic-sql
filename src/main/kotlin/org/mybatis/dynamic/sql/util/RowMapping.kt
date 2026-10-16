@@ -20,16 +20,10 @@ import org.mybatis.dynamic.sql.SqlColumn
 /**
  * 表示将列映射为行值对象的映射(用于多行 insert)。
  */
-class RowMapping private constructor(column: SqlColumn<*>) : AbstractColumnMapping(column) {
+class RowMapping(column: SqlColumn<*>) : AbstractColumnMapping(column) {
 
     override fun <R> accept(visitor: ColumnMappingVisitor<R>): R {
         return visitor.visit(this)
     }
 
-    companion object {
-        @JvmStatic
-        fun of(column: SqlColumn<*>): RowMapping {
-            return RowMapping(column)
-        }
-    }
 }

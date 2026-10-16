@@ -51,27 +51,27 @@ class BatchInsertDSL<T> private constructor(builder: AbstractBuilder<T, *>) : Bu
     inner class ColumnMappingFinisher<F>(private val column: SqlColumn<F>) {
 
         fun toProperty(property: String): BatchInsertDSL<T> {
-            columnMappings.add(PropertyMapping.of(column, property))
+            columnMappings.add(PropertyMapping(column, property))
             return this@BatchInsertDSL
         }
 
         fun toNull(): BatchInsertDSL<T> {
-            columnMappings.add(NullMapping.of(column))
+            columnMappings.add(NullMapping(column))
             return this@BatchInsertDSL
         }
 
         fun toConstant(constant: String): BatchInsertDSL<T> {
-            columnMappings.add(ConstantMapping.of(column, constant))
+            columnMappings.add(ConstantMapping(column, constant))
             return this@BatchInsertDSL
         }
 
         fun toStringConstant(constant: String): BatchInsertDSL<T> {
-            columnMappings.add(StringConstantMapping.of(column, constant))
+            columnMappings.add(StringConstantMapping(column, constant))
             return this@BatchInsertDSL
         }
 
         fun toRow(): BatchInsertDSL<T> {
-            columnMappings.add(RowMapping.of(column))
+            columnMappings.add(RowMapping(column))
             return this@BatchInsertDSL
         }
     }

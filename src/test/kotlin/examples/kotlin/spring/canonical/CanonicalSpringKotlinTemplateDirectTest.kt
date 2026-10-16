@@ -183,8 +183,7 @@ open class CanonicalSpringKotlinTemplateDirectTest {
     fun testInsert() {
         val row = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
 
-        val rows = template.insert(row) {
-            into(person)
+        val rows = template.insert(person,row) {
             map(id) toProperty "id"
             map(firstName) toProperty "firstName"
             map(lastName) toProperty "lastNameAsString"
@@ -217,8 +216,7 @@ open class CanonicalSpringKotlinTemplateDirectTest {
         val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
         val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 2)
 
-        val rows = template.insertMultiple(record1, record2) {
-            into(person)
+        val rows = template.insertMultiple(person,record1, record2) {
             map(id) toProperty "id"
             map(firstName) toProperty "firstName"
             map(lastName) toProperty "lastNameAsString"
@@ -236,8 +234,7 @@ open class CanonicalSpringKotlinTemplateDirectTest {
         val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
         val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 2)
 
-        val rows = template.insertBatch(record1, record2) {
-            into(person)
+        val rows = template.insertBatch(person,record1, record2) {
             map(id) toProperty "id"
             map(firstName) toProperty "firstName"
             map(lastName) toProperty "lastNameAsString"
@@ -309,8 +306,7 @@ open class CanonicalSpringKotlinTemplateDirectTest {
         val keyHolder = GeneratedKeyHolder()
 
         val rows = template.withKeyHolder(keyHolder) {
-            insert(command) {
-                into(generatedAlways)
+            insert(generatedAlways,command) {
                 map(generatedAlways.firstName) toProperty "firstName"
                 map(generatedAlways.lastName) toProperty "lastName"
             }
@@ -330,8 +326,7 @@ open class CanonicalSpringKotlinTemplateDirectTest {
         val keyHolder = GeneratedKeyHolder()
 
         val rows = template.withKeyHolder(keyHolder) {
-            insertMultiple(command1, command2) {
-                into(generatedAlways)
+            insertMultiple(generatedAlways,command1, command2) {
                 map(generatedAlways.firstName) toProperty "firstName"
                 map(generatedAlways.lastName) toProperty "lastName"
             }

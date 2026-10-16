@@ -67,8 +67,7 @@ fun <T : Any> insert(
     table: SqlTable,
     completer: KotlinInsertCompleter<T>
 ): Int =
-    insert(row) {
-        into(table)
+    insert(table,row) {
         run(completer)
     }.run(mapper)
 
@@ -85,8 +84,7 @@ fun <T : Any> insertBatch(
     table: SqlTable,
     completer: KotlinBatchInsertCompleter<T>
 ): List<Int> =
-    insertBatch(records) {
-        into(table)
+    insertBatch(table,records) {
         run(completer)
     }.insertStatements().map(mapper)
 
@@ -103,8 +101,7 @@ fun <T : Any> insertMultiple(
     table: SqlTable,
     completer: KotlinMultiRowInsertCompleter<T>
 ): Int =
-    insertMultiple(records) {
-        into(table)
+    insertMultiple(table,records) {
         run(completer)
     }.run(mapper)
 
@@ -114,9 +111,9 @@ fun <T : Any> insertMultipleWithGeneratedKeys(
     table: SqlTable,
     completer: KotlinMultiRowInsertCompleter<T>
 ): Int =
-    insertMultiple(records) {
-        into(table)
+    insertMultiple(table,records) {
         run(completer)
+
     }.run {
         mapper(insertStatement, this.records)
     }

@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.StringUtilities
+import org.mybatis.dynamic.sql.util.spaceBefore
 import java.util.function.*
 import java.util.function.Function
 
@@ -60,9 +61,9 @@ abstract class AbstractTwoValueCondition<T>(
         val parameterInfo1 = renderingContext.calculateParameterInfo(leftColumn)
         val parameterInfo2 = renderingContext.calculateParameterInfo(leftColumn)
         val finalFragment = (operator1()
-                + StringUtilities.spaceBefore(parameterInfo1.renderedPlaceHolder)
-                + StringUtilities.spaceBefore(operator2())
-                + StringUtilities.spaceBefore(parameterInfo2.renderedPlaceHolder))
+                + spaceBefore(parameterInfo1.renderedPlaceHolder)
+                + spaceBefore(operator2())
+                + spaceBefore(parameterInfo2.renderedPlaceHolder))
         val parameters = mapOf(parameterInfo1.parameterMapKey to leftColumn.convertParameterType(value1())!!, parameterInfo2.parameterMapKey to leftColumn.convertParameterType(value2()))
         return FragmentAndParameters(finalFragment, parameters)
     }

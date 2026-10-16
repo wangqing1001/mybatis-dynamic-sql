@@ -34,7 +34,8 @@ import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.select.join.JoinType
 import org.mybatis.dynamic.sql.util.Buildable
 import org.mybatis.dynamic.sql.util.ConfigurableStatement
-import org.mybatis.dynamic.sql.util.Validator
+import org.mybatis.dynamic.sql.util.ERROR_32
+import org.mybatis.dynamic.sql.util.assertNull
 import org.mybatis.dynamic.sql.where.WhereApplier
 import org.mybatis.dynamic.sql.where.WhereModel
 import java.util.function.Consumer
@@ -114,13 +115,13 @@ class SelectDSL(
     }
 
     override fun where(initialCriterion: SqlCriterion): QueryExpressionWhereBuilder {
-        Validator.assertNull(currentQueryValues.whereBuilder, Validator.ERROR_32)
+        assertNull(currentQueryValues.whereBuilder, ERROR_32)
         currentQueryValues.whereBuilder = QueryExpressionWhereBuilder(initialCriterion)
         return currentQueryValues.whereBuilder!!
     }
 
     override fun applyWhere(whereApplier: WhereApplier): QueryExpressionWhereBuilder {
-        Validator.assertNull(currentQueryValues.whereBuilder, Validator.ERROR_32)
+        assertNull(currentQueryValues.whereBuilder, ERROR_32)
         currentQueryValues.whereBuilder =
             QueryExpressionWhereBuilder(whereApplier.initialCriterion(), whereApplier.subCriteria())
         return currentQueryValues.whereBuilder!!
@@ -137,13 +138,13 @@ class SelectDSL(
     }
 
     override fun having(initialCriterion: SqlCriterion): QueryExpressionHavingBuilder {
-        Validator.assertNull(currentQueryValues.havingBuilder, "ERROR.31") //$NON-NLS-1$
+        assertNull(currentQueryValues.havingBuilder, "ERROR.31") //$NON-NLS-1$
         currentQueryValues.havingBuilder = QueryExpressionHavingBuilder(initialCriterion)
         return currentQueryValues.havingBuilder!!
     }
 
     override fun applyHaving(havingApplier: HavingApplier): QueryExpressionHavingBuilder {
-        Validator.assertNull(currentQueryValues.havingBuilder, "ERROR.31") //$NON-NLS-1$
+        assertNull(currentQueryValues.havingBuilder, "ERROR.31") //$NON-NLS-1$
         currentQueryValues.havingBuilder =
             QueryExpressionHavingBuilder(havingApplier.initialCriterion(), havingApplier.subCriteria())
         return currentQueryValues.havingBuilder!!
@@ -162,13 +163,13 @@ class SelectDSL(
     }
 
     override fun setWaitClause(waitClause: String): SelectDSL {
-        Validator.assertNull(this.waitClause, "ERROR.49") //$NON-NLS-1$
+        assertNull(this.waitClause, "ERROR.49") //$NON-NLS-1$
         this.waitClause = waitClause
         return this
     }
 
     override fun setForClause(forClause: String): SelectDSL {
-        Validator.assertNull(this.forClause, "ERROR.48") //$NON-NLS-1$
+        assertNull(this.forClause, "ERROR.48") //$NON-NLS-1$
         this.forClause = forClause
         return this
     }

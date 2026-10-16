@@ -19,6 +19,7 @@ import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.FragmentCollector
 import org.mybatis.dynamic.sql.util.StringUtilities
+import org.mybatis.dynamic.sql.util.spaceAfter
 import org.mybatis.dynamic.sql.where.CriterionRenderer
 
 abstract class AbstractBooleanExpressionModel protected constructor(
@@ -42,10 +43,10 @@ abstract class AbstractBooleanExpressionModel protected constructor(
 
     private fun calculateClause(collector: FragmentCollector): String {
         if (collector.hasMultipleFragments()) {
-            return collector.collectFragments(" ", StringUtilities.spaceAfter(prefix))
+            return collector.collectFragments(" ", spaceAfter(prefix))
         }
         return collector.firstFragment()?.let { stripEnclosingParenthesesIfPresent(it) }
-            ?.let { StringUtilities.spaceAfter(prefix) + it } ?: ""
+            ?.let { spaceAfter(prefix) + it } ?: ""
     }
 
     private fun stripEnclosingParenthesesIfPresent(fragment: String): String {

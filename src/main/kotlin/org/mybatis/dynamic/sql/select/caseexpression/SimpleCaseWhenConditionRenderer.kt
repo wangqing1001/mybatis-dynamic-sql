@@ -19,7 +19,7 @@ import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.RenderableCondition
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import org.mybatis.dynamic.sql.util.Validator
+import org.mybatis.dynamic.sql.util.assertFalse
 import org.mybatis.dynamic.sql.util.toFragmentCollector
 
 /**
@@ -38,7 +38,7 @@ class SimpleCaseWhenConditionRenderer<T>(
             }
             return@mapNotNull null
         }.toFragmentCollector()
-        Validator.assertFalse(fragmentCollector.isEmpty(), "ERROR.39")
+        assertFalse(fragmentCollector.isEmpty(), "ERROR.39")
         return fragmentCollector.toFragmentAndParameters(", ")
     }
 

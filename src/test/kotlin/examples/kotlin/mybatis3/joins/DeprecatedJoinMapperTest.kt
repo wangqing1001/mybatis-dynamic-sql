@@ -28,8 +28,9 @@ import org.assertj.core.api.Assertions.entry
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.mybatis.dynamic.sql.exception.InvalidSqlException
 import org.mybatis.dynamic.sql.util.Messages
-import org.mybatis.dynamic.sql.util.kotlin.KInvalidSQLException
+import org.mybatis.dynamic.sql.util.kotlin.InvalidSQLException
 import org.mybatis.dynamic.sql.util.kotlin.elements.invoke
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 
@@ -595,7 +596,7 @@ class DeprecatedJoinMapperTest {
         // create second table instance for self-join
         val user2 = user.withAlias("other_user")
 
-        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
+        assertThatExceptionOfType(InvalidSqlException::class.java).isThrownBy {
             select(user.userId, user.userName, user.parentId) {
                 from(user, "u1")
                 join(user2, "u2") {

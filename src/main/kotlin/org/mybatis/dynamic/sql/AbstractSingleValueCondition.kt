@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.StringUtilities
+import org.mybatis.dynamic.sql.util.spaceBefore
 import java.util.function.Function
 import java.util.function.Predicate
 import java.util.function.Supplier
@@ -46,7 +47,7 @@ abstract class AbstractSingleValueCondition<T> protected constructor(protected v
 
     override fun renderCondition(renderingContext: RenderingContext,leftColumn: BindableColumn<T>): FragmentAndParameters {
         val parameterInfo = renderingContext.calculateParameterInfo(leftColumn)
-        val finalFragment = operator() + StringUtilities.spaceBefore(parameterInfo.renderedPlaceHolder)
+        val finalFragment = operator() + spaceBefore(parameterInfo.renderedPlaceHolder)
         val parameters = mapOf(parameterInfo.parameterMapKey to leftColumn.convertParameterType(value()))
         return FragmentAndParameters(finalFragment, parameters)
     }

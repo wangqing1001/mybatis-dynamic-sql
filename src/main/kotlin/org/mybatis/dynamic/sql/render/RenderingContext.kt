@@ -20,6 +20,7 @@ import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration
 import org.mybatis.dynamic.sql.util.StringUtilities
+import org.mybatis.dynamic.sql.util.spaceBefore
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
@@ -86,7 +87,7 @@ class RenderingContext @JvmOverloads constructor(
 
     fun aliasedTableName(table: SqlTable): String {
         return tableAliasCalculator.aliasForTable(table)
-            ?.let { table.tableName() + StringUtilities.spaceBefore(it) }?:table.tableName()
+            ?.let { table.tableName() + spaceBefore(it) }?:table.tableName()
     }
 
     fun isNonRenderingClauseAllowed(): Boolean {

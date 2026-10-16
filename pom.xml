@@ -313,6 +313,8 @@
         <configuration>
           <args>
             <arg>-Xjvm-default=all</arg>
+<!--            <arg>-Xno-param-assertions</arg>-->
+<!--            <arg>-Xno-call-assertions</arg>-->
           </args>
         </configuration>
       </plugin>

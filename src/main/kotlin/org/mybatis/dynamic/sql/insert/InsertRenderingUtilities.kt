@@ -21,6 +21,7 @@ import org.mybatis.dynamic.sql.exception.InvalidSqlException
 import org.mybatis.dynamic.sql.util.FieldAndValueCollector
 import org.mybatis.dynamic.sql.util.Messages
 import org.mybatis.dynamic.sql.util.StringUtilities
+import org.mybatis.dynamic.sql.util.spaceBefore
 
 /**
  * insert 渲染工具类。
@@ -33,7 +34,7 @@ class InsertRenderingUtilities private constructor() {
             val statementStart = calculateInsertStatementStart(table)
             val columnsPhrase = collector.columnsPhrase()
             val valuesPhrase = collector.valuesPhrase()
-            return statementStart + StringUtilities.spaceBefore(columnsPhrase) + StringUtilities.spaceBefore(valuesPhrase)
+            return statementStart + spaceBefore(columnsPhrase) + spaceBefore(valuesPhrase)
         }
 
         @JvmStatic

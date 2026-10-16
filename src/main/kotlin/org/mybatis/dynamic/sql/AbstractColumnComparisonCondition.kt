@@ -18,6 +18,7 @@ package org.mybatis.dynamic.sql
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.StringUtilities
+import org.mybatis.dynamic.sql.util.spaceBefore
 import java.util.function.UnaryOperator
 
 abstract class AbstractColumnComparisonCondition<T> protected constructor(protected val rightColumn: BasicColumn) : RenderableCondition<T> {
@@ -26,7 +27,7 @@ abstract class AbstractColumnComparisonCondition<T> protected constructor(protec
 
     override fun renderCondition(renderingContext: RenderingContext,leftColumn: BindableColumn<T>): FragmentAndParameters {
         return rightColumn.render(renderingContext)
-            .mapFragment { operator() + StringUtilities.spaceBefore(it) }
+            .mapFragment { operator() + spaceBefore(it) }
     }
 
 }

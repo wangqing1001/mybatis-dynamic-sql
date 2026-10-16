@@ -13,56 +13,54 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
+@file:JvmName("Validator")
 package org.mybatis.dynamic.sql.util
 
 import org.mybatis.dynamic.sql.exception.InvalidSqlException
 
-/**
- * 校验工具类。
- */
-class Validator private constructor() {
-    companion object {
-        const val ERROR_32: String = "ERROR.32" //$NON-NLS-1$
+const val ERROR_32: String = "ERROR.32" //$NON-NLS-1$
 
-        @JvmStatic
-        fun assertNotEmpty(collection: Collection<*>, messageNumber: String) {
-            assertFalse(collection.isEmpty(), messageNumber)
-        }
+fun assertNotEmpty(collection: Collection<*>, messageNumber: String) {
+    assertFalse(collection.isEmpty(), messageNumber)
+}
 
-        @JvmStatic
-        fun assertNotEmpty(collection: Collection<*>, messageNumber: String, p1: String) {
-            assertFalse(collection.isEmpty(), messageNumber, p1)
-        }
+fun assertNotEmpty(collection: Collection<*>, messageNumber: String, p1: String) {
+    assertFalse(collection.isEmpty(), messageNumber, p1)
+}
 
-        @JvmStatic
-        fun assertFalse(condition: Boolean, messageNumber: String) {
-            if (condition) {
-                throw InvalidSqlException(Messages.getString(messageNumber))
-            }
-        }
+fun assertNotNull(o: Any?, messageNumber: String) {
+    assertTrue(o != null, messageNumber)
+}
 
-        @JvmStatic
-        fun assertFalse(condition: Boolean, messageNumber: String, p1: String) {
-            if (condition) {
-                throw InvalidSqlException(Messages.getString(messageNumber, p1))
-            }
-        }
+fun assertTrue(condition: Boolean, messageNumber: String, p1: String) {
+    assertFalse(!condition, messageNumber, p1)
+}
 
-        @JvmStatic
-        fun assertTrue(condition: Boolean, messageNumber: String) {
-            assertFalse(!condition, messageNumber)
-        }
+fun assertTrue(condition: Boolean, messageNumber: String) {
+    assertFalse(!condition, messageNumber)
+}
 
-        @JvmStatic
-        fun assertTrue(condition: Boolean, messageNumber: String, p1: String) {
-            assertFalse(!condition, messageNumber, p1)
-        }
-
-        @JvmStatic
-        fun assertNull(`object`: Any?, messageNumber: String) {
-            if (`object` != null) {
-                throw InvalidSqlException(Messages.getString(messageNumber))
-            }
-        }
+fun assertFalse(condition: Boolean, messageNumber: String) {
+    if (condition) {
+        throw InvalidSqlException(Messages.getString(messageNumber))
     }
+}
+
+fun assertFalse(condition: Boolean, messageNumber: String, p1: String) {
+    if (condition) {
+        throw InvalidSqlException(Messages.getString(messageNumber, p1))
+    }
+}
+
+fun assertNull(any: Any?, messageNumber: String) {
+    if (any != null) {
+        throw InvalidSqlException(Messages.getString(messageNumber))
+    }
+}
+
+fun <T: Any> invalidIfNull(o: T?, messageNumber: String): T {
+    if (o == null) {
+        throw InvalidSqlException(Messages.getString(messageNumber))
+    }
+    return o
 }

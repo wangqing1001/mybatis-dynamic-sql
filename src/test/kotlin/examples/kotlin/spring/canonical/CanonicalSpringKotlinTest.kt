@@ -30,7 +30,6 @@ import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.exception.InvalidSqlException
 import org.mybatis.dynamic.sql.util.Messages
-import org.mybatis.dynamic.sql.util.kotlin.KInvalidSQLException
 import org.mybatis.dynamic.sql.add
 import org.mybatis.dynamic.sql.constant
 import org.mybatis.dynamic.sql.isLikeWhenPresent
@@ -249,8 +248,7 @@ open class CanonicalSpringKotlinTest {
 
         val row = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
 
-        val insertStatement = insert(row) {
-            into(person)
+        val insertStatement = insert(person,row) {
             map(id).toProperty("id")
             map(firstName).toProperty("firstName")
             map(lastName).toProperty("lastNameAsString")
@@ -354,8 +352,7 @@ open class CanonicalSpringKotlinTest {
         val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
         val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 2)
 
-        val insertStatement = insertMultiple(listOf(record1, record2)) {
-            into(person)
+        val insertStatement = insertMultiple(person,listOf(record1, record2)) {
             map(id).toProperty("id")
             map(firstName).toProperty("firstName")
             map(lastName).toProperty("lastNameAsString")
@@ -399,8 +396,7 @@ open class CanonicalSpringKotlinTest {
             2
         )
 
-        val insertStatement = insertBatch(listOf(record1, record2)) {
-            into(person)
+        val insertStatement = insertBatch(person,listOf(record1, record2)) {
             map(id) toProperty "id"
             map(firstName) toProperty "firstName"
             map(lastName) toProperty "lastNameAsString"
@@ -487,46 +483,11 @@ open class CanonicalSpringKotlinTest {
 
     @Test
     fun testInsertSelectNoSelectStatement() {
-        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
+        assertThatExceptionOfType(InvalidSqlException::class.java).isThrownBy {
             insertSelect(person) {
                 columns(id, firstName, lastName, birthDate, employed, occupation, addressId)
             }
         }.withMessage(Messages.getString("ERROR.28")) //$NON-NLS-1$
-    }
-
-    @Test
-    fun testBatchInsertNoTable() {
-        val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
-        val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 1)
-
-        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
-            insertBatch(listOf(record1, record2)) {
-                map(person.firstName) toProperty "firstName"
-            }
-        }.withMessage(Messages.getString("ERROR.23")) //$NON-NLS-1$
-    }
-
-    @Test
-    fun testInsertNoTable() {
-        val row = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
-
-        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
-            insert(row) {
-                map(person.firstName) toProperty "firstName"
-            }
-        }.withMessage(Messages.getString("ERROR.25")) //$NON-NLS-1$
-    }
-
-    @Test
-    fun testMultiRowInsertNoTable() {
-        val record1 = PersonRecord(100, "Joe", LastName("Jones"), Date(), true, "Developer", 1)
-        val record2 = PersonRecord(101, "Sarah", LastName("Smith"), Date(), true, "Architect", 1)
-
-        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
-            insertMultiple(listOf(record1, record2)) {
-                map(person.firstName) toProperty "firstName"
-            }
-        }.withMessage(Messages.getString("ERROR.26")) //$NON-NLS-1$
     }
 
     @Test
@@ -550,8 +511,7 @@ open class CanonicalSpringKotlinTest {
     fun testInsertWithGeneratedKey() {
         val command = GeneratedAlwaysCommand(firstName = "Fred", lastName = "Flintstone")
 
-        val insertStatement = insert(command) {
-            into(generatedAlways)
+        val insertStatement = insert(generatedAlways,command) {
             map(generatedAlways.firstName) toProperty "firstName"
             map(generatedAlways.lastName) toProperty "lastName"
         }
@@ -570,8 +530,7 @@ open class CanonicalSpringKotlinTest {
         val command1 = GeneratedAlwaysCommand(firstName = "Fred", lastName = "Flintstone")
         val command2 = GeneratedAlwaysCommand(firstName = "Barney", lastName = "Rubble")
 
-        val insertStatement = insertMultiple(listOf(command1, command2)) {
-            into(generatedAlways)
+        val insertStatement = insertMultiple(generatedAlways,listOf(command1, command2)) {
             map(generatedAlways.firstName) toProperty "firstName"
             map(generatedAlways.lastName) toProperty "lastName"
         }

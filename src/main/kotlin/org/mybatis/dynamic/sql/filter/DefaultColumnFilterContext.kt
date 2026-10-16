@@ -23,19 +23,19 @@ internal class DefaultColumnFilterContext(
     private val columnMappings: MutableList<AbstractColumnMapping> = mutableListOf()
 
     override fun setNull(column: SqlColumn<*>): ColumnFilterContext =
-        add(NullMapping.of(column))
+        add(NullMapping(column))
 
     override fun setConstant(column: SqlColumn<*>, constant: String): ColumnFilterContext =
-        add(ConstantMapping.of(column, constant))
+        add(ConstantMapping(column, constant))
 
     override fun setStringConstant(column: SqlColumn<*>, value: String): ColumnFilterContext =
-        add(StringConstantMapping.of(column, value))
+        add(StringConstantMapping(column, value))
 
     override fun <T> setValue(column: SqlColumn<T>, value: T): ColumnFilterContext =
-        add(ValueMapping.of(column, {value}))
+        add(ValueMapping(column, {value}))
 
     override fun <T> setValue(column: SqlColumn<T>,value: Supplier<T>): ColumnFilterContext =
-        add(ValueMapping.of(column, value))
+        add(ValueMapping(column, value))
 
     override fun toColumnMappings(): List<AbstractColumnMapping> = columnMappings.toList()
 

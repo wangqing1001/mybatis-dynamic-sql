@@ -53,27 +53,27 @@ class MultiRowInsertDSL<T> private constructor(
     inner class ColumnMappingFinisher<F>(private val column: SqlColumn<F>) {
 
         fun toProperty(property: String): MultiRowInsertDSL<T> {
-            columnMappings.add(PropertyMapping.of(column, property))
+            columnMappings.add(PropertyMapping(column, property))
             return this@MultiRowInsertDSL
         }
 
         fun toNull(): MultiRowInsertDSL<T> {
-            columnMappings.add(NullMapping.of(column))
+            columnMappings.add(NullMapping(column))
             return this@MultiRowInsertDSL
         }
 
         fun toConstant(constant: String): MultiRowInsertDSL<T> {
-            columnMappings.add(ConstantMapping.of(column, constant))
+            columnMappings.add(ConstantMapping(column, constant))
             return this@MultiRowInsertDSL
         }
 
         fun toStringConstant(constant: String): MultiRowInsertDSL<T> {
-            columnMappings.add(StringConstantMapping.of(column, constant))
+            columnMappings.add(StringConstantMapping(column, constant))
             return this@MultiRowInsertDSL
         }
 
         fun toRow(): MultiRowInsertDSL<T> {
-            columnMappings.add(RowMapping.of(column))
+            columnMappings.add(RowMapping(column))
             return this@MultiRowInsertDSL
         }
     }

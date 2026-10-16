@@ -23,11 +23,14 @@ import org.mybatis.dynamic.sql.multiSelect
 import org.mybatis.dynamic.sql.select.MultiSelectDSL
 import org.mybatis.dynamic.sql.select.MultiSelectModel
 import org.mybatis.dynamic.sql.util.Buildable
+import org.mybatis.dynamic.sql.util.assertNull
+import org.mybatis.dynamic.sql.util.invalidIfNull
 
 typealias MultiSelectCompleter = KotlinMultiSelectBuilder.() -> Unit
 
 @MyBatisDslMarker
 class KotlinMultiSelectBuilder: Buildable<MultiSelectModel>, KotlinPagingDSL {
+
     private var dsl: MultiSelectDSL? = null
         set(value) {
             assertNull(field, "ERROR.33") //$NON-NLS-1$

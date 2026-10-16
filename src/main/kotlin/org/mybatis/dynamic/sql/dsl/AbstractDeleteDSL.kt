@@ -27,7 +27,8 @@ import org.mybatis.dynamic.sql.filter.buildFilteredWhereModel
 import org.mybatis.dynamic.sql.select.paging.LimitModel
 import org.mybatis.dynamic.sql.util.Buildable
 import org.mybatis.dynamic.sql.util.ConfigurableStatement
-import org.mybatis.dynamic.sql.util.Validator
+import org.mybatis.dynamic.sql.util.ERROR_32
+import org.mybatis.dynamic.sql.util.assertNull
 import org.mybatis.dynamic.sql.where.WhereApplier
 import org.mybatis.dynamic.sql.where.WhereModel
 import java.util.ArrayList
@@ -57,13 +58,13 @@ abstract class AbstractDeleteDSL<M, D : AbstractDeleteDSL<M, D>> protected const
     }
 
     override fun where(initialCriterion: SqlCriterion): DeleteWhereBuilder {
-        Validator.assertNull(whereBuilder, Validator.ERROR_32)
+        assertNull(whereBuilder, ERROR_32)
         whereBuilder = DeleteWhereBuilder(initialCriterion)
         return whereBuilder!!
     }
 
     override fun applyWhere(whereApplier: WhereApplier): DeleteWhereBuilder {
-        Validator.assertNull(whereBuilder, Validator.ERROR_32)
+        assertNull(whereBuilder, ERROR_32)
         whereBuilder = DeleteWhereBuilder(whereApplier.initialCriterion(), whereApplier.subCriteria())
         return whereBuilder!!
     }

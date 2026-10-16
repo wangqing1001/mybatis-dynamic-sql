@@ -148,8 +148,8 @@ fun <T: Any> insert(row: T): InsertDSL.IntoGatherer<T> {
 }
 
 @JvmSynthetic
-fun <T: Any> insert(row: T, completer: KotlinInsertCompleter<T>): InsertModel<T>{
-    return KotlinInsertBuilder(row).apply(completer).build()
+fun <T: Any> insert(table: SqlTable,row: T,completer: KotlinInsertCompleter<T>): InsertModel<T>{
+    return KotlinInsertBuilder(table,row).apply(completer).build()
 }
 
 fun insertInto(table: SqlTable): GeneralInsertDSL {
@@ -170,8 +170,8 @@ fun <T: Any> insertBatch(records: Collection<T>): BatchInsertDSL.IntoGatherer<T>
 }
 
 @JvmSynthetic
-fun <T: Any> insertBatch(rows: Collection<T>, completer: KotlinBatchInsertCompleter<T>): BatchInsertModel<T>{
-    return KotlinBatchInsertBuilder(rows).apply(completer).build()
+fun <T: Any> insertBatch(table: SqlTable,rows: Collection<T>, completer: KotlinBatchInsertCompleter<T>): BatchInsertModel<T>{
+    return KotlinBatchInsertBuilder(table,rows).apply(completer).build()
 }
 
 fun <T: Any> insertMultiple(vararg records: T): MultiRowInsertDSL.IntoGatherer<T> {
@@ -183,8 +183,8 @@ fun <T: Any> insertMultiple(records: Collection<T>): MultiRowInsertDSL.IntoGathe
 }
 
 @JvmSynthetic
-fun <T : Any> insertMultiple(rows: Collection<T>, completer: KotlinMultiRowInsertCompleter<T>): MultiRowInsertModel<T>{
-    return KotlinMultiRowInsertBuilder(rows).apply(completer).build()
+fun <T : Any> insertMultiple(table: SqlTable,rows: Collection<T>, completer: KotlinMultiRowInsertCompleter<T>): MultiRowInsertModel<T>{
+    return KotlinMultiRowInsertBuilder(table,rows).apply(completer).build()
 }
 
 fun insertSelect(table: SqlTable): InsertSelectDSL.InsertColumnGatherer{

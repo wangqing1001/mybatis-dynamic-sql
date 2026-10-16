@@ -28,6 +28,7 @@ import org.mybatis.dynamic.sql.util.PropertyWhenPresentMapping
 import org.mybatis.dynamic.sql.util.RowMapping
 import org.mybatis.dynamic.sql.util.StringConstantMapping
 import org.mybatis.dynamic.sql.util.StringUtilities
+import org.mybatis.dynamic.sql.util.formatConstantForSQL
 
 /**
  * 值短语访问器,负责将列映射转换为插入语句中的值短语。
@@ -45,7 +46,7 @@ open class ValuePhraseVisitor(
     }
 
     override fun visit(mapping: StringConstantMapping): FieldAndValueAndParameters? {
-        val valuePhrase = StringUtilities.formatConstantForSQL(mapping.constant())
+        val valuePhrase = formatConstantForSQL(mapping.constant())
         return FieldAndValueAndParameters(mapping.columnName(), valuePhrase)
     }
 

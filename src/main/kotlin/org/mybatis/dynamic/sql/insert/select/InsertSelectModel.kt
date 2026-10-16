@@ -8,6 +8,7 @@ import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.render.RenderingStrategy
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.util.StringUtilities
+import org.mybatis.dynamic.sql.util.spaceAfter
 
 /**
  * insert-select 模型。
@@ -38,7 +39,7 @@ class InsertSelectModel @JvmOverloads constructor(
     fun render(renderingStrategy: RenderingStrategy): InsertSelectStatementProvider {
         val renderingContext = RenderingContext(renderingStrategy, statementConfiguration)
         val statementStart = InsertRenderingUtilities.calculateInsertStatementStart(table)
-        val prefix = statementStart + StringUtilities.spaceAfter(columnList?.render()?:"")
+        val prefix = statementStart + spaceAfter(columnList?.render()?:"")
         val fragmentAndParameters = selectModel.render(renderingContext,prefix)
         val insertStatement = fragmentAndParameters.fragment()
         val parameters = fragmentAndParameters.parameters()

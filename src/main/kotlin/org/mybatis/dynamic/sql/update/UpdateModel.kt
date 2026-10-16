@@ -25,7 +25,8 @@ import org.mybatis.dynamic.sql.render.TableAliasCalculator
 import org.mybatis.dynamic.sql.select.paging.LimitModel
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import org.mybatis.dynamic.sql.util.Validator
+import org.mybatis.dynamic.sql.util.assertFalse
+import org.mybatis.dynamic.sql.util.assertNotEmpty
 import org.mybatis.dynamic.sql.util.toFragmentCollector
 import org.mybatis.dynamic.sql.where.WhereModel
 import java.util.function.Function
@@ -45,7 +46,7 @@ class UpdateModel @JvmOverloads constructor(
 ) {
 
     init {
-        Validator.assertNotEmpty(columnMappings, "ERROR.17") //$NON-NLS-1$
+        assertNotEmpty(columnMappings, "ERROR.17") //$NON-NLS-1$
     }
 
     fun table(): SqlTable {
@@ -101,7 +102,7 @@ class UpdateModel @JvmOverloads constructor(
     private fun calculateSetPhrase(renderingContext:RenderingContext): FragmentAndParameters {
         val visitor = SetPhraseVisitor(renderingContext)
         val fragmentCollector = columnMappings.mapNotNull { it.accept(visitor) }.toFragmentCollector()
-        Validator.assertFalse(fragmentCollector.isEmpty(), "ERROR.18")
+        assertFalse(fragmentCollector.isEmpty(), "ERROR.18")
         return fragmentCollector.toFragmentAndParameters(", ", "set ", "")
     }
 

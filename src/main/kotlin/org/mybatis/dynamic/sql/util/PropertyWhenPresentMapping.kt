@@ -21,7 +21,7 @@ import java.util.function.Supplier
 /**
  * 表示将列映射到属性名、且仅在属性值存在时渲染的映射。
  */
-class PropertyWhenPresentMapping private constructor(
+class PropertyWhenPresentMapping(
     column: SqlColumn<*>,
     property: String,
     private val valueSupplier: Supplier<*>
@@ -35,10 +35,5 @@ class PropertyWhenPresentMapping private constructor(
         return visitor.visit(this)
     }
 
-    companion object {
-        @JvmStatic
-        fun of(column: SqlColumn<*>, property: String, valueSupplier: Supplier<*>): PropertyWhenPresentMapping {
-            return PropertyWhenPresentMapping(column, property, valueSupplier)
-        }
-    }
+
 }

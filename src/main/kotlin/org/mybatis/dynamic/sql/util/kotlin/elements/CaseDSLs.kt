@@ -24,8 +24,8 @@ import org.mybatis.dynamic.sql.select.caseexpression.SearchedCaseWhenCondition
 import org.mybatis.dynamic.sql.select.caseexpression.SimpleCaseWhenCondition
 import org.mybatis.dynamic.sql.stringConstant
 import org.mybatis.dynamic.sql.util.kotlin.GroupingCriteriaCollector
-import org.mybatis.dynamic.sql.util.kotlin.assertNotNull
-import org.mybatis.dynamic.sql.util.kotlin.assertNull
+import org.mybatis.dynamic.sql.util.assertNotNull
+import org.mybatis.dynamic.sql.util.assertNull
 
 class KSearchedCaseDSL : KElseDSL {
     internal var elseValue: BasicColumn? = null

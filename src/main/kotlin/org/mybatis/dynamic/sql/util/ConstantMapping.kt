@@ -22,7 +22,7 @@ import org.mybatis.dynamic.sql.SqlColumn
  *
  * @author Jeff Butler
  */
-class ConstantMapping private constructor(
+class ConstantMapping(
     column: SqlColumn<*>,
     private val constant: String
 ) : AbstractColumnMapping(column) {
@@ -35,10 +35,4 @@ class ConstantMapping private constructor(
         return visitor.visit(this)
     }
 
-    companion object {
-        @JvmStatic
-        fun of(column: SqlColumn<*>, constant: String): ConstantMapping {
-            return ConstantMapping(column, constant)
-        }
-    }
 }

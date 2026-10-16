@@ -20,7 +20,7 @@ import org.mybatis.dynamic.sql.SortSpecification
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.select.SearchedCaseRenderer
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import org.mybatis.dynamic.sql.util.Validator.Companion.assertNotEmpty
+import org.mybatis.dynamic.sql.util.assertNotEmpty
 import java.util.*
 
 /**

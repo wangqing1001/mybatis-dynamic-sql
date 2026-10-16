@@ -19,7 +19,7 @@ import org.mybatis.dynamic.sql.configuration.StatementConfiguration
 import org.mybatis.dynamic.sql.order.OrderByModel
 import org.mybatis.dynamic.sql.render.RenderingStrategy
 import org.mybatis.dynamic.sql.select.paging.PagingModel
-import org.mybatis.dynamic.sql.util.Validator
+import org.mybatis.dynamic.sql.util.assertNotEmpty
 
 /**
  * 多 select 语句模型。包含初始 select 与多个 union 查询。
@@ -33,7 +33,7 @@ class MultiSelectModel @JvmOverloads constructor(
 ) : AbstractSelectModel(orderByModel,pagingModel,statementConfiguration) {
 
     init {
-        Validator.assertNotEmpty(unionQueries, "ERROR.35") //$NON-NLS-1$
+        assertNotEmpty(unionQueries, "ERROR.35") //$NON-NLS-1$
     }
 
     fun initialSelect(): SelectModel {

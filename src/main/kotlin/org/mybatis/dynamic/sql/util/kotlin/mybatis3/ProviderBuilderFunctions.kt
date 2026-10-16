@@ -65,20 +65,19 @@ fun deleteFrom(table: SqlTable, completer: DeleteCompleter): DeleteStatementProv
 fun deleteFrom(table: SqlTable, tableAlias: String, completer: DeleteCompleter): DeleteStatementProvider =
     deleteFrom(table, tableAlias, completer).render(RenderingStrategies.MYBATIS3)
 
-fun <T : Any> insert(row: T, completer: KotlinInsertCompleter<T>): InsertStatementProvider<T> =
-    insert(row, completer).render(RenderingStrategies.MYBATIS3)
+fun <T : Any> insert(table: SqlTable,row: T, completer: KotlinInsertCompleter<T>): InsertStatementProvider<T> =
+    insert(table,row, completer).render(RenderingStrategies.MYBATIS3)
 
-fun <T : Any> insertBatch(rows: Collection<T>, completer: KotlinBatchInsertCompleter<T>): BatchInsert<T> =
-    insertBatch(rows, completer).render(RenderingStrategies.MYBATIS3)
+fun <T : Any> insertBatch(table: SqlTable,rows: Collection<T>, completer: KotlinBatchInsertCompleter<T>): BatchInsert<T> =
+    insertBatch(table,rows,completer).render(RenderingStrategies.MYBATIS3)
 
 fun insertInto(table: SqlTable, completer: GeneralInsertCompleter): GeneralInsertStatementProvider =
     insertInto(table, completer).render(RenderingStrategies.MYBATIS3)
 
-fun <T : Any> insertMultiple(
-    rows: Collection<T>,
-    completer: KotlinMultiRowInsertCompleter<T>
-): MultiRowInsertStatementProvider<T> =
-    insertMultiple(rows, completer).render(RenderingStrategies.MYBATIS3)
+fun <T : Any> insertMultiple(table: SqlTable,rows: Collection<T>,completer: KotlinMultiRowInsertCompleter<T>): MultiRowInsertStatementProvider<T>{
+    return insertMultiple(table,rows, completer).render(RenderingStrategies.MYBATIS3)
+}
+
 
 fun insertSelect(table: SqlTable,completer: InsertSelectCompleter): InsertSelectStatementProvider =
     insertSelect(table,completer).render(RenderingStrategies.MYBATIS3)

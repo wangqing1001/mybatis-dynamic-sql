@@ -22,7 +22,7 @@ import java.util.function.Supplier
 /**
  * 表示将列映射到值或 null 的映射。
  */
-class ValueOrNullMapping<T> private constructor(
+class ValueOrNullMapping<T>(
     column: SqlColumn<T>,
     private val valueSupplier: Supplier<T?>
 ) : AbstractColumnMapping(column) {
