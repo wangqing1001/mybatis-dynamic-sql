@@ -8,30 +8,18 @@ import org.mybatis.dynamic.sql.insert.select.InsertSelectModel
 import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.util.Buildable
 import org.mybatis.dynamic.sql.util.ConfigurableStatement
-import java.util.Objects
 import java.util.function.Consumer
 
 /**
  * insert-select DSL。
  */
 class InsertSelectDSL private constructor(
-    table: SqlTable,
-    columnList: InsertColumnListModel?,
-    selectModel: SelectModel
+    private val table: SqlTable,
+    private val selectModel: SelectModel,
+    private val columnList: InsertColumnListModel? = null
 ) : Buildable<InsertSelectModel>, ConfigurableStatement<InsertSelectDSL> {
 
-    private val table: SqlTable
-    private val columnList: InsertColumnListModel?
-    private val selectModel: SelectModel
     private val statementConfiguration: StatementConfiguration = StatementConfiguration()
-
-    init {
-        this.table = Objects.requireNonNull(table)
-        this.selectModel = Objects.requireNonNull(selectModel)
-        this.columnList = columnList
-    }
-
-    private constructor(table: SqlTable, selectModel: SelectModel) : this(table, null, selectModel)
 
     override fun build(): InsertSelectModel {
         return InsertSelectModel(table,selectModel,statementConfiguration,columnList)
@@ -71,7 +59,7 @@ class InsertSelectDSL private constructor(
         private val columnList: InsertColumnListModel = InsertColumnListModel(columns)
 
         fun withSelectStatement(selectModelBuilder: Buildable<SelectModel>): InsertSelectDSL {
-            return InsertSelectDSL(table, columnList, selectModelBuilder.build())
+            return InsertSelectDSL(table,selectModelBuilder.build(),columnList)
         }
     }
 }

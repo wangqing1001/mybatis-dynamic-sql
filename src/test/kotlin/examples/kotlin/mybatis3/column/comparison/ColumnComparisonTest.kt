@@ -20,7 +20,7 @@ import examples.kotlin.mybatis3.column.comparison.ColumnComparisonDynamicSqlSupp
 import examples.kotlin.mybatis3.column.comparison.ColumnComparisonDynamicSqlSupport.number2
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.mybatis.dynamic.sql.util.kotlin.elements.sortColumn
+import org.mybatis.dynamic.sql.sortColumn
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig

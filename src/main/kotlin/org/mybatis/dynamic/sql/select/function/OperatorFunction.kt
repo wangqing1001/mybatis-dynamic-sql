@@ -20,12 +20,7 @@ import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.toFragmentCollector
-import java.util.ArrayList
-import java.util.Arrays
-import java.util.Objects
-import java.util.function.Function
-import java.util.stream.Collectors
-import java.util.stream.Stream
+
 
 /**
  * 运算符函数,如加、减、乘、除等。

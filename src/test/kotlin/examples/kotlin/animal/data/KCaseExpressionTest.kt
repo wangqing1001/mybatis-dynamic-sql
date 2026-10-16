@@ -29,10 +29,10 @@ import org.mybatis.dynamic.sql.exception.InvalidSqlException
 import org.mybatis.dynamic.sql.util.Messages
 import org.mybatis.dynamic.sql.util.kotlin.KInvalidSQLException
 import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
-import org.mybatis.dynamic.sql.util.kotlin.elements.case
-import org.mybatis.dynamic.sql.util.kotlin.elements.cast
-import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
-import org.mybatis.dynamic.sql.util.kotlin.elements.value
+import org.mybatis.dynamic.sql.case
+import org.mybatis.dynamic.sql.cast
+import org.mybatis.dynamic.sql.isEqualTo
+import org.mybatis.dynamic.sql.value
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper
 import java.math.BigDecimal

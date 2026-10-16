@@ -27,8 +27,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
-import org.mybatis.dynamic.sql.util.kotlin.elements.add
-import org.mybatis.dynamic.sql.util.kotlin.elements.constant
+import org.mybatis.dynamic.sql.add
+import org.mybatis.dynamic.sql.constant
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.deleteFrom
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.update

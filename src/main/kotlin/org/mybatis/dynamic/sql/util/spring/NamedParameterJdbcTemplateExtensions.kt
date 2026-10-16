@@ -31,34 +31,30 @@ import org.mybatis.dynamic.sql.select.SelectStatementProvider
 import org.mybatis.dynamic.sql.update.UpdateModel
 import org.mybatis.dynamic.sql.update.UpdateStatementProvider
 import org.mybatis.dynamic.sql.util.Buildable
-import org.mybatis.dynamic.sql.util.Utilities
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.jdbc.support.KeyHolder
-import java.util.Objects
 import java.util.Optional
 
 /**
  * NamedParameterJdbcTemplate 的扩展类,提供类型安全的数据库操作方法。
  */
-class NamedParameterJdbcTemplateExtensions(template: NamedParameterJdbcTemplate) {
-    private val template: NamedParameterJdbcTemplate = Objects.requireNonNull(template)
+class NamedParameterJdbcTemplateExtensions(private val template: NamedParameterJdbcTemplate) {
+
 
     fun count(countStatement: Buildable<SelectModel>): Long {
         return count(countStatement.build().render(RenderingStrategies.SPRING_NAMED_PARAMETER))
     }
 
     fun count(countStatement: SelectStatementProvider): Long {
-        val answer = template.queryForObject(
+       return template.queryForObject(
             countStatement.selectStatement,
             countStatement.parameters,
             Long::class.java
-        )
-
-        return Utilities.safelyUnbox(answer)
+        )?:0
     }
 
     fun delete(deleteStatement: Buildable<DeleteModel>): Int {

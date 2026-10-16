@@ -16,7 +16,6 @@
 package org.mybatis.dynamic.sql.util
 
 import org.mybatis.dynamic.sql.SqlColumn
-import java.util.Objects
 import java.util.function.Supplier
 
 /**
@@ -26,10 +25,6 @@ class MappedColumnWhenPresentMapping private constructor(
     column: SqlColumn<*>,
     private val valueSupplier: Supplier<*>
 ) : MappedColumnMapping(column) {
-
-    init {
-        Objects.requireNonNull(valueSupplier)
-    }
 
     fun shouldRender(): Boolean {
         return valueSupplier.get() != null

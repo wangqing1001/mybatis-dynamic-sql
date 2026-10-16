@@ -26,15 +26,13 @@ import org.mybatis.dynamic.sql.util.StringUtilities
 import org.mybatis.dynamic.sql.util.ValueMapping
 import org.mybatis.dynamic.sql.util.ValueOrNullMapping
 import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping
-import java.util.Objects
 
 /**
  * 通用 insert 值短语访问器。
  */
-class GeneralInsertValuePhraseVisitor(renderingContext: RenderingContext) :
-    GeneralInsertMappingVisitor<FieldAndValueAndParameters?>() {
-
-    private val renderingContext: RenderingContext = Objects.requireNonNull(renderingContext)
+class GeneralInsertValuePhraseVisitor(
+    private val renderingContext: RenderingContext
+) : GeneralInsertMappingVisitor<FieldAndValueAndParameters?>() {
 
     override fun visit(mapping: NullMapping): FieldAndValueAndParameters {
         return buildNullFragment(mapping)
@@ -54,8 +52,8 @@ class GeneralInsertValuePhraseVisitor(renderingContext: RenderingContext) :
     }
 
     override fun <T> visit(mapping: ValueOrNullMapping<T>): FieldAndValueAndParameters? {
-        return mapping.value().map { v: Any -> buildValueFragment(mapping, v) }
-            .orElseGet { buildNullFragment(mapping) }
+        val value = mapping.value()?:return buildNullFragment(mapping)
+        return buildValueFragment(mapping, value)
     }
 
     override fun <T> visit(mapping: ValueWhenPresentMapping<T>): FieldAndValueAndParameters? {

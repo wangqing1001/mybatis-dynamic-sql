@@ -112,7 +112,7 @@ class LikeNotLikeTest {
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
-            import org.mybatis.dynamic.sql.util.kotlin.elements.isLike
+            import org.mybatis.dynamic.sql.isLike
 
             fun testFunction() {
                 countFrom(person) {
@@ -135,7 +135,7 @@ class LikeNotLikeTest {
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
-            import org.mybatis.dynamic.sql.util.kotlin.elements.isLikeWhenPresent
+            import org.mybatis.dynamic.sql.isLikeWhenPresent
 
             fun testFunction() {
                 countFrom(person) {
@@ -156,7 +156,7 @@ class LikeNotLikeTest {
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
-            import org.mybatis.dynamic.sql.util.kotlin.elements.isNotLike
+            import org.mybatis.dynamic.sql.isNotLike
 
             fun testFunction() {
                 val ids = listOf(4, null)
@@ -180,7 +180,7 @@ class LikeNotLikeTest {
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
-            import org.mybatis.dynamic.sql.util.kotlin.elements.isNotLikeWhenPresent
+            import org.mybatis.dynamic.sql.isNotLikeWhenPresent
 
             fun testFunction() {
                 countFrom(person) {

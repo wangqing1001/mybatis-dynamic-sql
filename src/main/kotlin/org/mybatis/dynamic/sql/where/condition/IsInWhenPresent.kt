@@ -16,8 +16,6 @@
 package org.mybatis.dynamic.sql.where.condition
 
 import org.mybatis.dynamic.sql.AbstractListValueCondition
-import org.mybatis.dynamic.sql.util.Utilities
-import java.util.Arrays
 import java.util.Collections
 import java.util.function.Function
 import java.util.function.Predicate

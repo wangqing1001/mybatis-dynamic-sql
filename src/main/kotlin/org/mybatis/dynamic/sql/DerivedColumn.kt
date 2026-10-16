@@ -111,15 +111,15 @@ class DerivedColumn<T> protected constructor(builder: Builder<T>) : BindableColu
 
     companion object {
         @JvmStatic
-        fun <T> of(name: String): DerivedColumn<T?> {
-            return Builder<T?>()
+        fun <T> of(name: String): DerivedColumn<T> {
+            return Builder<T>()
                 .withName(name)
                 .build()
         }
 
         @JvmStatic
-        fun <T> of(name: String, tableQualifier: String?): DerivedColumn<T?> {
-            return Builder<T?>()
+        fun <T> of(name: String, tableQualifier: String?): DerivedColumn<T> {
+            return Builder<T>()
                 .withName(name)
                 .withTableQualifier(tableQualifier)
                 .build()

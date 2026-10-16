@@ -17,9 +17,9 @@ package org.mybatis.dynamic.sql.util.kotlin
 
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.SortSpecification
-import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration
 import org.mybatis.dynamic.sql.dsl.SelectDSL
+import org.mybatis.dynamic.sql.multiSelect
 import org.mybatis.dynamic.sql.select.MultiSelectDSL
 import org.mybatis.dynamic.sql.select.MultiSelectModel
 import org.mybatis.dynamic.sql.util.Buildable
@@ -39,7 +39,7 @@ class KotlinMultiSelectBuilder: Buildable<MultiSelectModel>, KotlinPagingDSL {
 
     fun select(selectList: List<BasicColumn>, completer: SelectCompleter) {
         val b = KotlinSelectBuilder(SelectDSL.select(selectList)).apply(completer)
-        dsl = SqlBuilder.multiSelect(b)
+        dsl = multiSelect(b)
     }
 
     fun selectDistinct(vararg selectList: BasicColumn, completer: SelectCompleter) =
@@ -47,7 +47,7 @@ class KotlinMultiSelectBuilder: Buildable<MultiSelectModel>, KotlinPagingDSL {
 
     fun selectDistinct(selectList: List<BasicColumn>, completer: SelectCompleter) {
         val b = KotlinSelectBuilder(SelectDSL.selectDistinct(selectList)).apply(completer)
-        dsl = SqlBuilder.multiSelect(b)
+        dsl = multiSelect(b)
     }
 
     fun union(completer: KotlinSubQueryBuilder.() -> Unit) {

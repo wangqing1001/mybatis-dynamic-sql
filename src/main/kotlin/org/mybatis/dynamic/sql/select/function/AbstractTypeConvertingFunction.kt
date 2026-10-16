@@ -17,7 +17,6 @@ package org.mybatis.dynamic.sql.select.function
 
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.BindableColumn
-import java.util.Objects
 
 /**
  * 表示可以改变底层类型的函数。例如,将二进制字段转换为 base64 字符串,或将整数转换为字符串等。

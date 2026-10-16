@@ -11,15 +11,15 @@ import org.mybatis.dynamic.sql.util.NullMapping
 import org.mybatis.dynamic.sql.util.PropertyMapping
 import org.mybatis.dynamic.sql.util.RowMapping
 import org.mybatis.dynamic.sql.util.StringConstantMapping
-import java.util.Objects
 
 /**
  * 多行 insert DSL。
  */
-class MultiRowInsertDSL<T> private constructor(builder: BatchInsertDSL.AbstractBuilder<T, *>) :
-    Buildable<MultiRowInsertModel<T>> {
+class MultiRowInsertDSL<T> private constructor(
+    builder: BatchInsertDSL.AbstractBuilder<T, *>
+) : Buildable<MultiRowInsertModel<T>> {
     private val records: List<T> = builder.records
-    private val table: SqlTable = Objects.requireNonNull(builder.table)
+    private val table: SqlTable = builder.table
     private val columnMappings: MutableList<AbstractColumnMapping> = builder.columnMappings
 
     fun <F> map(column: SqlColumn<F>): ColumnMappingFinisher<F> {
@@ -36,16 +36,12 @@ class MultiRowInsertDSL<T> private constructor(builder: BatchInsertDSL.AbstractB
     }
 
     companion object {
-        @JvmStatic
-        @SafeVarargs
-        fun <T> insert(vararg records: T): IntoGatherer<T> {
-            return insert(listOf(*records))
-        }
 
         @JvmStatic
         fun <T> insert(records: Collection<T>): IntoGatherer<T> {
             return IntoGatherer(records)
         }
+
     }
 
     class IntoGatherer<T>(private val records: Collection<T>) {
@@ -83,6 +79,7 @@ class MultiRowInsertDSL<T> private constructor(builder: BatchInsertDSL.AbstractB
     }
 
     class Builder<T>(table: SqlTable) : BatchInsertDSL.AbstractBuilder<T, Builder<T>>(table) {
+
         override fun getThis(): Builder<T> {
             return this
         }
@@ -90,5 +87,6 @@ class MultiRowInsertDSL<T> private constructor(builder: BatchInsertDSL.AbstractB
         fun build(): MultiRowInsertDSL<T> {
             return MultiRowInsertDSL(this)
         }
+
     }
 }

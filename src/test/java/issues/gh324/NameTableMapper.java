@@ -74,7 +74,7 @@ public interface NameTableMapper extends CommonCountMapper, CommonDeleteMapper, 
     default int updateByPrimaryKey(NameRecord row) {
         return update(c ->
                 c.set(name).equalTo(row::name)
-                        .where(id, isEqualTo(row::id))
+                        .where(id, isEqualTo(row.id()))
         );
     }
 

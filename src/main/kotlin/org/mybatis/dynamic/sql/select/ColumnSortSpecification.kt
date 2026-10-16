@@ -19,24 +19,15 @@ import org.mybatis.dynamic.sql.SortSpecification
 import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import java.util.Objects
 
 /**
  * 基于列的排序规范:指定表别名和列。
  */
-class ColumnSortSpecification private constructor(
+class ColumnSortSpecification @JvmOverloads constructor(
     private val tableAlias: String,
     private val column: SqlColumn<*>,
-    private val descendingPhrase: String
+    private val descendingPhrase: String = ""
 ) : SortSpecification {
-
-    constructor(tableAlias: String, column: SqlColumn<*>) :
-        this(tableAlias, column, "") //$NON-NLS-1$
-
-    init {
-        Objects.requireNonNull(tableAlias)
-        Objects.requireNonNull(column)
-    }
 
     override fun descending(): SortSpecification {
         return ColumnSortSpecification(tableAlias, column, " DESC") //$NON-NLS-1$

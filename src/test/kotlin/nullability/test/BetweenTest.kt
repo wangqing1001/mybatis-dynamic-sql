@@ -93,7 +93,7 @@ class BetweenTest {
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
-            import org.mybatis.dynamic.sql.util.kotlin.elements.isBetween
+            import org.mybatis.dynamic.sql.isBetween
 
             fun testFunction() {
                 countFrom(person) {
@@ -116,7 +116,7 @@ class BetweenTest {
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
-            import org.mybatis.dynamic.sql.util.kotlin.elements.isBetween
+            import org.mybatis.dynamic.sql.isBetween
 
             fun testFunction() {
                 countFrom(person) {
@@ -139,7 +139,7 @@ class BetweenTest {
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
-            import org.mybatis.dynamic.sql.util.kotlin.elements.isBetween
+            import org.mybatis.dynamic.sql.isBetween
 
             fun testFunction() {
                 countFrom(person) {

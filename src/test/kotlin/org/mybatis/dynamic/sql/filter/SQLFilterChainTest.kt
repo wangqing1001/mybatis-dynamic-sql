@@ -21,8 +21,8 @@ import org.mybatis.dynamic.sql.NullCriterion
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.dsl.SelectDSL
 import org.mybatis.dynamic.sql.render.RenderingStrategies
-import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
-import org.mybatis.dynamic.sql.util.kotlin.model.select
+import org.mybatis.dynamic.sql.isEqualTo
+import org.mybatis.dynamic.sql.select
 import org.mybatis.dynamic.sql.where.WhereApplier
 
 class SQLFilterChainTest {

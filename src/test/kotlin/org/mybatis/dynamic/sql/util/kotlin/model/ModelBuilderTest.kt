@@ -19,7 +19,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.render.RenderingStrategies
-import org.mybatis.dynamic.sql.util.kotlin.elements.column
+import org.mybatis.dynamic.sql.select
+import org.mybatis.dynamic.sql.selectDistinct
 
 class ModelBuilderTest {
     class Table : SqlTable("Table")

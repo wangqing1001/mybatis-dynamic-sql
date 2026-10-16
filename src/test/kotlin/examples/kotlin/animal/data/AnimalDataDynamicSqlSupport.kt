@@ -18,7 +18,6 @@ package examples.kotlin.animal.data
 import java.sql.JDBCType
 
 import org.mybatis.dynamic.sql.SqlTable
-import org.mybatis.dynamic.sql.util.kotlin.elements.column
 
 object AnimalDataDynamicSqlSupport {
     val animalData = AnimalData()

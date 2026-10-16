@@ -16,11 +16,12 @@
 package org.mybatis.dynamic.sql.util.kotlin.elements
 
 import org.mybatis.dynamic.sql.BasicColumn
-import org.mybatis.dynamic.sql.SqlBuilder
+import org.mybatis.dynamic.sql.cast
 import org.mybatis.dynamic.sql.select.function.Cast
 import org.mybatis.dynamic.sql.util.kotlin.assertNull
 
 class CastDSL {
+
     internal var cast: Cast? = null
         private set(value) {
             assertNull(field, "ERROR.43") //$NON-NLS-1$
@@ -28,14 +29,14 @@ class CastDSL {
         }
 
     infix fun String.`as`(targetType: String) {
-        cast = SqlBuilder.cast(this).`as`(targetType)
+        cast = cast(this).`as`(targetType)
     }
 
     infix fun Double.`as`(targetType: String) {
-        cast = SqlBuilder.cast(this).`as`(targetType)
+        cast = cast(this).`as`(targetType)
     }
 
     infix fun BasicColumn.`as`(targetType: String) {
-        cast = SqlBuilder.cast(this).`as`(targetType)
+        cast = cast(this).`as`(targetType)
     }
 }

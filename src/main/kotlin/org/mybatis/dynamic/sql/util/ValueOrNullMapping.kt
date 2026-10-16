@@ -16,7 +16,6 @@
 package org.mybatis.dynamic.sql.util
 
 import org.mybatis.dynamic.sql.SqlColumn
-import java.util.Objects
 import java.util.Optional
 import java.util.function.Supplier
 
@@ -27,16 +26,11 @@ class ValueOrNullMapping<T> private constructor(
     column: SqlColumn<T>,
     private val valueSupplier: Supplier<T?>
 ) : AbstractColumnMapping(column) {
-    // 保留对列的引用,以免丢失类型
-    private val localColumn: SqlColumn<T>
 
-    init {
-        Objects.requireNonNull(valueSupplier)
-        localColumn = Objects.requireNonNull(column)
-    }
+    private val localColumn: SqlColumn<T> = column
 
-    fun value(): Optional<Any> {
-        return Optional.ofNullable(localColumn.convertParameterType(valueSupplier.get()))
+    fun value(): Any? {
+        return localColumn.convertParameterType(valueSupplier.get())
     }
 
     override fun <R> accept(visitor: ColumnMappingVisitor<R>): R {

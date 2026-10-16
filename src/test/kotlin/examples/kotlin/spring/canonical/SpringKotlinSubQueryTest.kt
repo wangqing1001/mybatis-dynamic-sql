@@ -23,8 +23,8 @@ import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.id
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.DerivedColumn
-import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
 import org.mybatis.dynamic.sql.util.kotlin.elements.invoke
+import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
 import org.mybatis.dynamic.sql.util.kotlin.spring.deleteFrom
 import org.mybatis.dynamic.sql.util.kotlin.spring.select
 import org.mybatis.dynamic.sql.util.kotlin.spring.selectList

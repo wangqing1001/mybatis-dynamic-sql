@@ -26,11 +26,10 @@ import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.exception.InvalidSqlException
 import org.mybatis.dynamic.sql.util.Messages
 import org.mybatis.dynamic.sql.util.kotlin.GroupingCriteriaCollector.Companion.having
-import org.mybatis.dynamic.sql.util.kotlin.elements.add
-import org.mybatis.dynamic.sql.util.kotlin.elements.column
-import org.mybatis.dynamic.sql.util.kotlin.elements.count
-import org.mybatis.dynamic.sql.util.kotlin.elements.isBetween
-import org.mybatis.dynamic.sql.util.kotlin.elements.isLessThanOrEqualTo
+import org.mybatis.dynamic.sql.add
+import org.mybatis.dynamic.sql.count
+import org.mybatis.dynamic.sql.isBetween
+import org.mybatis.dynamic.sql.isLessThanOrEqualTo
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 
 object FooDynamicSqlSupport {

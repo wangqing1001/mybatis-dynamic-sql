@@ -44,7 +44,6 @@ import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping
 import org.mybatis.dynamic.sql.where.WhereApplier
 import org.mybatis.dynamic.sql.where.WhereModel
 import java.util.ArrayList
-import java.util.Objects
 import java.util.function.Consumer
 import java.util.function.Supplier
 
@@ -67,7 +66,9 @@ abstract class AbstractUpdateDSL<M, D : AbstractUpdateDSL<M, D>> protected const
     }
 
     override fun where(): UpdateWhereBuilder {
-        whereBuilder = Objects.requireNonNullElseGet(whereBuilder) { UpdateWhereBuilder(NullCriterion()) }
+        if(whereBuilder==null){
+            whereBuilder = UpdateWhereBuilder(NullCriterion())
+        }
         return whereBuilder!!
     }
 

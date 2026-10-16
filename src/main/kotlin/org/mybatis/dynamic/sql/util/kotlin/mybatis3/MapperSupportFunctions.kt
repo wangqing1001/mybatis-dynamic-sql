@@ -35,14 +35,13 @@ import org.mybatis.dynamic.sql.util.kotlin.KotlinMultiRowInsertCompleter
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
 
-fun count(
+fun countFrom(
     mapper: (SelectStatementProvider) -> Long,
     column: BasicColumn,
     table: SqlTable,
     completer: CountCompleter
 ): Long =
-    count(column) {
-        from(table)
+    countFrom(column,table) {
         run(completer)
     }.run(mapper)
 
@@ -52,8 +51,7 @@ fun countDistinct(
     table: SqlTable,
     completer: CountCompleter
 ): Long =
-    countDistinct(column) {
-        from(table)
+    countDistinctFrom(column,table) {
         run(completer)
     }.run(mapper)
 
@@ -128,8 +126,7 @@ fun insertSelect(
     table: SqlTable,
     completer: InsertSelectCompleter
 ): Int =
-    insertSelect {
-        into(table)
+    insertSelect(table) {
         run(completer)
     }.run(mapper)
 

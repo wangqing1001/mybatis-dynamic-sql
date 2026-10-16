@@ -32,7 +32,6 @@ import org.mybatis.dynamic.sql.util.kotlin.KotlinUpdateBuilder
 import org.mybatis.dynamic.sql.util.kotlin.SelectCompleter
 import org.mybatis.dynamic.sql.util.kotlin.UpdateCompleter
 import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
-import org.mybatis.dynamic.sql.util.kotlin.mybatis3.count
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countDistinct
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.deleteFrom
@@ -47,7 +46,7 @@ import org.mybatis.dynamic.sql.util.kotlin.mybatis3.selectOne
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.update
 
 fun PersonMapper.count(column: BasicColumn, completer: CountCompleter) =
-    count(this::count, column, person, completer)
+    countFrom(this::count, column, person, completer)
 
 fun PersonMapper.countDistinct(column: BasicColumn, completer: CountCompleter) =
     countDistinct(this::count, column, person, completer)

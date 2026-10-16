@@ -16,8 +16,7 @@
 package org.mybatis.dynamic.sql.render
 
 import org.mybatis.dynamic.sql.SqlTable
-import java.util.Objects
-import java.util.Optional
+
 
 /**
  * 带父级表别名计算器。先查询子计算器,再回退到父计算器。

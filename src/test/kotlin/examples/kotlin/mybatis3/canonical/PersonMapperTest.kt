@@ -34,14 +34,14 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestInstance.Lifecycle
 import org.mybatis.dynamic.sql.exception.NonRenderingWhereClauseException
-import org.mybatis.dynamic.sql.util.kotlin.elements.add
-import org.mybatis.dynamic.sql.util.kotlin.elements.case
-import org.mybatis.dynamic.sql.util.kotlin.elements.concat
-import org.mybatis.dynamic.sql.util.kotlin.elements.constant
-import org.mybatis.dynamic.sql.util.kotlin.elements.isIn
-import org.mybatis.dynamic.sql.util.kotlin.elements.sortColumn
-import org.mybatis.dynamic.sql.util.kotlin.elements.stringConstant
-import org.mybatis.dynamic.sql.util.kotlin.elements.sum
+import org.mybatis.dynamic.sql.add
+import org.mybatis.dynamic.sql.case
+import org.mybatis.dynamic.sql.concat
+import org.mybatis.dynamic.sql.constant
+import org.mybatis.dynamic.sql.isIn
+import org.mybatis.dynamic.sql.sortColumn
+import org.mybatis.dynamic.sql.stringConstant
+import org.mybatis.dynamic.sql.sum
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertInto
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.insertSelect
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.multiSelect
@@ -269,8 +269,7 @@ class PersonMapperTest {
         sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
-            val insertStatement = insertSelect {
-                into(person)
+            val insertStatement = insertSelect(person) {
                 columns(id, firstName, lastName, employed, occupation, addressId, birthDate)
                 select(add(id, constant<Int>("100")), firstName, lastName, employed, occupation, addressId, birthDate) {
                     from(person)
@@ -606,9 +605,7 @@ class PersonMapperTest {
     fun testCountLastName() {
         sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
-
             val rows = mapper.count(lastName) { allRows() }
-
             assertThat(rows).isEqualTo(6L)
         }
     }
@@ -903,8 +900,7 @@ class PersonMapperTest {
     @Test
     fun testInsertSelectWithNonRenderingWhereClauseDisAllowed() {
         assertThatExceptionOfType(NonRenderingWhereClauseException::class.java).isThrownBy {
-            insertSelect {
-                into(person)
+            insertSelect(person) {
                 select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
                     from(person)
                     where { id isGreaterThanOrEqualToWhenPresent null }
@@ -915,8 +911,7 @@ class PersonMapperTest {
 
     @Test
     fun testInsertSelectWithNonRenderingWhereClauseAllowed() {
-        val insertStatement = insertSelect {
-            into(person)
+        val insertStatement = insertSelect(person) {
             select(id, firstName, lastName, birthDate, employed, occupation, addressId) {
                 from(person)
                 where { id isGreaterThanOrEqualToWhenPresent null }

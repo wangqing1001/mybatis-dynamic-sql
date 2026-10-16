@@ -17,7 +17,6 @@ package org.mybatis.dynamic.sql.exception
 
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.util.Messages
-import java.util.Objects
 
 /**
  * 当构建的查询对同一个 SqlTable 实例指定了多个别名时抛出此异常。
@@ -26,21 +25,14 @@ import java.util.Objects
  * <p>此错误通常发生在构建自连接查询时。解决方法是创建 SqlTable 对象的第二个实例用于自连接。
  */
 class DuplicateTableAliasException : DynamicSqlException {
-    constructor(table: SqlTable, newAlias: String, existingAlias: String) : super(
-        generateMessage(
-            Objects.requireNonNull(table),
-            Objects.requireNonNull(newAlias),
-            Objects.requireNonNull(existingAlias)
-        )
-    )
+
+    constructor(table: SqlTable, newAlias: String, existingAlias: String) : super(generateMessage(table,newAlias,existingAlias))
 
     companion object {
+
         private fun generateMessage(table: SqlTable, newAlias: String, existingAlias: String): String {
-            return Messages.getString("ERROR.1", table.tableName(), newAlias, existingAlias) //$NON-NLS-1$
+            return Messages.getString("ERROR.1", table.tableName(), newAlias, existingAlias)
         }
 
-        @JvmField
-        @kotlin.jvm.Transient
-        val serialVersionUID: Long = -2631664872557787391L
     }
 }

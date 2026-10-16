@@ -526,7 +526,7 @@ import org.mybatis.dynamic.sql.SqlBuilder.isEqualTo
 to
 
 ```kotlin
-import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
+import org.mybatis.dynamic.sql.isEqualTo
 ```
 
 Several functions that accepted supplier arguments are not present in the Kotlin DSL. This is to avoid difficult

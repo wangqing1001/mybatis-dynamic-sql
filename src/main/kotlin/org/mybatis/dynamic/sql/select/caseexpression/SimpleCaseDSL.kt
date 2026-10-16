@@ -18,8 +18,7 @@ package org.mybatis.dynamic.sql.select.caseexpression
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.RenderableCondition
-import java.util.Arrays
-import java.util.Objects
+
 
 /**
  * 简单 case 表达式 DSL。

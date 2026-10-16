@@ -72,7 +72,7 @@ class NotInTest {
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
-            import org.mybatis.dynamic.sql.util.kotlin.elements.isNotIn
+            import org.mybatis.dynamic.sql.isNotIn
 
             fun testFunction() {
                 countFrom(person) {
@@ -95,7 +95,7 @@ class NotInTest {
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
-            import org.mybatis.dynamic.sql.util.kotlin.elements.isNotIn
+            import org.mybatis.dynamic.sql.isNotIn
 
             fun testFunction() {
                 val ids = listOf(4, null)

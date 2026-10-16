@@ -18,21 +18,14 @@ package org.mybatis.dynamic.sql.select.aggregate
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import java.util.Objects
 
 /**
  * count(column) 聚合函数。
  */
-class Count private constructor(
+class Count @JvmOverloads constructor(
     private val column: BasicColumn,
-    alias: String?
+    alias: String? = null
 ) : AbstractCount(alias) {
-
-    constructor(column: BasicColumn) : this(column, null)
-
-    init {
-        Objects.requireNonNull(column)
-    }
 
     override fun render(renderingContext: RenderingContext): FragmentAndParameters {
         return column.render(renderingContext).mapFragment { s: String -> "count($s)" } //$NON-NLS-1$ //$NON-NLS-2$
@@ -42,10 +35,4 @@ class Count private constructor(
         return Count(column, alias)
     }
 
-    companion object {
-        @JvmStatic
-        fun of(column: BasicColumn): Count {
-            return Count(column)
-        }
-    }
 }

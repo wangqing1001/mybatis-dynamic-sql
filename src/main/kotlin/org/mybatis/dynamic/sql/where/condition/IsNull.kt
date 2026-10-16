@@ -41,10 +41,10 @@ open class IsNull<T> : AbstractNoValueCondition<T>(), AbstractNoValueCondition.F
             }
         }
 
-        @JvmStatic
-        fun <T> empty(): IsNull<T> {
+        private fun <T> empty(): IsNull<T> {
             @Suppress("UNCHECKED_CAST")
             return EMPTY as IsNull<T>
         }
+
     }
 }

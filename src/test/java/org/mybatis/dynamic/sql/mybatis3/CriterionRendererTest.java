@@ -42,7 +42,7 @@ class CriterionRendererTest {
     void testAliasWithIgnore() {
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER);
-        IsEqualTo<Integer> condition = SqlBuilder.isEqualTo(() -> 3);
+        IsEqualTo<Integer> condition = SqlBuilder.isEqualTo(3);
         ColumnAndConditionCriterion<Integer> criterion = new ColumnAndConditionCriterion<>(column,condition);
         RenderingContext renderingContext = new RenderingContext(RenderingStrategies.MYBATIS3,new StatementConfiguration());
         CriterionRenderer renderer = new CriterionRenderer(renderingContext);
@@ -57,7 +57,7 @@ class CriterionRendererTest {
     void testAliasWithoutIgnore() {
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER);
-        IsEqualTo<Integer> condition = SqlBuilder.isEqualTo(() -> 3);
+        IsEqualTo<Integer> condition = SqlBuilder.isEqualTo(3);
 
         ColumnAndConditionCriterion<Integer> criterion = new ColumnAndConditionCriterion<>(column,condition);
         Map<SqlTable, String> tableAliases = new HashMap<>();
@@ -97,7 +97,7 @@ class CriterionRendererTest {
     void testTypeHandlerAndAlias() {
         SqlTable table = SqlTable.of("foo");
         SqlColumn<Integer> column = table.column("id", JDBCType.INTEGER, "foo.Bar");
-        IsEqualTo<Integer> condition = SqlBuilder.isEqualTo(() -> 3);
+        IsEqualTo<Integer> condition = SqlBuilder.isEqualTo(3);
         ColumnAndConditionCriterion<Integer> criterion = new ColumnAndConditionCriterion<>(column,condition);
         Map<SqlTable, String> tableAliases = new HashMap<>();
         tableAliases.put(table, "a");

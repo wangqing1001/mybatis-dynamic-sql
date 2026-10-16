@@ -56,9 +56,8 @@ class SetPhraseVisitor(private val renderingContext: RenderingContext) :
     }
 
     override fun <T> visit(mapping: ValueOrNullMapping<T>): FragmentAndParameters? {
-        return mapping.value()
-            .map { v: Any -> buildValueFragment(mapping, v) }
-            .orElseGet { buildNullFragment(mapping) }
+        val value = mapping.value()?:return buildNullFragment(mapping)
+        return buildValueFragment(mapping, value)
     }
 
     override fun <T> visit(mapping: ValueWhenPresentMapping<T>): FragmentAndParameters? {

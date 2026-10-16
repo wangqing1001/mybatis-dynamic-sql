@@ -28,10 +28,10 @@ import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.occupation
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
-import org.mybatis.dynamic.sql.util.kotlin.elements.add
-import org.mybatis.dynamic.sql.util.kotlin.elements.constant
+import org.mybatis.dynamic.sql.add
+import org.mybatis.dynamic.sql.constant
 import org.mybatis.dynamic.sql.util.kotlin.spring.count
-import org.mybatis.dynamic.sql.util.kotlin.spring.countDistinct
+import org.mybatis.dynamic.sql.util.kotlin.spring.countDistinctFrom
 import org.mybatis.dynamic.sql.util.kotlin.spring.countFrom
 import org.mybatis.dynamic.sql.util.kotlin.spring.deleteFrom
 import org.mybatis.dynamic.sql.util.kotlin.spring.insert
@@ -80,19 +80,15 @@ open class CanonicalSpringKotlinTemplateDirectTest {
 
     @Test
     fun testCountLastName() {
-        val rows = template.count(lastName) {
-            from(person)
-        }
+        val rows = template.countFrom(lastName,person) {}
 
         assertThat(rows).isEqualTo(6)
     }
 
     @Test
     fun testCountDistinctLastName() {
-        val rows = template.countDistinct(lastName) {
-            from(person)
+        val rows = template.countDistinctFrom(lastName,person) {
         }
-
         assertThat(rows).isEqualTo(2)
     }
 
@@ -258,8 +254,7 @@ open class CanonicalSpringKotlinTemplateDirectTest {
 
     @Test
     fun testInsertSelect() {
-        val rows = template.insertSelect {
-            into(person)
+        val rows = template.insertSelect(person) {
             columns(id, firstName, lastName, birthDate, employed, occupation, addressId)
             select(
                 add(id, constant<Int>("100")), firstName, lastName, birthDate, employed, occupation, addressId
@@ -355,8 +350,7 @@ open class CanonicalSpringKotlinTemplateDirectTest {
         val keyHolder = GeneratedKeyHolder()
 
         val rows = template.withKeyHolder(keyHolder) {
-            insertSelect {
-                into(generatedAlways)
+            insertSelect(generatedAlways) {
                 columns(generatedAlways.firstName, generatedAlways.lastName)
                 select(person.firstName, person.lastName) {
                     from(person)

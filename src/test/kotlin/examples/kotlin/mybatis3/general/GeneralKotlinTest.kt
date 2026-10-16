@@ -38,9 +38,8 @@ import org.junit.jupiter.api.TestInstance
 import org.mybatis.dynamic.sql.exception.InvalidSqlException
 import org.mybatis.dynamic.sql.util.Messages
 import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
-import org.mybatis.dynamic.sql.util.kotlin.elements.count
-import org.mybatis.dynamic.sql.util.kotlin.mybatis3.count
-import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countDistinct
+import org.mybatis.dynamic.sql.count
+import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countDistinctFrom
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.deleteFrom
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
@@ -103,8 +102,7 @@ class GeneralKotlinTest {
         sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
-            val countStatement = count(lastName) {
-                from(person)
+            val countStatement = countFrom(lastName,person) {
                 where { id isLessThan 4 }
             }
 
@@ -123,8 +121,7 @@ class GeneralKotlinTest {
         sqlSessionFactory.openSession().use { session ->
             val mapper = session.getMapper(PersonMapper::class.java)
 
-            val countStatement = countDistinct(lastName) {
-                from(person)
+            val countStatement = countDistinctFrom(lastName,person) {
                 where { id isLessThan 4 }
             }
 
@@ -619,28 +616,12 @@ class GeneralKotlinTest {
         }.withMessage(Messages.getString("ERROR.27")) //$NON-NLS-1$
     }
 
-    @Test
-    fun testRawCountWithoutFrom() {
-        assertThatExceptionOfType(InvalidSqlException::class.java).isThrownBy {
-            count(id) {
-                where {
-                    id isEqualTo 5
-                    or {
-                        id isEqualTo 4
-                        or {
-                            id isEqualTo 3
-                            or { id isEqualTo 2 }
-                        }
-                    }
-                }
-            }
-        }.withMessage(Messages.getString("ERROR.27")) //$NON-NLS-1$
-    }
+
 
     @Test
     fun testRawCountDoubleFrom() {
         assertThatExceptionOfType(InvalidSqlException::class.java).isThrownBy {
-            count(id) {
+            countFrom(person) {
                 from(person)
                 from(person)
                 where {

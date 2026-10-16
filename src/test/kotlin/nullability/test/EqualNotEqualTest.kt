@@ -112,7 +112,7 @@ class EqualNotEqualTest {
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
-            import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
+            import org.mybatis.dynamic.sql.isEqualTo
 
             fun testFunction() {
                 countFrom(person) {
@@ -135,7 +135,7 @@ class EqualNotEqualTest {
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
-            import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualToWhenPresent
+            import org.mybatis.dynamic.sql.isEqualToWhenPresent
 
             fun testFunction() {
                 countFrom(person) {
@@ -156,7 +156,7 @@ class EqualNotEqualTest {
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
-            import org.mybatis.dynamic.sql.util.kotlin.elements.isNotEqualTo
+            import org.mybatis.dynamic.sql.isNotEqualTo
 
             fun testFunction() {
                 val ids = listOf(4, null)
@@ -180,7 +180,7 @@ class EqualNotEqualTest {
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.firstName
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
-            import org.mybatis.dynamic.sql.util.kotlin.elements.isNotEqualToWhenPresent
+            import org.mybatis.dynamic.sql.isNotEqualToWhenPresent
 
             fun testFunction() {
                 countFrom(person) {

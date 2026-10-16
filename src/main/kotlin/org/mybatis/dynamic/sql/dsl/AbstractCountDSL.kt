@@ -73,8 +73,6 @@ abstract class AbstractCountDSL<M, D : AbstractCountDSL<M, D>> protected constru
         return whereBuilder
     }
 
-
-
     override fun where(initialCriterion: SqlCriterion): CountWhereBuilder {
         Validator.assertNull(whereBuilder, Validator.ERROR_32)
         whereBuilder = CountWhereBuilder(initialCriterion)

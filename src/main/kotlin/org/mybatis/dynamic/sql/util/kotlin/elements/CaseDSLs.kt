@@ -17,10 +17,12 @@ package org.mybatis.dynamic.sql.util.kotlin.elements
 
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.RenderableCondition
+import org.mybatis.dynamic.sql.constant
 import org.mybatis.dynamic.sql.select.caseexpression.BasicWhenCondition
 import org.mybatis.dynamic.sql.select.caseexpression.ConditionBasedWhenCondition
 import org.mybatis.dynamic.sql.select.caseexpression.SearchedCaseWhenCondition
 import org.mybatis.dynamic.sql.select.caseexpression.SimpleCaseWhenCondition
+import org.mybatis.dynamic.sql.stringConstant
 import org.mybatis.dynamic.sql.util.kotlin.GroupingCriteriaCollector
 import org.mybatis.dynamic.sql.util.kotlin.assertNotNull
 import org.mybatis.dynamic.sql.util.kotlin.assertNull

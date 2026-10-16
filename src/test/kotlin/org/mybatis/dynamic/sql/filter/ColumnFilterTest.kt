@@ -21,7 +21,7 @@ import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.dsl.GeneralInsertDSL
 import org.mybatis.dynamic.sql.dsl.UpdateDSL
 import org.mybatis.dynamic.sql.render.RenderingStrategies
-import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
+import org.mybatis.dynamic.sql.isEqualTo
 
 /**
  * 列过滤器（update / general insert 的 set 子句填充）的回归测试。

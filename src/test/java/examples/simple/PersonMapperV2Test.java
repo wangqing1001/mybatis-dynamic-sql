@@ -460,7 +460,7 @@ class PersonMapperV2Test {
                     .set(addressId).equalToOrNull(row::addressId)
                     .where();
 
-            var statement = start.and(id, isEqualToWhenPresent(row::id))
+            var statement = start.and(id, isEqualToWhenPresent(row.id()))
                     .build().render(RenderingStrategies.MYBATIS3);
 
 

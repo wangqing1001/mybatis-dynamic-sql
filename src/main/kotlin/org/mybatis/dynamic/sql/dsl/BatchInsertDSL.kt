@@ -11,7 +11,6 @@ import org.mybatis.dynamic.sql.util.NullMapping
 import org.mybatis.dynamic.sql.util.PropertyMapping
 import org.mybatis.dynamic.sql.util.RowMapping
 import org.mybatis.dynamic.sql.util.StringConstantMapping
-import java.util.Objects
 
 /**
  * 批量 insert DSL。
@@ -35,16 +34,12 @@ class BatchInsertDSL<T> private constructor(builder: AbstractBuilder<T, *>) : Bu
     }
 
     companion object {
-        @JvmStatic
-        @SafeVarargs
-        fun <T> insert(vararg records: T): IntoGatherer<T> {
-            return insert(listOf(*records))
-        }
 
         @JvmStatic
         fun <T> insert(records: Collection<T>): IntoGatherer<T> {
             return IntoGatherer(records)
         }
+
     }
 
     class IntoGatherer<T>(private val records: Collection<T>) {

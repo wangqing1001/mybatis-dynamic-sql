@@ -16,10 +16,10 @@
 package org.mybatis.dynamic.sql.util.kotlin
 
 import org.mybatis.dynamic.sql.BasicColumn
-import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration
+import org.mybatis.dynamic.sql.dsl.InsertSelectDSL
 import org.mybatis.dynamic.sql.dsl.SelectDSL
 import org.mybatis.dynamic.sql.insert.select.InsertSelectModel
 import org.mybatis.dynamic.sql.select.SelectModel
@@ -27,6 +27,7 @@ import org.mybatis.dynamic.sql.util.Buildable
 
 @MyBatisDslMarker
 sealed class KotlinBaseSubQueryBuilder {
+
     private var selectBuilder: KotlinSelectBuilder? = null
 
     fun select(vararg selectList: BasicColumn, completer: SelectCompleter): Unit =
@@ -62,14 +63,11 @@ class KotlinQualifiedSubQueryBuilder : KotlinBaseSubQueryBuilder(), Buildable<Se
 
 typealias InsertSelectCompleter = KotlinInsertSelectSubQueryBuilder.() -> Unit
 
-class KotlinInsertSelectSubQueryBuilder : KotlinBaseSubQueryBuilder(), Buildable<InsertSelectModel> {
-    private var columnList: List<SqlColumn<*>>? = null
-    private var table: SqlTable? = null
-    private var statementConfigurator: (StatementConfiguration.() -> Unit)? = null
 
-    fun into(table: SqlTable) {
-        this.table = table
-    }
+class KotlinInsertSelectSubQueryBuilder(private val table: SqlTable) : KotlinBaseSubQueryBuilder(), Buildable<InsertSelectModel> {
+
+    private var columnList: List<SqlColumn<*>>? = null
+    private var statementConfigurator: (StatementConfiguration.() -> Unit)? = null
 
     fun columns(vararg columnList: SqlColumn<*>): Unit = columns(columnList.asList())
 
@@ -82,19 +80,12 @@ class KotlinInsertSelectSubQueryBuilder : KotlinBaseSubQueryBuilder(), Buildable
     }
 
     override fun build(): InsertSelectModel {
-        assertNotNull(table, "ERROR.29") //$NON-NLS-1$
-
-        val dsl = if (columnList == null) {
-            SqlBuilder.insertInto(table!!)
-                .withSelectStatement { buildSelectModel() }
-        } else {
-            SqlBuilder.insertInto(table!!)
-                .withColumnList(columnList!!)
-                .withSelectStatement { buildSelectModel() }
+        val insertSelectDSL = if(columnList != null){
+            InsertSelectDSL.insertInto(table).withColumnList(columnList!!).withSelectStatement{ buildSelectModel() }
+        }else{
+            InsertSelectDSL.insertInto(table).withSelectStatement{ buildSelectModel() }
         }
-
-        statementConfigurator?.let { dsl.configureStatement(it) }
-
-        return dsl.build()
+        statementConfigurator?.let { insertSelectDSL.configureStatement(it) }
+        return insertSelectDSL.build()
     }
 }

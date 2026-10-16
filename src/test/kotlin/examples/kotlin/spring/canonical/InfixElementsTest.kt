@@ -26,9 +26,9 @@ import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.util.Messages
 import org.mybatis.dynamic.sql.util.kotlin.KInvalidSQLException
-import org.mybatis.dynamic.sql.util.kotlin.elements.isLike
-import org.mybatis.dynamic.sql.util.kotlin.elements.stringConstant
-import org.mybatis.dynamic.sql.util.kotlin.elements.upper
+import org.mybatis.dynamic.sql.isLike
+import org.mybatis.dynamic.sql.stringConstant
+import org.mybatis.dynamic.sql.upper
 import org.mybatis.dynamic.sql.util.kotlin.spring.countFrom
 import org.mybatis.dynamic.sql.util.kotlin.spring.delete
 import org.mybatis.dynamic.sql.util.kotlin.spring.deleteFrom

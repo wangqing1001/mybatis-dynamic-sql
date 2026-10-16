@@ -25,8 +25,8 @@ import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.lastName
 import examples.kotlin.spring.canonical.PersonDynamicSqlSupport.occupation
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.mybatis.dynamic.sql.util.kotlin.elements.max
-import org.mybatis.dynamic.sql.util.kotlin.elements.min
+import org.mybatis.dynamic.sql.max
+import org.mybatis.dynamic.sql.min
 import org.mybatis.dynamic.sql.util.kotlin.spring.select
 import org.mybatis.dynamic.sql.util.kotlin.spring.selectList
 import org.mybatis.dynamic.sql.util.kotlin.spring.selectOne

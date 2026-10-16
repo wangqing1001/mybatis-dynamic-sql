@@ -18,7 +18,6 @@ package org.mybatis.dynamic.sql.select
 import org.mybatis.dynamic.sql.SortSpecification
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import java.util.Objects
 
 /**
  * 用于没有合适列名的 order by 短语(例如计算列或聚合列)。

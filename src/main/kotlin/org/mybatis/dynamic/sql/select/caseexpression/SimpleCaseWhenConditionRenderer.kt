@@ -21,18 +21,15 @@ import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.Validator
 import org.mybatis.dynamic.sql.util.toFragmentCollector
-import java.util.Objects
 
 /**
  * 简单 case when 条件渲染器。
  */
 class SimpleCaseWhenConditionRenderer<T>(
-    renderingContext: RenderingContext,
-    column: BindableColumn<T>
+    private val renderingContext: RenderingContext,
+    private val column: BindableColumn<T>
 ) : SimpleCaseWhenConditionVisitor<T, FragmentAndParameters> {
 
-    private val renderingContext: RenderingContext = Objects.requireNonNull(renderingContext)
-    private val column: BindableColumn<T> = Objects.requireNonNull(column)
 
     override fun visit(whenCondition: ConditionBasedWhenCondition<T>): FragmentAndParameters {
         val fragmentCollector = whenCondition.conditions().mapNotNull {

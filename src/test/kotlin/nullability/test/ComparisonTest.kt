@@ -69,7 +69,7 @@ class ComparisonTest {
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
-            import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualTo
+            import org.mybatis.dynamic.sql.isEqualTo
 
             fun testFunction() {
                 countFrom(person) {
@@ -92,7 +92,7 @@ class ComparisonTest {
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
-            import org.mybatis.dynamic.sql.util.kotlin.elements.isEqualToWhenPresent
+            import org.mybatis.dynamic.sql.isEqualToWhenPresent
 
             fun testFunction() {
                 countFrom(person) {
@@ -155,7 +155,7 @@ class ComparisonTest {
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
-            import org.mybatis.dynamic.sql.util.kotlin.elements.isNotEqualTo
+            import org.mybatis.dynamic.sql.isNotEqualTo
 
             fun testFunction() {
                 countFrom(person) {
@@ -178,7 +178,7 @@ class ComparisonTest {
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
-            import org.mybatis.dynamic.sql.util.kotlin.elements.isNotEqualToWhenPresent
+            import org.mybatis.dynamic.sql.isNotEqualToWhenPresent
 
             fun testFunction() {
                 countFrom(person) {
@@ -241,7 +241,7 @@ class ComparisonTest {
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
-            import org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThan
+            import org.mybatis.dynamic.sql.isGreaterThan
 
             fun testFunction() {
                 countFrom(person) {
@@ -264,7 +264,7 @@ class ComparisonTest {
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
-            import org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThanWhenPresent
+            import org.mybatis.dynamic.sql.isGreaterThanWhenPresent
 
             fun testFunction() {
                 countFrom(person) {
@@ -327,7 +327,7 @@ class ComparisonTest {
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
-            import org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThanOrEqualTo
+            import org.mybatis.dynamic.sql.isGreaterThanOrEqualTo
 
             fun testFunction() {
                 countFrom(person) {
@@ -350,7 +350,7 @@ class ComparisonTest {
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
-            import org.mybatis.dynamic.sql.util.kotlin.elements.isGreaterThanOrEqualToWhenPresent
+            import org.mybatis.dynamic.sql.isGreaterThanOrEqualToWhenPresent
 
             fun testFunction() {
                 countFrom(person) {
@@ -413,7 +413,7 @@ class ComparisonTest {
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
-            import org.mybatis.dynamic.sql.util.kotlin.elements.isLessThan
+            import org.mybatis.dynamic.sql.isLessThan
 
             fun testFunction() {
                 countFrom(person) {
@@ -436,7 +436,7 @@ class ComparisonTest {
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
-            import org.mybatis.dynamic.sql.util.kotlin.elements.isLessThanWhenPresent
+            import org.mybatis.dynamic.sql.isLessThanWhenPresent
 
             fun testFunction() {
                 countFrom(person) {
@@ -499,7 +499,7 @@ class ComparisonTest {
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
-            import org.mybatis.dynamic.sql.util.kotlin.elements.isLessThanOrEqualTo
+            import org.mybatis.dynamic.sql.isLessThanOrEqualTo
 
             fun testFunction() {
                 countFrom(person) {
@@ -522,7 +522,7 @@ class ComparisonTest {
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.id
             import examples.kotlin.mybatis3.canonical.PersonDynamicSqlSupport.person
             import org.mybatis.dynamic.sql.util.kotlin.mybatis3.countFrom
-            import org.mybatis.dynamic.sql.util.kotlin.elements.isLessThanOrEqualToWhenPresent
+            import org.mybatis.dynamic.sql.isLessThanOrEqualToWhenPresent
 
             fun testFunction() {
                 countFrom(person) {

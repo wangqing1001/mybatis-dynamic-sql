@@ -16,7 +16,6 @@
 package org.mybatis.dynamic.sql.util
 
 import org.mybatis.dynamic.sql.SqlColumn
-import java.util.Objects
 
 /**
  * 列映射抽象基类。

@@ -16,7 +16,6 @@
 package org.mybatis.dynamic.sql.util.mybatis3
 
 import org.mybatis.dynamic.sql.BasicColumn
-import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.delete.DeleteStatementProvider
 import org.mybatis.dynamic.sql.dsl.CountDSL
@@ -78,6 +77,8 @@ object MyBatis3Utils {
 
     @JvmStatic
     fun countFrom(table: SqlTable, completer: CountDSLCompleter): SelectStatementProvider {
+
+
         return countFrom(CountDSL.countFrom(table), completer)
     }
 
@@ -124,7 +125,7 @@ object MyBatis3Utils {
 
     @JvmStatic
     fun <R : Any> insert(row: R, table: SqlTable, completer: UnaryOperator<InsertDSL<R>>): InsertStatementProvider<R> {
-        return completer.apply(SqlBuilder.insert(row).into(table))
+        return completer.apply(org.mybatis.dynamic.sql.insert(row).into(table))
             .build()
             .render(RenderingStrategies.MYBATIS3)
     }
@@ -156,12 +157,12 @@ object MyBatis3Utils {
     }
 
     @JvmStatic
-    fun <R> insertMultiple(
+    fun <R: Any> insertMultiple(
         records: Collection<R>,
         table: SqlTable,
         completer: UnaryOperator<MultiRowInsertDSL<R>>
     ): MultiRowInsertStatementProvider<R> {
-        return completer.apply(SqlBuilder.insertMultiple(records).into(table))
+        return completer.apply(org.mybatis.dynamic.sql.insertMultiple(records).into(table))
             .build()
             .render(RenderingStrategies.MYBATIS3)
     }

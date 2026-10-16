@@ -18,21 +18,14 @@ package org.mybatis.dynamic.sql.select.aggregate
 import org.mybatis.dynamic.sql.BasicColumn
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import java.util.Objects
 
 /**
  * count(distinct column) 聚合函数。
  */
-class CountDistinct private constructor(
+class CountDistinct @JvmOverloads constructor(
     private val column: BasicColumn,
-    alias: String?
+    alias: String? = null
 ) : AbstractCount(alias) {
-
-    constructor(column: BasicColumn) : this(column, null)
-
-    init {
-        Objects.requireNonNull(column)
-    }
 
     override fun render(renderingContext: RenderingContext): FragmentAndParameters {
         return column.render(renderingContext)

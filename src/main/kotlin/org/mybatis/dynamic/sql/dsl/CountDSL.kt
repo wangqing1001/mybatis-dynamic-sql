@@ -16,16 +16,18 @@
 package org.mybatis.dynamic.sql.dsl
 
 import org.mybatis.dynamic.sql.BasicColumn
-import org.mybatis.dynamic.sql.SqlBuilder
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.select.SelectModel
+import org.mybatis.dynamic.sql.select.aggregate.Count
+import org.mybatis.dynamic.sql.select.aggregate.CountAll
+import org.mybatis.dynamic.sql.select.aggregate.CountDistinct
 
 /**
  * 用于构建 count 查询的 DSL。count 查询是 select 查询的特化:它们有 join 和 where 子句,
  * 但没有 select 的其它部分(group by、order by 等)。count 查询总是返回一个 long 值。
  * 如果这些限制不可接受,请使用 Select DSL 构建不受限制的 select 语句。
  */
-class CountDSL private constructor(column: BasicColumn) : AbstractCountDSL<SelectModel, CountDSL>(column) {
+class CountDSL(column: BasicColumn) : AbstractCountDSL<SelectModel, CountDSL>(column) {
 
     override fun getThis(): CountDSL {
         return this
@@ -38,22 +40,22 @@ class CountDSL private constructor(column: BasicColumn) : AbstractCountDSL<Selec
     companion object {
         @JvmStatic
         fun countFrom(table: SqlTable): CountDSL {
-            return CountDSL(SqlBuilder.count()).from(table)
+            return CountDSL(CountAll()).from(table)
         }
 
         @JvmStatic
         fun countFrom(table: SqlTable, tableAlias: String): CountDSL {
-            return CountDSL(SqlBuilder.count()).from(table, tableAlias)
+            return CountDSL(CountAll()).from(table, tableAlias)
         }
 
         @JvmStatic
         fun count(column: BasicColumn): CountDSL {
-            return CountDSL(SqlBuilder.count(column))
+            return CountDSL(Count(column))
         }
 
         @JvmStatic
         fun countDistinct(column: BasicColumn): CountDSL {
-            return CountDSL(SqlBuilder.countDistinct(column))
+            return CountDSL(CountDistinct(column))
         }
     }
 }

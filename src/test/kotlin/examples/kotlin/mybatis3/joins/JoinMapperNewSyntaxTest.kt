@@ -31,10 +31,10 @@ import org.junit.jupiter.api.TestInstance
 import org.mybatis.dynamic.sql.exception.InvalidSqlException
 import org.mybatis.dynamic.sql.util.Messages
 import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
-import org.mybatis.dynamic.sql.util.kotlin.elements.constant
-import org.mybatis.dynamic.sql.util.kotlin.elements.count
+import org.mybatis.dynamic.sql.constant
+import org.mybatis.dynamic.sql.count
 import org.mybatis.dynamic.sql.util.kotlin.elements.invoke
-import org.mybatis.dynamic.sql.util.kotlin.elements.subQuery
+import org.mybatis.dynamic.sql.subQuery
 import org.mybatis.dynamic.sql.util.kotlin.mybatis3.select
 import org.mybatis.dynamic.sql.util.mybatis3.CommonSelectMapper
 

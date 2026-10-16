@@ -80,7 +80,7 @@ class PersonMapperTest {
             assertThat(rows).isEqualTo(1);
             assertThat(row.getId()).isEqualTo(22);
 
-            InsertSelectStatementProvider insertSelectStatement = SqlBuilder.insertInto(person)
+            InsertSelectStatementProvider insertSelectStatement = SqlBuilder.insertSelect(person)
                     .withColumnList(firstName, lastName)
                     .withSelectStatement(SqlBuilder.select(firstName, lastName).from(person))
                     .build()
@@ -116,7 +116,7 @@ class PersonMapperTest {
             assertThat(record1.getId()).isEqualTo(22);
             assertThat(record2.getId()).isEqualTo(23);
 
-            InsertSelectStatementProvider insertSelectStatement = SqlBuilder.insertInto(person)
+            InsertSelectStatementProvider insertSelectStatement = SqlBuilder.insertSelect(person)
                     .withColumnList(firstName, lastName)
                     .withSelectStatement(SqlBuilder.select(firstName, lastName).from(person))
                     .build()

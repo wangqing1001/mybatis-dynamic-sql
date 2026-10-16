@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
+import org.mybatis.dynamic.sql.SqlBuilder;
 import org.mybatis.dynamic.sql.delete.DeleteModel;
 import org.mybatis.dynamic.sql.insert.batch.BatchInsertModel;
 import org.mybatis.dynamic.sql.insert.GeneralInsertModel;
@@ -449,7 +450,7 @@ class PersonTemplateTest {
                 .set(employed).equalToWhenPresent(updateRecord::employed)
                 .set(occupation).equalToWhenPresent(updateRecord::occupation)
                 .set(addressId).equalToWhenPresent(updateRecord::addressId)
-                .where(id, isEqualTo(updateRecord::id));
+                .where(id, isEqualTo(updateRecord.id()));
 
         rows = template.update(updateStatement);
         assertThat(rows).isEqualTo(1);
@@ -489,7 +490,7 @@ class PersonTemplateTest {
                 .set(employed).equalToWhenPresent(row::employed)
                 .set(occupation).equalToWhenPresent(row::occupation)
                 .set(addressId).equalToWhenPresent(row::addressId)
-                .where(id, isEqualTo(row::id));
+                .where(id, isEqualTo(row.id()));
 
         rows = template.update(updateStatement);
         assertThat(rows).isEqualTo(1);
@@ -536,7 +537,6 @@ class PersonTemplateTest {
     void testCount() {
         Buildable<SelectModel> countStatement = countFrom(person)
                 .where(occupation, isNull());
-
         long rows = template.count(countStatement);
         assertThat(rows).isEqualTo(2L);
     }
@@ -551,7 +551,7 @@ class PersonTemplateTest {
 
     @Test
     void testCountLastName() {
-        Buildable<SelectModel> countStatement = countColumn(lastName).from(person);
+        Buildable<SelectModel> countStatement = countFrom(lastName,person);
 
         long rows = template.count(countStatement);
         assertThat(rows).isEqualTo(6L);
@@ -559,7 +559,7 @@ class PersonTemplateTest {
 
     @Test
     void testCountDistinctLastName() {
-        Buildable<SelectModel> countStatement = countDistinctColumn(lastName).from(person);
+        Buildable<SelectModel> countStatement = countDistinctFrom(lastName,person);
 
         long rows = template.count(countStatement);
         assertThat(rows).isEqualTo(2L);

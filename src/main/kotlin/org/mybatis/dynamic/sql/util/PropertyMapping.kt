@@ -16,7 +16,6 @@
 package org.mybatis.dynamic.sql.util
 
 import org.mybatis.dynamic.sql.SqlColumn
-import java.util.Objects
 
 /**
  * 表示将列映射到属性名的映射。
@@ -26,9 +25,7 @@ open class PropertyMapping protected constructor(
     private val property: String
 ) : AbstractColumnMapping(column) {
 
-    init {
-        Objects.requireNonNull(property)
-    }
+
 
     fun property(): String {
         return property

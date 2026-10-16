@@ -16,7 +16,6 @@
 package examples.kotlin.mybatis3.canonical
 
 import org.mybatis.dynamic.sql.SqlTable
-import org.mybatis.dynamic.sql.util.kotlin.elements.column
 import java.sql.JDBCType
 
 object GeneratedAlwaysDynamicSqlSupport {

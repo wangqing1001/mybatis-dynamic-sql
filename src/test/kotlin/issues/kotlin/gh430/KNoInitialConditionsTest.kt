@@ -21,8 +21,8 @@ import org.mybatis.dynamic.sql.AndOrCriteriaGroup
 import org.mybatis.dynamic.sql.subselect.FooDynamicSqlSupport.foo
 import org.mybatis.dynamic.sql.subselect.FooDynamicSqlSupport.column1
 import org.mybatis.dynamic.sql.subselect.FooDynamicSqlSupport.column2
-import org.mybatis.dynamic.sql.util.kotlin.elements.and
-import org.mybatis.dynamic.sql.util.kotlin.elements.or
+import org.mybatis.dynamic.sql.and
+import org.mybatis.dynamic.sql.or
 import org.mybatis.dynamic.sql.util.kotlin.spring.select
 import java.util.*
 

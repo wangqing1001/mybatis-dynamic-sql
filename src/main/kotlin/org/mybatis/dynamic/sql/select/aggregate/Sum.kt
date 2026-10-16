@@ -63,7 +63,7 @@ class Sum<T> private constructor(
 
         @JvmStatic
         fun of(column: BasicColumn): Sum<Any> {
-            return Sum<Any>(column)
+            return Sum(column)
         }
 
         @JvmStatic

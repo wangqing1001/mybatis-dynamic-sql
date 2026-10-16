@@ -115,7 +115,7 @@ public interface GeneratedAlwaysMapper extends CommonUpdateMapper {
         return update(c ->
                 c.set(firstName).equalTo(row::getFirstName)
                 .set(lastName).equalTo(row::getLastName)
-                .where(id, isEqualTo(row::getId))
+                .where(id, isEqualTo(row.getId()))
         );
     }
 
@@ -123,7 +123,7 @@ public interface GeneratedAlwaysMapper extends CommonUpdateMapper {
         return update(c ->
                 c.set(firstName).equalToWhenPresent(row::getFirstName)
                         .set(lastName).equalToWhenPresent(row::getLastName)
-                        .where(id, isEqualTo(row::getId))
+                        .where(id, isEqualTo(row.getId()))
         );
     }
 

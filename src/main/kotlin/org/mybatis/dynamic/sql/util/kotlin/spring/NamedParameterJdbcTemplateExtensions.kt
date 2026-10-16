@@ -49,11 +49,11 @@ import kotlin.reflect.KClass
 fun NamedParameterJdbcTemplate.count(selectStatement: SelectStatementProvider): Long =
     queryForObject(selectStatement.selectStatement, selectStatement.parameters, Long::class.java)!!
 
-fun NamedParameterJdbcTemplate.count(column: BasicColumn, completer: CountCompleter): Long =
-    count(org.mybatis.dynamic.sql.util.kotlin.spring.count(column, completer))
+fun NamedParameterJdbcTemplate.countFrom(column: BasicColumn,table: SqlTable, completer: CountCompleter): Long =
+    count(org.mybatis.dynamic.sql.util.kotlin.spring.countFrom(column,table, completer))
 
-fun NamedParameterJdbcTemplate.countDistinct(column: BasicColumn, completer: CountCompleter): Long =
-    count(org.mybatis.dynamic.sql.util.kotlin.spring.countDistinct(column, completer))
+fun NamedParameterJdbcTemplate.countDistinctFrom(column: BasicColumn,table: SqlTable, completer: CountCompleter): Long =
+    count(org.mybatis.dynamic.sql.util.kotlin.spring.countDistinctFrom(column,table,completer))
 
 fun NamedParameterJdbcTemplate.countFrom(table: SqlTable, completer: CountCompleter): Long =
     count(org.mybatis.dynamic.sql.util.kotlin.spring.countFrom(table, completer))
@@ -128,8 +128,8 @@ fun <T : Any> NamedParameterJdbcTemplate.insertMultiple(
 ): Int =
     update(insertStatement.insertStatement, BeanPropertySqlParameterSource(insertStatement), keyHolder)
 
-fun NamedParameterJdbcTemplate.insertSelect(completer: InsertSelectCompleter): Int =
-    insertSelect(org.mybatis.dynamic.sql.util.kotlin.spring.insertSelect(completer))
+fun NamedParameterJdbcTemplate.insertSelect(table: SqlTable, completer: InsertSelectCompleter): Int =
+    insertSelect(org.mybatis.dynamic.sql.util.kotlin.spring.insertSelect(table,completer))
 
 fun NamedParameterJdbcTemplate.insertSelect(insertStatement: InsertSelectStatementProvider): Int =
     update(insertStatement.insertStatement, MapSqlParameterSource(insertStatement.parameters))
@@ -274,6 +274,6 @@ class KeyHolderHelper(private val keyHolder: KeyHolder, private val template: Na
         template.insertMultiple(org.mybatis.dynamic.sql.util.kotlin.spring.insertMultiple(records, completer),
             keyHolder)
 
-    fun insertSelect(completer: InsertSelectCompleter): Int =
-        template.insertSelect(org.mybatis.dynamic.sql.util.kotlin.spring.insertSelect(completer), keyHolder)
+    fun insertSelect(table: SqlTable,completer: InsertSelectCompleter): Int =
+        template.insertSelect(org.mybatis.dynamic.sql.util.kotlin.spring.insertSelect(table,completer), keyHolder)
 }

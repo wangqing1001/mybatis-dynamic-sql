@@ -21,7 +21,6 @@ import org.mybatis.dynamic.sql.TableExpression
 import org.mybatis.dynamic.sql.select.join.JoinSpecification
 import org.mybatis.dynamic.sql.select.join.JoinType
 import java.util.ArrayList
-import java.util.Objects
 
 /**
  * join 支持的抽象基类。

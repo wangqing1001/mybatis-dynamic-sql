@@ -16,7 +16,6 @@
 package org.mybatis.dynamic.sql.util
 
 import org.mybatis.dynamic.sql.SqlColumn
-import java.util.Objects
 import java.util.function.Supplier
 
 /**
@@ -27,10 +26,6 @@ class PropertyWhenPresentMapping private constructor(
     property: String,
     private val valueSupplier: Supplier<*>
 ) : PropertyMapping(column, property) {
-
-    init {
-        Objects.requireNonNull(valueSupplier)
-    }
 
     fun shouldRender(): Boolean {
         return valueSupplier.get() != null

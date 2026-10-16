@@ -31,15 +31,15 @@ import org.junit.jupiter.api.Test
 import org.mybatis.dynamic.sql.exception.InvalidSqlException
 import org.mybatis.dynamic.sql.util.Messages
 import org.mybatis.dynamic.sql.util.kotlin.KInvalidSQLException
+import org.mybatis.dynamic.sql.add
+import org.mybatis.dynamic.sql.constant
+import org.mybatis.dynamic.sql.isLikeWhenPresent
+import org.mybatis.dynamic.sql.max
+import org.mybatis.dynamic.sql.sortColumn
+import org.mybatis.dynamic.sql.upper
 import org.mybatis.dynamic.sql.util.kotlin.elements.`as`
-import org.mybatis.dynamic.sql.util.kotlin.elements.add
-import org.mybatis.dynamic.sql.util.kotlin.elements.constant
-import org.mybatis.dynamic.sql.util.kotlin.elements.isLikeWhenPresent
-import org.mybatis.dynamic.sql.util.kotlin.elements.max
-import org.mybatis.dynamic.sql.util.kotlin.elements.sortColumn
-import org.mybatis.dynamic.sql.util.kotlin.elements.upper
 import org.mybatis.dynamic.sql.util.kotlin.spring.count
-import org.mybatis.dynamic.sql.util.kotlin.spring.countDistinct
+import org.mybatis.dynamic.sql.util.kotlin.spring.countDistinctFrom
 import org.mybatis.dynamic.sql.util.kotlin.spring.countFrom
 import org.mybatis.dynamic.sql.util.kotlin.spring.delete
 import org.mybatis.dynamic.sql.util.kotlin.spring.deleteFrom
@@ -100,9 +100,7 @@ open class CanonicalSpringKotlinTest {
 
     @Test
     fun testRawCountLastName() {
-        val countStatement = count(lastName) {
-            from(person)
-        }
+        val countStatement = countFrom(lastName,person) { }
 
         assertThat(countStatement.selectStatement).isEqualTo("select count(last_name) from Person")
 
@@ -113,10 +111,7 @@ open class CanonicalSpringKotlinTest {
 
     @Test
     fun testRawCountDistinctLastName() {
-        val countStatement = countDistinct(lastName) {
-            from(person)
-        }
-
+        val countStatement = countDistinctFrom(lastName,person) {}
         assertThat(countStatement.selectStatement).isEqualTo("select count(distinct last_name) from Person")
 
         val rows = template.count(countStatement)
@@ -423,8 +418,7 @@ open class CanonicalSpringKotlinTest {
 
     @Test
     fun testInsertSelect() {
-        val insertStatement = insertSelect {
-            into(person)
+        val insertStatement = insertSelect(person) {
             columns(id, firstName, lastName, birthDate, employed, occupation, addressId)
             select(add(id, constant<Int>("100")), firstName, lastName, birthDate, employed, occupation, addressId) {
                 from(person)
@@ -460,22 +454,8 @@ open class CanonicalSpringKotlinTest {
     }
 
     @Test
-    fun testInsertSelectNoTable() {
-        assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
-            insertSelect {
-                columns(id, firstName, lastName, birthDate, employed, occupation, addressId)
-                select(add(id, constant<Int>("100")), firstName, lastName, birthDate, employed, occupation, addressId) {
-                    from(person)
-                    orderBy(id)
-                }
-            }
-        }.withMessage(Messages.getString("ERROR.29"))
-    }
-
-    @Test
     fun testInsertSelectNoColumns() {
-        val insertStatement = insertSelect {
-            into(person)
+        val insertStatement = insertSelect(person) {
             select(add(id, constant<Int>("100")), firstName, lastName, birthDate, employed, occupation, addressId) {
                 from(person)
                 orderBy(id)
@@ -495,8 +475,7 @@ open class CanonicalSpringKotlinTest {
     @Test
     fun testInsertSelectEmptyColumnList() {
         assertThatExceptionOfType(InvalidSqlException::class.java).isThrownBy {
-            insertSelect {
-                into(person)
+            insertSelect(person) {
                 columns()
                 select(add(id, constant<Int>("100")), firstName, lastName, birthDate, employed, occupation, addressId) {
                     from(person)
@@ -509,8 +488,7 @@ open class CanonicalSpringKotlinTest {
     @Test
     fun testInsertSelectNoSelectStatement() {
         assertThatExceptionOfType(KInvalidSQLException::class.java).isThrownBy {
-            insertSelect {
-                into(person)
+            insertSelect(person) {
                 columns(id, firstName, lastName, birthDate, employed, occupation, addressId)
             }
         }.withMessage(Messages.getString("ERROR.28")) //$NON-NLS-1$
@@ -611,8 +589,7 @@ open class CanonicalSpringKotlinTest {
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     fun testInsertSelectWithGeneratedKey() {
-        val insertStatement = insertSelect {
-            into(generatedAlways)
+        val insertStatement = insertSelect(generatedAlways) {
             columns(generatedAlways.firstName, generatedAlways.lastName)
             select(person.firstName, person.lastName) {
                 from(person)

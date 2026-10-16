@@ -200,7 +200,7 @@ public interface PersonMapperV2 extends CommonCountMapper, CommonDeleteMapper, C
             .set(employed).equalToOrNull(row::employed)
             .set(occupation).equalToOrNull(row::occupation)
             .set(addressId).equalToOrNull(row::addressId)
-            .where(id, isEqualToWhenPresent(row::id))
+            .where(id, isEqualToWhenPresent((row.id())))
         );
     }
 
@@ -212,7 +212,7 @@ public interface PersonMapperV2 extends CommonCountMapper, CommonDeleteMapper, C
             .set(employed).equalToWhenPresent(row::employed)
             .set(occupation).equalToWhenPresent(row::occupation)
             .set(addressId).equalToWhenPresent(row::addressId)
-            .where(id, isEqualToWhenPresent(row::id))
+            .where(id, isEqualToWhenPresent((row.id())))
         );
     }
 }
