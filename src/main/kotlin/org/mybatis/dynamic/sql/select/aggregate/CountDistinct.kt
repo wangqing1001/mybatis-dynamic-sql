@@ -36,10 +36,4 @@ class CountDistinct @JvmOverloads constructor(
         return CountDistinct(column, alias)
     }
 
-    companion object {
-        @JvmStatic
-        fun of(column: BasicColumn): CountDistinct {
-            return CountDistinct(column)
-        }
-    }
 }

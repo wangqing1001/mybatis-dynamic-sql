@@ -22,7 +22,7 @@ import java.util.Arrays
 /**
  * 乘法函数。
  */
-class Multiply<T> private constructor(
+class Multiply<T>(
     firstColumn: BasicColumn,
     secondColumn: BasicColumn,
     subsequentColumns: List<BasicColumn>
@@ -32,23 +32,4 @@ class Multiply<T> private constructor(
         return Multiply(column, secondColumn, subsequentColumns)
     }
 
-    companion object {
-        @JvmStatic
-        fun <T> of(
-            firstColumn: BindableColumn<T>,
-            secondColumn: BasicColumn,
-            vararg subsequentColumns: BasicColumn
-        ): Multiply<T> {
-            return of(firstColumn, secondColumn, Arrays.asList(*subsequentColumns))
-        }
-
-        @JvmStatic
-        fun <T> of(
-            firstColumn: BindableColumn<T>,
-            secondColumn: BasicColumn,
-            subsequentColumns: List<BasicColumn>
-        ): Multiply<T> {
-            return Multiply(firstColumn, secondColumn, subsequentColumns)
-        }
-    }
 }

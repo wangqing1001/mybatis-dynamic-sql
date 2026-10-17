@@ -26,7 +26,7 @@ import java.util.Arrays
 /**
  * concat 函数,将所有列连接为一个 concat(...) 表达式。
  */
-class Concat<T> protected constructor(
+class Concat<T>(
     firstColumn: BasicColumn,
     subsequentColumns: List<BasicColumn>
 ) : AbstractUniTypeFunction<T, Concat<T>>(firstColumn) {
@@ -47,15 +47,4 @@ class Concat<T> protected constructor(
         return Concat(column, allColumns.subList(1, allColumns.size))
     }
 
-    companion object {
-        @JvmStatic
-        fun <T> concat(firstColumn: BindableColumn<T>, vararg subsequentColumns: BasicColumn): Concat<T> {
-            return Concat(firstColumn, Arrays.asList(*subsequentColumns))
-        }
-
-        @JvmStatic
-        fun <T> of(firstColumn: BindableColumn<T>, subsequentColumns: List<BasicColumn>): Concat<T> {
-            return Concat(firstColumn, subsequentColumns)
-        }
-    }
 }

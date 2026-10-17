@@ -55,7 +55,7 @@ fun count(column: BasicColumn): Count {
 }
 
 fun countDistinct(column: BasicColumn): CountDistinct {
-    return CountDistinct.of(column)
+    return CountDistinct(column)
 }
 
 @JvmOverloads

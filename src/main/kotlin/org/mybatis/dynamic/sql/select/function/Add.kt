@@ -22,7 +22,7 @@ import java.util.Arrays
 /**
  * 加法函数。
  */
-class Add<T> private constructor(
+class Add<T>(
     firstColumn: BasicColumn,
     secondColumn: BasicColumn,
     subsequentColumns: List<BasicColumn>
@@ -32,23 +32,4 @@ class Add<T> private constructor(
         return Add(column, secondColumn, subsequentColumns)
     }
 
-    companion object {
-        @JvmStatic
-        fun <T> of(
-            firstColumn: BindableColumn<T>,
-            secondColumn: BasicColumn,
-            vararg subsequentColumns: BasicColumn
-        ): Add<T> {
-            return of(firstColumn, secondColumn, listOf(*subsequentColumns))
-        }
-
-        @JvmStatic
-        fun <T> of(
-            firstColumn: BindableColumn<T>,
-            secondColumn: BasicColumn,
-            subsequentColumns: List<BasicColumn>
-        ): Add<T> {
-            return Add(firstColumn, secondColumn, subsequentColumns)
-        }
-    }
 }

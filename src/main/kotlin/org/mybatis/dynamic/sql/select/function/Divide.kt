@@ -22,7 +22,7 @@ import java.util.Arrays
 /**
  * 除法函数。
  */
-class Divide<T> private constructor(
+class Divide<T>(
     firstColumn: BasicColumn,
     secondColumn: BasicColumn,
     subsequentColumns: List<BasicColumn>
@@ -32,23 +32,4 @@ class Divide<T> private constructor(
         return Divide(column, secondColumn, subsequentColumns)
     }
 
-    companion object {
-        @JvmStatic
-        fun <T> of(
-            firstColumn: BindableColumn<T>,
-            secondColumn: BasicColumn,
-            vararg subsequentColumns: BasicColumn
-        ): Divide<T> {
-            return of(firstColumn, secondColumn, listOf(*subsequentColumns))
-        }
-
-        @JvmStatic
-        fun <T> of(
-            firstColumn: BindableColumn<T>,
-            secondColumn: BasicColumn,
-            subsequentColumns: List<BasicColumn>
-        ): Divide<T> {
-            return Divide(firstColumn, secondColumn, subsequentColumns)
-        }
-    }
 }

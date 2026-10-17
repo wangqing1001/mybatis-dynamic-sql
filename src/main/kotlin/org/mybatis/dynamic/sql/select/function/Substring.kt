@@ -23,8 +23,11 @@ import org.mybatis.dynamic.sql.util.FragmentAndParameters
 /**
  * substring 函数。
  */
-class Substring<T> private constructor(column: BasicColumn, private val offset: Int, private val length: Int) :
-    AbstractUniTypeFunction<T, Substring<T>>(column) {
+class Substring<T> (
+    column: BasicColumn,
+    private val offset: Int,
+    private val length: Int
+) : AbstractUniTypeFunction<T, Substring<T>>(column) {
 
     override fun render(renderingContext: RenderingContext): FragmentAndParameters {
         return column.render(renderingContext).mapFragment {
@@ -36,10 +39,4 @@ class Substring<T> private constructor(column: BasicColumn, private val offset: 
         return Substring(column, offset, length)
     }
 
-    companion object {
-        @JvmStatic
-        fun <T> of(column: BindableColumn<T>, offset: Int, length: Int): Substring<T> {
-            return Substring(column, offset, length)
-        }
-    }
 }

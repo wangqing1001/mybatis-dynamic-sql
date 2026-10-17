@@ -55,38 +55,66 @@ fun stringConstant(constant: String) = StringConstant(constant)
 fun <T: Any> value(value: T) = BoundValue(value)
 
 fun <T: Any> add(firstColumn: BindableColumn<T>,secondColumn: BasicColumn,vararg subsequentColumns: BasicColumn): Add<T>{
-    return Add.of(firstColumn, secondColumn,listOf(*subsequentColumns))
+    return Add(firstColumn, secondColumn,listOf(*subsequentColumns))
+}
+
+fun <T: Any> add(firstColumn: BindableColumn<T>,secondColumn: BasicColumn,subsequentColumns: List<BasicColumn>): Add<T>{
+    return Add(firstColumn, secondColumn,subsequentColumns)
 }
 
 fun <T: Any> divide(firstColumn: BindableColumn<T>,secondColumn: BasicColumn,vararg subsequentColumns: BasicColumn): Divide<T>{
-    return Divide.of(firstColumn, secondColumn,listOf(*subsequentColumns))
+    return Divide(firstColumn, secondColumn,listOf(*subsequentColumns))
+}
+
+fun <T: Any> divide(firstColumn: BindableColumn<T>,secondColumn: BasicColumn,subsequentColumns: List<BasicColumn>): Divide<T>{
+    return Divide(firstColumn, secondColumn,subsequentColumns)
 }
 
 fun <T: Any> multiply(firstColumn: BindableColumn<T>,secondColumn: BasicColumn,vararg subsequentColumns: BasicColumn): Multiply<T>{
-    return Multiply.of(firstColumn, secondColumn,listOf(*subsequentColumns))
+    return Multiply(firstColumn, secondColumn,listOf(*subsequentColumns))
+}
+
+fun <T: Any> multiply(firstColumn: BindableColumn<T>,secondColumn: BasicColumn,subsequentColumns: List<BasicColumn>): Multiply<T>{
+    return Multiply(firstColumn, secondColumn,subsequentColumns)
 }
 
 fun <T: Any> subtract(firstColumn: BindableColumn<T>,secondColumn: BasicColumn,vararg subsequentColumns: BasicColumn): Subtract<T>{
-    return Subtract.of(firstColumn, secondColumn,listOf(*subsequentColumns))
+    return Subtract(firstColumn, secondColumn,listOf(*subsequentColumns))
+}
+
+fun <T: Any> subtract(firstColumn: BindableColumn<T>,secondColumn: BasicColumn,subsequentColumns: List<BasicColumn>): Subtract<T>{
+    return Subtract(firstColumn, secondColumn,subsequentColumns)
 }
 
 fun <T : Any> concat(firstColumn: BindableColumn<T>,vararg subsequentColumns: BasicColumn): Concat<T>{
-    return Concat.of(firstColumn, listOf(*subsequentColumns))
+    return Concat(firstColumn, listOf(*subsequentColumns))
+}
+
+fun <T : Any> concat(firstColumn: BindableColumn<T>,subsequentColumns: List<BasicColumn>): Concat<T>{
+    return Concat(firstColumn, subsequentColumns)
 }
 
 fun <T : Any> concatenate(firstColumn: BindableColumn<T>,secondColumn: BasicColumn,vararg subsequentColumns: BasicColumn): Concatenate<T>{
     return Concatenate(firstColumn, secondColumn, listOf(*subsequentColumns))
 }
 
+fun <T : Any> concatenate(firstColumn: BindableColumn<T>,secondColumn: BasicColumn,subsequentColumns: List<BasicColumn>): Concatenate<T>{
+    return Concatenate(firstColumn, secondColumn, subsequentColumns)
+}
+
 fun <T : Any> applyOperator(operator: String,firstColumn: BindableColumn<T>,secondColumn: BasicColumn,vararg subsequentColumns: BasicColumn): OperatorFunction<T>{
     return OperatorFunction(operator, firstColumn, secondColumn, listOf(*subsequentColumns))
 }
 
-fun <T : Any> lower(column: BindableColumn<T>) = Lower.of(column)
+fun <T : Any> applyOperator(operator: String,firstColumn: BindableColumn<T>,secondColumn: BasicColumn,subsequentColumns: List<BasicColumn>): OperatorFunction<T>{
+    return OperatorFunction(operator, firstColumn, secondColumn, subsequentColumns)
+}
 
-fun <T : Any> substring(column: BindableColumn<T>,offset: Int,length: Int) = Substring.of(column, offset, length)
+fun <T : Any> lower(column: BindableColumn<T>) = Lower<T>(column)
 
-fun <T : Any> upper(column: BindableColumn<T>) = Upper.of(column)
+fun <T : Any> substring(column: BindableColumn<T>,offset: Int,length: Int) = Substring<T>(column, offset, length)
+
+fun <T : Any> upper(column: BindableColumn<T>) = Upper<T>(column)
 
 fun cast(value: String): CastFinisher {
     return cast(stringConstant(value))

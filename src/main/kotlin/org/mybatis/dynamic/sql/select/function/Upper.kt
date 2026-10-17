@@ -23,7 +23,7 @@ import org.mybatis.dynamic.sql.util.FragmentAndParameters
 /**
  * upper 函数。
  */
-class Upper<T> private constructor(column: BasicColumn) : AbstractUniTypeFunction<T, Upper<T>>(column) {
+class Upper<T>(column: BasicColumn) : AbstractUniTypeFunction<T, Upper<T>>(column) {
 
     override fun render(renderingContext: RenderingContext): FragmentAndParameters {
         return column.render(renderingContext).mapFragment { s: String -> "upper($s)" } //$NON-NLS-1$ //$NON-NLS-2$
@@ -33,10 +33,5 @@ class Upper<T> private constructor(column: BasicColumn) : AbstractUniTypeFunctio
         return Upper(column)
     }
 
-    companion object {
-        @JvmStatic
-        fun <T> of(column: BindableColumn<T>): Upper<T> {
-            return Upper(column)
-        }
-    }
+
 }

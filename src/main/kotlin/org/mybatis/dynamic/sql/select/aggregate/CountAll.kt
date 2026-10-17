@@ -21,11 +21,7 @@ import org.mybatis.dynamic.sql.util.FragmentAndParameters
 /**
  * count(*) 聚合函数。
  */
-class CountAll : AbstractCount {
-
-    constructor():super()
-
-    constructor(alias: String?):super(alias)
+class CountAll @JvmOverloads constructor(alias: String?=null) : AbstractCount(alias) {
 
     override fun render(renderingContext: RenderingContext): FragmentAndParameters {
         return FragmentAndParameters("count(*)") //$NON-NLS-1$

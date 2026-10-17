@@ -22,7 +22,7 @@ import java.util.Arrays
 /**
  * 减法函数。
  */
-class Subtract<T> private constructor(
+class Subtract<T>(
     firstColumn: BasicColumn,
     secondColumn: BasicColumn,
     subsequentColumns: List<BasicColumn>
@@ -32,23 +32,4 @@ class Subtract<T> private constructor(
         return Subtract(column, secondColumn, subsequentColumns)
     }
 
-    companion object {
-        @JvmStatic
-        fun <T> of(
-            firstColumn: BindableColumn<T>,
-            secondColumn: BasicColumn,
-            vararg subsequentColumns: BasicColumn
-        ): Subtract<T> {
-            return of(firstColumn, secondColumn, Arrays.asList(*subsequentColumns))
-        }
-
-        @JvmStatic
-        fun <T> of(
-            firstColumn: BindableColumn<T>,
-            secondColumn: BasicColumn,
-            subsequentColumns: List<BasicColumn>
-        ): Subtract<T> {
-            return Subtract(firstColumn, secondColumn, subsequentColumns)
-        }
-    }
 }

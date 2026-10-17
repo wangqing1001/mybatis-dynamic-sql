@@ -23,7 +23,7 @@ import org.mybatis.dynamic.sql.util.FragmentAndParameters
 /**
  * lower 函数。
  */
-class Lower<T> private constructor(column: BasicColumn) : AbstractUniTypeFunction<T, Lower<T>>(column) {
+class Lower<T>(column: BasicColumn) : AbstractUniTypeFunction<T, Lower<T>>(column) {
 
     override fun render(renderingContext: RenderingContext): FragmentAndParameters {
         return column.render(renderingContext).mapFragment { s: String -> "lower($s)" } //$NON-NLS-1$ //$NON-NLS-2$
@@ -33,10 +33,4 @@ class Lower<T> private constructor(column: BasicColumn) : AbstractUniTypeFunctio
         return Lower(column)
     }
 
-    companion object {
-        @JvmStatic
-        fun <T> of(column: BindableColumn<T>): Lower<T> {
-            return Lower(column)
-        }
-    }
 }
