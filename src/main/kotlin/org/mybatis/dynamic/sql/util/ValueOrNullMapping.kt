@@ -37,10 +37,4 @@ class ValueOrNullMapping<T>(
         return visitor.visit(this)
     }
 
-    companion object {
-        @JvmStatic
-        fun <T> of(column: SqlColumn<T>, valueSupplier: Supplier<T?>): ValueOrNullMapping<T> {
-            return ValueOrNullMapping(column, valueSupplier)
-        }
-    }
 }

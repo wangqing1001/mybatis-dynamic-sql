@@ -37,7 +37,7 @@ import org.mybatis.dynamic.sql.util.Messages
  * @param <T> the column type
  * @since 1.5.1
 </T> */
-class BoundValue<T> private constructor(private val value: T) : BindableColumn<T> {
+class BoundValue<T>(private val value: T) : BindableColumn<T> {
 
 
     override fun render(renderingContext: RenderingContext): FragmentAndParameters {
@@ -54,10 +54,4 @@ class BoundValue<T> private constructor(private val value: T) : BindableColumn<T
         throw InvalidSqlException(Messages.getString("ERROR.38")) //$NON-NLS-1$
     }
 
-    companion object {
-        @JvmStatic
-        fun <T> of(value: T): BoundValue<T> {
-            return BoundValue(value)
-        }
-    }
 }

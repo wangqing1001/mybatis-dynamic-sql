@@ -18,10 +18,8 @@ package org.mybatis.dynamic.sql
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.render.RenderingStrategy
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import org.mybatis.dynamic.sql.util.StringUtilities
 import org.mybatis.dynamic.sql.util.toCamelCase
 import java.sql.JDBCType
-import java.util.*
 
 /**
  * This class represents the definition of a column in a table.
@@ -116,7 +114,7 @@ open class SqlColumn<T> protected constructor(builder: AbstractBuilder<T, *>) : 
         alias = builder.alias
         typeHandler = builder.typeHandler
         renderingStrategy = builder.renderingStrategy
-        parameterTypeConverter = Objects.requireNonNull(builder.parameterTypeConverter)!!
+        parameterTypeConverter = builder.parameterTypeConverter
         tableQualifier = builder.tableQualifier
         javaType = builder.javaType
         javaProperty = builder.javaProperty
@@ -142,14 +140,12 @@ open class SqlColumn<T> protected constructor(builder: AbstractBuilder<T, *>) : 
         return typeHandler
     }
 
-
-
     override fun javaType(): Class<T>? {
         return javaType
     }
 
-    fun javaProperty(): Optional<String> {
-        return Optional.ofNullable(javaProperty)
+    fun javaProperty(): String? {
+        return javaProperty
     }
 
     override fun convertParameterType(value: T?): Any? {

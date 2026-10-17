@@ -32,7 +32,7 @@ class InsertVisitorsTest {
     void testThatMultiRowInsertVisitorErrorsForMappedColumnWhenPropertyIsMissing() {
         TestTable table = new TestTable();
         MultiRowValuePhraseVisitor tv = new MultiRowValuePhraseVisitor(RenderingStrategies.MYBATIS3, "prefix");
-        MappedColumnMapping mapping = MappedColumnMapping.of(table.id);
+        MappedColumnMapping mapping = new MappedColumnMapping(table.id);
 
         assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(() -> tv.visit(mapping))
                 .withMessage(Messages.getString("ERROR.50", table.id.name()));
@@ -42,7 +42,7 @@ class InsertVisitorsTest {
     void testThatValuePhraseVisitorErrorsForMappedColumnWhenPropertyIsMissing() {
         TestTable table = new TestTable();
         ValuePhraseVisitor tv = new ValuePhraseVisitor(RenderingStrategies.MYBATIS3);
-        MappedColumnMapping mapping = MappedColumnMapping.of(table.id);
+        MappedColumnMapping mapping = new MappedColumnMapping(table.id);
 
         assertThatExceptionOfType(InvalidSqlException.class).isThrownBy(() -> tv.visit(mapping))
                 .withMessage(Messages.getString("ERROR.50", table.id.name()));

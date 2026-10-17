@@ -1,11 +1,10 @@
 package org.mybatis.dynamic.sql.insert.batch
 
 import org.mybatis.dynamic.sql.SqlTable
-import org.mybatis.dynamic.sql.insert.InsertRenderingUtilities
+import org.mybatis.dynamic.sql.insert.calculateInsertStatementStart
 import org.mybatis.dynamic.sql.render.RenderingStrategy
 import org.mybatis.dynamic.sql.util.AbstractColumnMapping
 import org.mybatis.dynamic.sql.util.FieldAndValueCollector
-import org.mybatis.dynamic.sql.util.StringUtilities
 import org.mybatis.dynamic.sql.util.assertNotEmpty
 import org.mybatis.dynamic.sql.util.spaceBefore
 import org.mybatis.dynamic.sql.util.toFieldAndValueCollector
@@ -32,7 +31,7 @@ class MultiRowInsertModel<T> @JvmOverloads constructor(
     }
 
     private fun calculateInsertStatement(collector: FieldAndValueCollector): String {
-        val statementStart = InsertRenderingUtilities.calculateInsertStatementStart(table())
+        val statementStart = calculateInsertStatementStart(table())
         val columnsPhrase = collector.columnsPhrase()
         val valuesPhrase = collector.multiRowInsertValuesPhrase(recordCount())
         return statementStart + spaceBefore(columnsPhrase) + spaceBefore(valuesPhrase)

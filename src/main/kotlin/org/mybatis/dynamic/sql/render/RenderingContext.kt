@@ -19,7 +19,6 @@ import org.mybatis.dynamic.sql.BindableColumn
 import org.mybatis.dynamic.sql.SqlColumn
 import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.configuration.StatementConfiguration
-import org.mybatis.dynamic.sql.util.StringUtilities
 import org.mybatis.dynamic.sql.util.spaceBefore
 import java.util.concurrent.atomic.AtomicInteger
 

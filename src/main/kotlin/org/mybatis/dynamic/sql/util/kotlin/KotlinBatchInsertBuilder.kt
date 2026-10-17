@@ -38,7 +38,7 @@ class KotlinBatchInsertBuilder<T : Any> (
     }
 
     fun <C : Any> withMappedColumn(column: SqlColumn<C>) {
-        columnMappings.add(MappedColumnMapping.of(column))
+        columnMappings.add(MappedColumnMapping(column))
     }
 
     override fun build(): BatchInsertModel<T> {

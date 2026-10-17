@@ -13,6 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
+@file:JvmName("InsertRenderingUtilities")
 package org.mybatis.dynamic.sql.insert
 
 import org.mybatis.dynamic.sql.SqlColumn
@@ -20,33 +21,19 @@ import org.mybatis.dynamic.sql.SqlTable
 import org.mybatis.dynamic.sql.exception.InvalidSqlException
 import org.mybatis.dynamic.sql.util.FieldAndValueCollector
 import org.mybatis.dynamic.sql.util.Messages
-import org.mybatis.dynamic.sql.util.StringUtilities
 import org.mybatis.dynamic.sql.util.spaceBefore
 
-/**
- * insert 渲染工具类。
- */
-class InsertRenderingUtilities private constructor() {
+fun calculateInsertStatement(table: SqlTable, collector: FieldAndValueCollector): String {
+    val statementStart = calculateInsertStatementStart(table)
+    val columnsPhrase = collector.columnsPhrase()
+    val valuesPhrase = collector.valuesPhrase()
+    return statementStart + spaceBefore(columnsPhrase) + spaceBefore(valuesPhrase)
+}
 
-    companion object {
-        @JvmStatic
-        fun calculateInsertStatement(table: SqlTable, collector: FieldAndValueCollector): String {
-            val statementStart = calculateInsertStatementStart(table)
-            val columnsPhrase = collector.columnsPhrase()
-            val valuesPhrase = collector.valuesPhrase()
-            return statementStart + spaceBefore(columnsPhrase) + spaceBefore(valuesPhrase)
-        }
+fun calculateInsertStatementStart(table: SqlTable): String {
+    return "insert into " + table.tableName() //$NON-NLS-1$
+}
 
-        @JvmStatic
-        fun calculateInsertStatementStart(table: SqlTable): String {
-            return "insert into " + table.tableName() //$NON-NLS-1$
-        }
-
-        @JvmStatic
-        fun getMappedPropertyName(column: SqlColumn<*>): String {
-            return column.javaProperty().orElseThrow {
-                InvalidSqlException(Messages.getString("ERROR.50", column.name())) //$NON-NLS-1$
-            }
-        }
-    }
+fun getMappedPropertyName(column: SqlColumn<*>): String {
+    return column.javaProperty()?: throw InvalidSqlException(Messages.getString("ERROR.50", column.name()))
 }

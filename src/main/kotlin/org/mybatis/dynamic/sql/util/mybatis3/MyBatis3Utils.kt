@@ -109,7 +109,7 @@ object MyBatis3Utils {
 
     @JvmStatic
     fun deleteFrom(table: SqlTable, completer: DeleteDSLCompleter): DeleteStatementProvider {
-        return completer.apply(DeleteDSL.deleteFrom(table))
+        return completer.apply(DeleteDSL(table))
             .build()
             .render(RenderingStrategies.MYBATIS3)
     }
@@ -263,7 +263,7 @@ object MyBatis3Utils {
 
     @JvmStatic
     fun update(table: SqlTable, completer: UpdateDSLCompleter): UpdateStatementProvider {
-        return completer.apply(UpdateDSL.update(table))
+        return completer.apply(UpdateDSL(table))
             .build()
             .render(RenderingStrategies.MYBATIS3)
     }

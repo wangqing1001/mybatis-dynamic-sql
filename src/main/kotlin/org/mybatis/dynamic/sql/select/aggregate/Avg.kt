@@ -24,7 +24,7 @@ import org.mybatis.dynamic.sql.util.FragmentAndParameters
 /**
  * avg 聚合函数。
  */
-class Avg<T> private constructor(column: BasicColumn) : AbstractUniTypeFunction<T, Avg<T>>(column) {
+class Avg<T>(column: BasicColumn) : AbstractUniTypeFunction<T, Avg<T>>(column) {
 
     override fun render(renderingContext: RenderingContext): FragmentAndParameters {
         return column.render(renderingContext).mapFragment { s: String -> "avg($s)" } //$NON-NLS-1$ //$NON-NLS-2$
@@ -34,10 +34,4 @@ class Avg<T> private constructor(column: BasicColumn) : AbstractUniTypeFunction<
         return Avg(column)
     }
 
-    companion object {
-        @JvmStatic
-        fun <T> of(column: BindableColumn<T>): Avg<T> {
-            return Avg(column)
-        }
-    }
 }

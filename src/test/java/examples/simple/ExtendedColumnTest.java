@@ -95,7 +95,7 @@ class ExtendedColumnTest {
     void testPropagatedJavaProperty() {
         var baz = bar.withJavaProperty("id");
 
-        assertThat(baz.javaProperty()).hasValue("id");
+        assertThat(baz.javaProperty()).isEqualTo("id");
         assertThat(baz.isPrimaryKeyColumn()).isTrue();
     }
 
@@ -116,7 +116,7 @@ class ExtendedColumnTest {
         assertThat(baz.renderingStrategy()).isEqualTo(RenderingStrategies.MYBATIS3);
         assertThat(baz.convertParameterType(11)).isEqualTo("11");
         assertThat(baz.javaType()).isEqualTo(Integer.class);
-        assertThat(baz.javaProperty()).hasValue("id");
+        assertThat(baz.javaProperty()).isEqualTo("id");
         assertThat(baz.isPrimaryKeyColumn()).isTrue();
     }
 }

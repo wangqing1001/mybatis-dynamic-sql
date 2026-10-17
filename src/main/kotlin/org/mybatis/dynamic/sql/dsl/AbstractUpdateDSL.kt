@@ -53,7 +53,7 @@ import java.util.function.Supplier
  */
 abstract class AbstractUpdateDSL<M, D : AbstractUpdateDSL<M, D>> protected constructor(
     private val table: SqlTable,
-    private val tableAlias: String?
+    private val tableAlias: String? = null
 ) : WhereOperations<AbstractUpdateDSL<M, D>.UpdateWhereBuilder>,OrderByOperations<D>,ConfigurableStatement<D>,Buildable<M> {
 
     private val columnMappings: MutableList<AbstractColumnMapping> = ArrayList()

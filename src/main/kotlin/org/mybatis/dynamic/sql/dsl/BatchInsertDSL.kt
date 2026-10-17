@@ -25,7 +25,7 @@ class BatchInsertDSL<T> private constructor(builder: AbstractBuilder<T, *>) : Bu
     }
 
     fun <F> withMappedColumn(column: SqlColumn<F>): BatchInsertDSL<T> {
-        columnMappings.add(MappedColumnMapping.of(column))
+        columnMappings.add(MappedColumnMapping(column))
         return this
     }
 

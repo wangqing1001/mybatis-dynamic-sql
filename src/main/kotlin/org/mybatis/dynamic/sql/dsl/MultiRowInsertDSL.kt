@@ -27,7 +27,7 @@ class MultiRowInsertDSL<T> private constructor(
     }
 
     fun <F> withMappedColumn(column: SqlColumn<F>): MultiRowInsertDSL<T> {
-        columnMappings.add(MappedColumnMapping.of(column))
+        columnMappings.add(MappedColumnMapping(column))
         return this
     }
 

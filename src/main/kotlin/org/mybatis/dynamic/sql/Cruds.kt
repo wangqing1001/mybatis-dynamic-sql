@@ -197,39 +197,39 @@ fun insertSelect(table: SqlTable,completer: InsertSelectCompleter): InsertSelect
 }
 
 fun update(table: SqlTable): UpdateDSL {
-    return UpdateDSL.update(table)
+    return UpdateDSL(table)
 }
 
 fun deleteFrom(table: SqlTable): DeleteDSL {
-    return DeleteDSL.deleteFrom(table)
+    return DeleteDSL(table)
 }
 
 fun deleteFrom(table: SqlTable, tableAlias: String): DeleteDSL {
-    return DeleteDSL.deleteFrom(table, tableAlias)
+    return DeleteDSL(table, tableAlias)
 }
 
 @JvmSynthetic
 fun deleteFrom(table: SqlTable, completer: DeleteCompleter): DeleteModel{
-    return KotlinDeleteBuilder(DeleteDSL.deleteFrom(table)).apply(completer).build()
+    return KotlinDeleteBuilder(DeleteDSL(table)).apply(completer).build()
 }
 
 @JvmSynthetic
 fun deleteFrom(table: SqlTable, tableAlias: String, completer: DeleteCompleter): DeleteModel {
-    return KotlinDeleteBuilder(DeleteDSL.deleteFrom(table, tableAlias)).apply(completer).build()
+    return KotlinDeleteBuilder(DeleteDSL(table, tableAlias)).apply(completer).build()
 }
 
 @JvmSynthetic
 fun update(table: SqlTable, completer: UpdateCompleter): UpdateModel{
-    return KotlinUpdateBuilder(UpdateDSL.update(table)).apply(completer).build()
+    return KotlinUpdateBuilder(UpdateDSL(table)).apply(completer).build()
 }
 
 fun update(table: SqlTable, tableAlias: String): UpdateDSL {
-    return UpdateDSL.update(table, tableAlias)
+    return UpdateDSL(table, tableAlias)
 }
 
 @JvmSynthetic
 fun update(table: SqlTable, tableAlias: String, completer: UpdateCompleter): UpdateModel{
-    return KotlinUpdateBuilder(UpdateDSL.update(table, tableAlias)).apply(completer).build()
+    return KotlinUpdateBuilder(UpdateDSL(table, tableAlias)).apply(completer).build()
 }
 
 

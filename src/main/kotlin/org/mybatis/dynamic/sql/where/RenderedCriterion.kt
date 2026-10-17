@@ -16,7 +16,6 @@
 package org.mybatis.dynamic.sql.where
 
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import org.mybatis.dynamic.sql.util.StringUtilities
 import org.mybatis.dynamic.sql.util.spaceBefore
 
 /**

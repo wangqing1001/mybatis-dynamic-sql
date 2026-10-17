@@ -23,7 +23,7 @@ class BindableColumnTest {
 
     @Test
     void testDefaultFunctions() {
-        StringConstant constant = StringConstant.of("Fred");
+        StringConstant constant = new StringConstant("Fred");
         assertThat(constant.jdbcType()).isNull();
         assertThat(constant.typeHandler()).isNull();
     }

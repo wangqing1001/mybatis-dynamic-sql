@@ -18,7 +18,6 @@ package org.mybatis.dynamic.sql
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.FragmentCollector
-import org.mybatis.dynamic.sql.util.StringUtilities
 import org.mybatis.dynamic.sql.util.spaceAfter
 import org.mybatis.dynamic.sql.where.CriterionRenderer
 

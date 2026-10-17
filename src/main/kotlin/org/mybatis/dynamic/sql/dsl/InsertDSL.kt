@@ -29,12 +29,12 @@ class InsertDSL<T>(
     }
 
     fun <F> withMappedColumn(column: SqlColumn<F>): InsertDSL<T> {
-        columnMappings.add(MappedColumnMapping.of(column))
+        columnMappings.add(MappedColumnMapping(column))
         return this
     }
 
     fun <F> withMappedColumnWhenPresent(column: SqlColumn<F>, valueSupplier: Supplier<*>): InsertDSL<T> {
-        columnMappings.add(MappedColumnWhenPresentMapping.of(column, valueSupplier))
+        columnMappings.add(MappedColumnWhenPresentMapping(column, valueSupplier))
         return this
     }
 

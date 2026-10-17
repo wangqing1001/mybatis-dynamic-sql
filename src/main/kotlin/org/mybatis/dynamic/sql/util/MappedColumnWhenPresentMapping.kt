@@ -21,7 +21,7 @@ import java.util.function.Supplier
 /**
  * 带映射属性且仅在值存在时渲染的列映射。
  */
-class MappedColumnWhenPresentMapping private constructor(
+class MappedColumnWhenPresentMapping(
     column: SqlColumn<*>,
     private val valueSupplier: Supplier<*>
 ) : MappedColumnMapping(column) {
@@ -34,10 +34,4 @@ class MappedColumnWhenPresentMapping private constructor(
         return visitor.visit(this)
     }
 
-    companion object {
-        @JvmStatic
-        fun of(column: SqlColumn<*>, valueSupplier: Supplier<*>): MappedColumnWhenPresentMapping {
-            return MappedColumnWhenPresentMapping(column, valueSupplier)
-        }
-    }
 }

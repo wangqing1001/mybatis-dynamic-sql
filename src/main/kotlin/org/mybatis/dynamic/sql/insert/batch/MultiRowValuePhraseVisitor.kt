@@ -1,7 +1,7 @@
 package org.mybatis.dynamic.sql.insert.batch
 
 import org.mybatis.dynamic.sql.SqlColumn
-import org.mybatis.dynamic.sql.insert.InsertRenderingUtilities
+import org.mybatis.dynamic.sql.insert.getMappedPropertyName
 import org.mybatis.dynamic.sql.render.RenderingStrategy
 import org.mybatis.dynamic.sql.util.ConstantMapping
 import org.mybatis.dynamic.sql.util.FieldAndValueAndParameters
@@ -11,7 +11,6 @@ import org.mybatis.dynamic.sql.util.NullMapping
 import org.mybatis.dynamic.sql.util.PropertyMapping
 import org.mybatis.dynamic.sql.util.RowMapping
 import org.mybatis.dynamic.sql.util.StringConstantMapping
-import org.mybatis.dynamic.sql.util.StringUtilities
 import org.mybatis.dynamic.sql.util.formatConstantForSQL
 
 /**
@@ -46,10 +45,9 @@ open class MultiRowValuePhraseVisitor internal constructor(
     }
 
     override fun visit(mapping: MappedColumnMapping): FieldAndValueAndParameters {
-        val valuePhrase = calculateJdbcPlaceholder(
-            mapping.column(),
-            InsertRenderingUtilities.getMappedPropertyName(mapping.column())
-        )
+        val column = mapping.column()
+        val parameterName = getMappedPropertyName(column)
+        val valuePhrase = calculateJdbcPlaceholder(column,parameterName)
         return FieldAndValueAndParameters(mapping.columnName(), valuePhrase)
     }
 

@@ -31,16 +31,16 @@ import org.mybatis.dynamic.sql.util.kotlin.elements.KSearchedCaseDSL
 import org.mybatis.dynamic.sql.util.kotlin.elements.KSimpleCaseDSL
 import org.mybatis.dynamic.sql.util.invalidIfNull
 
-fun subQuery(subQuery: Buildable<SelectModel>) = SubQueryColumn.of(subQuery.build())
+fun subQuery(subQuery: Buildable<SelectModel>) = SubQueryColumn(subQuery.build())
 
 @JvmSynthetic
-fun subQuery(subQuery: KotlinSubQueryBuilder.() -> Unit) = SubQueryColumn.of(KotlinSubQueryBuilder().apply(subQuery).build())
+fun subQuery(subQuery: KotlinSubQueryBuilder.() -> Unit) = SubQueryColumn(KotlinSubQueryBuilder().apply(subQuery).build())
 
-fun <T: Any> max(column: BindableColumn<T>) = Max.of(column)
+fun <T: Any> max(column: BindableColumn<T>) = Max<T>(column)
 
-fun <T: Any> min(column: BindableColumn<T>) = Min.of(column)
+fun <T: Any> min(column: BindableColumn<T>) = Min<T>(column)
 
-fun <T: Any> avg(column: BindableColumn<T>) = Avg.of(column)
+fun <T: Any> avg(column: BindableColumn<T>) = Avg<T>(column)
 
 fun <T: Any> sum(column: BindableColumn<T>) = Sum.of(column)
 
@@ -48,11 +48,11 @@ fun sum(column: BasicColumn) = Sum.of(column)
 
 fun <T: Any> sum(column: BindableColumn<T>, condition: RenderableCondition<T>) = Sum.of(column, condition)
 
-fun <T: Any> constant(constant: String) = Constant.of<T>(constant)
+fun <T: Any> constant(constant: String) = Constant<T>(constant)
 
-fun stringConstant(constant: String) = StringConstant.of(constant)
+fun stringConstant(constant: String) = StringConstant(constant)
 
-fun <T: Any> value(value: T) = BoundValue.of(value)
+fun <T: Any> value(value: T) = BoundValue(value)
 
 fun <T: Any> add(firstColumn: BindableColumn<T>,secondColumn: BasicColumn,vararg subsequentColumns: BasicColumn): Add<T>{
     return Add.of(firstColumn, secondColumn,listOf(*subsequentColumns))

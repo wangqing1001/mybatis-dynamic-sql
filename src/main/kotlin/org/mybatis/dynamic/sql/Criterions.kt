@@ -148,9 +148,9 @@ fun <T> on(joinColumn: BindableColumn<T>,joinCondition: RenderableCondition<T>):
 }
 
 fun exists(selectModelBuilder: Buildable<SelectModel>): ExistsPredicate {
-    return ExistsPredicate.exists(selectModelBuilder)
+    return ExistsPredicate("exists", selectModelBuilder)
 }
 
 fun notExists(selectModelBuilder: Buildable<SelectModel>): ExistsPredicate {
-    return ExistsPredicate.notExists(selectModelBuilder)
+    return ExistsPredicate("not exists", selectModelBuilder)
 }

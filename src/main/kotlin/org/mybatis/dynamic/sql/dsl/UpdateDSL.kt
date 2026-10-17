@@ -21,8 +21,10 @@ import org.mybatis.dynamic.sql.update.UpdateModel
 /**
  * update 语句 DSL。
  */
-class UpdateDSL private constructor(table: SqlTable, tableAlias: String?) :
-    AbstractUpdateDSL<UpdateModel, UpdateDSL>(table, tableAlias) {
+class UpdateDSL @JvmOverloads constructor(
+    table: SqlTable,
+    tableAlias: String? = null
+) : AbstractUpdateDSL<UpdateModel, UpdateDSL>(table, tableAlias) {
 
     /**
      * 警告!调用此方法可能生成更新表中所有行的 update 语句。
@@ -37,15 +39,4 @@ class UpdateDSL private constructor(table: SqlTable, tableAlias: String?) :
         return this
     }
 
-    companion object {
-        @JvmStatic
-        fun update(table: SqlTable, tableAlias: String): UpdateDSL {
-            return UpdateDSL(table, tableAlias)
-        }
-
-        @JvmStatic
-        fun update(table: SqlTable): UpdateDSL {
-            return UpdateDSL(table, null)
-        }
-    }
 }

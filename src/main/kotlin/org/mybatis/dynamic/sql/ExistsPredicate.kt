@@ -19,7 +19,7 @@ import org.mybatis.dynamic.sql.select.SelectModel
 import org.mybatis.dynamic.sql.util.Buildable
 import java.util.*
 
-class ExistsPredicate private constructor(
+class ExistsPredicate(
     private val operator: String,
     private val selectModelBuilder: Buildable<SelectModel>
 ) {
@@ -32,17 +32,4 @@ class ExistsPredicate private constructor(
         return selectModelBuilder
     }
 
-    companion object {
-
-        @JvmStatic
-        fun exists(selectModelBuilder: Buildable<SelectModel>): ExistsPredicate {
-            return ExistsPredicate("exists", selectModelBuilder) //$NON-NLS-1$
-        }
-
-        @JvmStatic
-        fun notExists(selectModelBuilder: Buildable<SelectModel>): ExistsPredicate {
-            return ExistsPredicate("not exists", selectModelBuilder) //$NON-NLS-1$
-        }
-
-    }
 }

@@ -31,7 +31,7 @@ public class UpdateStatementConvertor implements Converter<PersonRecord, UpdateS
 
     @Override
     public UpdateStatementProvider convert(PersonRecord source) {
-        return UpdateDSL.update(person)
+        return new UpdateDSL(person)
                 .set(firstName).equalTo(source::firstName)
                 .set(lastName).equalTo(source::lastName)
                 .where(id, isEqualTo(Objects.requireNonNull(source.id())))

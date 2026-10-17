@@ -19,12 +19,10 @@ import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import java.util.*
 
-class Constant<T> private constructor(
+class Constant<T> @JvmOverloads constructor(
     private val value: String,
-    private val alias: String?
+    private val alias: String? = null
 ) : BindableColumn<T> {
-
-    constructor(value: String): this(value,null)
 
     override fun alias(): String? {
         return alias
@@ -38,10 +36,4 @@ class Constant<T> private constructor(
         return Constant(value, alias)
     }
 
-    companion object {
-        @JvmStatic
-        fun <T> of(value: String): Constant<T> {
-            return Constant(value)
-        }
-    }
 }

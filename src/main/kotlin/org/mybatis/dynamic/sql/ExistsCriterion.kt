@@ -32,6 +32,4 @@ class ExistsCriterion @JvmOverloads constructor(
         return visitor.visit(this)
     }
 
-
-
 }

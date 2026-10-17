@@ -39,7 +39,7 @@ import java.util.function.Consumer
  */
 abstract class AbstractDeleteDSL<M, D : AbstractDeleteDSL<M, D>> protected constructor(
     private val table: SqlTable,
-    private val tableAlias: String?
+    private val tableAlias: String? = null
 ) : WhereOperations<AbstractDeleteDSL<M, D>.DeleteWhereBuilder>,
     ConfigurableStatement<D>,
     OrderByOperations<D>,

@@ -26,27 +26,27 @@ interface ElseDSL<T> {
 
     @Suppress("FunctionName")
     fun else_(value: String): T {
-        return else_(StringConstant.of(value))
+        return else_(StringConstant(value))
     }
 
     @Suppress("FunctionName")
     fun else_(value: Boolean): T {
-        return else_(Constant.of<Any>(value.toString()))
+        return else_(Constant<Any>(value.toString()))
     }
 
     @Suppress("FunctionName")
     fun else_(value: Int): T {
-        return else_(Constant.of<Any>(value.toString()))
+        return else_(Constant<Any>(value.toString()))
     }
 
     @Suppress("FunctionName")
     fun else_(value: Long): T {
-        return else_(Constant.of<Any>(value.toString()))
+        return else_(Constant<Any>(value.toString()))
     }
 
     @Suppress("FunctionName")
     fun else_(value: Double): T {
-        return else_(Constant.of<Any>(value.toString()))
+        return else_(Constant<Any>(value.toString()))
     }
 
     @Suppress("FunctionName")

@@ -23,7 +23,6 @@ import org.mybatis.dynamic.sql.util.FragmentAndParameters
 import org.mybatis.dynamic.sql.util.NullMapping
 import org.mybatis.dynamic.sql.util.SelectMapping
 import org.mybatis.dynamic.sql.util.StringConstantMapping
-import org.mybatis.dynamic.sql.util.StringUtilities
 import org.mybatis.dynamic.sql.util.UpdateMappingVisitor
 import org.mybatis.dynamic.sql.util.ValueMapping
 import org.mybatis.dynamic.sql.util.ValueOrNullMapping

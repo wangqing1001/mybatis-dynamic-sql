@@ -21,8 +21,10 @@ import org.mybatis.dynamic.sql.delete.DeleteModel
 /**
  * delete 语句 DSL。
  */
-class DeleteDSL private constructor(table: SqlTable, tableAlias: String?) :
-    AbstractDeleteDSL<DeleteModel, DeleteDSL>(table, tableAlias) {
+class DeleteDSL @JvmOverloads constructor(
+    table: SqlTable,
+    tableAlias: String? = null
+) : AbstractDeleteDSL<DeleteModel, DeleteDSL>(table, tableAlias) {
 
     /**
      * 警告!调用此方法可能生成删除表中所有行的 delete 语句。
@@ -37,15 +39,4 @@ class DeleteDSL private constructor(table: SqlTable, tableAlias: String?) :
         return this
     }
 
-    companion object {
-        @JvmStatic
-        fun deleteFrom(table: SqlTable, tableAlias: String): DeleteDSL {
-            return DeleteDSL(table, tableAlias)
-        }
-
-        @JvmStatic
-        fun deleteFrom(table: SqlTable): DeleteDSL {
-            return DeleteDSL(table, null)
-        }
-    }
 }

@@ -39,9 +39,6 @@ open class SqlTable protected constructor(protected var tableName: String) : Tab
         return SqlColumn.Builder<T>().withTable(this).withName(name).withJdbcType(jdbcType).withTypeHandler(typeHandler).build()
     }
 
-
-
-
     override fun <R> accept(visitor: TableExpressionVisitor<R>): R {
         return visitor.visit(this)
     }

@@ -24,7 +24,7 @@ import org.mybatis.dynamic.sql.util.FragmentAndParameters
 /**
  * min 聚合函数。
  */
-class Min<T> private constructor(column: BasicColumn) : AbstractUniTypeFunction<T, Min<T>>(column) {
+class Min<T>(column: BasicColumn) : AbstractUniTypeFunction<T, Min<T>>(column) {
 
     override fun render(renderingContext: RenderingContext): FragmentAndParameters {
         return column.render(renderingContext).mapFragment { s: String -> "min($s)" } //$NON-NLS-1$ //$NON-NLS-2$)
@@ -34,10 +34,4 @@ class Min<T> private constructor(column: BasicColumn) : AbstractUniTypeFunction<
         return Min(column)
     }
 
-    companion object {
-        @JvmStatic
-        fun <T> of(column: BindableColumn<T>): Min<T> {
-            return Min(column)
-        }
-    }
 }

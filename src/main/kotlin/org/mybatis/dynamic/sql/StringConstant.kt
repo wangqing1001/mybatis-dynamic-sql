@@ -17,16 +17,13 @@ package org.mybatis.dynamic.sql
 
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import org.mybatis.dynamic.sql.util.StringUtilities
 import org.mybatis.dynamic.sql.util.formatConstantForSQL
-import java.util.*
 
-class StringConstant private constructor(
+class StringConstant @JvmOverloads constructor(
     private val value: String,
     private val alias: String? = null
 ) : BindableColumn<String> {
 
-    constructor(value: String) : this(value, null)
 
     override fun alias(): String? {
         return alias
@@ -40,10 +37,4 @@ class StringConstant private constructor(
         return StringConstant(value, alias)
     }
 
-    companion object {
-        @JvmStatic
-        fun of(value: String): StringConstant {
-            return StringConstant(value)
-        }
-    }
 }

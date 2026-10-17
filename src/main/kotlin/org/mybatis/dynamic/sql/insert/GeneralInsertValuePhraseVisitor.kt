@@ -22,7 +22,6 @@ import org.mybatis.dynamic.sql.util.FieldAndValueAndParameters
 import org.mybatis.dynamic.sql.util.GeneralInsertMappingVisitor
 import org.mybatis.dynamic.sql.util.NullMapping
 import org.mybatis.dynamic.sql.util.StringConstantMapping
-import org.mybatis.dynamic.sql.util.StringUtilities
 import org.mybatis.dynamic.sql.util.ValueMapping
 import org.mybatis.dynamic.sql.util.ValueOrNullMapping
 import org.mybatis.dynamic.sql.util.ValueWhenPresentMapping

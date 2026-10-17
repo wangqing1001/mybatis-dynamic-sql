@@ -19,6 +19,7 @@ package org.mybatis.dynamic.sql.render
  * 渲染策略注册表。
  */
 class RenderingStrategies private constructor() {
+
     companion object {
         @JvmField
         val MYBATIS3: RenderingStrategy = MyBatis3RenderingStrategy()
@@ -26,4 +27,5 @@ class RenderingStrategies private constructor() {
         @JvmField
         val SPRING_NAMED_PARAMETER: RenderingStrategy = SpringNamedParameterRenderingStrategy()
     }
+
 }

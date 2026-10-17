@@ -36,11 +36,11 @@ class KotlinInsertBuilder<T> (private val table: SqlTable,private val row: T): B
     }
 
     fun <C> withMappedColumn(column: SqlColumn<C>) {
-        columnMappings.add(MappedColumnMapping.of(column))
+        columnMappings.add(MappedColumnMapping(column))
     }
 
     fun <C> withMappedColumnWhenPresent(column: SqlColumn<C>, valueSupplier: () -> Any?) {
-        columnMappings.add(MappedColumnWhenPresentMapping.of(column, valueSupplier))
+        columnMappings.add(MappedColumnWhenPresentMapping(column, valueSupplier))
     }
 
     override fun build(): InsertModel<T> {

@@ -55,7 +55,7 @@ class ColumnFilterTest {
 
     @Test
     fun updateContributesColumnNotSetByUser() {
-        val statement = UpdateDSL.update(person)
+        val statement = UpdateDSL(person)
             .set(person.name).equalTo("Fred")
             .where(person.id, isEqualTo(1))
             .build()
@@ -72,7 +72,7 @@ class ColumnFilterTest {
      */
     @Test
     fun userSetColumnWinsOverFilter() {
-        val statement = UpdateDSL.update(person)
+        val statement = UpdateDSL(person)
             .set(person.name).equalTo("Fred")
             .set(person.updatedBy).equalTo("bob")
             .where(person.id, isEqualTo(1))
@@ -115,7 +115,7 @@ class ColumnFilterTest {
      */
     @Test
     fun disabledFilterSkipsColumnContribution() {
-        val updateStatement = UpdateDSL.update(person)
+        val updateStatement = UpdateDSL(person)
             .set(person.name).equalTo("Fred")
             .where(person.id, isEqualTo(1))
             .configureStatement { it.enabledFilter(false) }
@@ -145,7 +145,7 @@ class ColumnFilterTest {
      */
     @Test
     fun repeatedBuildOfSameDslIsIdempotent() {
-        val builder = UpdateDSL.update(person)
+        val builder = UpdateDSL(person)
             .set(person.name).equalTo("Fred")
             .where(person.id, isEqualTo(1))
 
@@ -170,7 +170,7 @@ class ColumnFilterTest {
             val name = column<String>("name")
         }
 
-        val statement = UpdateDSL.update(plain)
+        val statement = UpdateDSL(plain)
             .set(plain.name).equalTo("Fred")
             .where(plain.id, isEqualTo(1))
             .build()
@@ -210,7 +210,7 @@ class ColumnFilterTest {
             override fun filter(): Array<SQLFilter> = filters
         }
 
-        val statement = UpdateDSL.update(table)
+        val statement = UpdateDSL(table)
             .set(table.name).equalTo("Fred")
             .build()
             .render(RenderingStrategies.MYBATIS3)

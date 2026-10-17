@@ -20,16 +20,10 @@ import org.mybatis.dynamic.sql.SqlColumn
 /**
  * 带映射属性的列映射基类。子类可通过访问器添加映射属性。
  */
-open class MappedColumnMapping protected constructor(column: SqlColumn<*>) : AbstractColumnMapping(column) {
+open class MappedColumnMapping(column: SqlColumn<*>) : AbstractColumnMapping(column) {
 
     override fun <R> accept(visitor: ColumnMappingVisitor<R>): R {
         return visitor.visit(this)
     }
 
-    companion object {
-        @JvmStatic
-        fun of(column: SqlColumn<*>): MappedColumnMapping {
-            return MappedColumnMapping(column)
-        }
-    }
 }

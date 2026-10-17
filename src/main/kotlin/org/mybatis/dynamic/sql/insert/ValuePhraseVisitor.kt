@@ -27,7 +27,6 @@ import org.mybatis.dynamic.sql.util.PropertyMapping
 import org.mybatis.dynamic.sql.util.PropertyWhenPresentMapping
 import org.mybatis.dynamic.sql.util.RowMapping
 import org.mybatis.dynamic.sql.util.StringConstantMapping
-import org.mybatis.dynamic.sql.util.StringUtilities
 import org.mybatis.dynamic.sql.util.formatConstantForSQL
 
 /**
@@ -71,7 +70,7 @@ open class ValuePhraseVisitor(
     override fun visit(mapping: MappedColumnMapping): FieldAndValueAndParameters? {
         val valuePhrase = calculateJdbcPlaceholder(
             mapping.column(),
-            InsertRenderingUtilities.getMappedPropertyName(mapping.column())
+            getMappedPropertyName(mapping.column())
         )
         return FieldAndValueAndParameters(mapping.columnName(), valuePhrase)
     }

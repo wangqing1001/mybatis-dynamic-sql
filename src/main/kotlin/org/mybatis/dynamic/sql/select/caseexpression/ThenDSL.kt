@@ -25,23 +25,23 @@ import org.mybatis.dynamic.sql.StringConstant
 interface ThenDSL<T> {
 
     fun then(value: String): T {
-        return then(StringConstant.of(value))
+        return then(StringConstant(value))
     }
 
     fun then(value: Boolean): T {
-        return then(Constant.of<Any>(value.toString()))
+        return then(Constant<Any>(value.toString()))
     }
 
     fun then(value: Int): T {
-        return then(Constant.of<Any>(value.toString()))
+        return then(Constant<Any>(value.toString()))
     }
 
     fun then(value: Long): T {
-        return then(Constant.of<Any>(value.toString()))
+        return then(Constant<Any>(value.toString()))
     }
 
     fun then(value: Double): T {
-        return then(Constant.of<Any>(value.toString()))
+        return then(Constant<Any>(value.toString()))
     }
 
     fun then(column: BasicColumn): T

@@ -305,7 +305,7 @@ class PersonMapperV2Test {
         try (SqlSession session = sqlSessionFactory.openSession()) {
             PersonMapperV2 mapper = session.getMapper(PersonMapperV2.class);
 
-            DeleteStatementProvider deleteStatement = DeleteDSL.deleteFrom(person)
+            DeleteStatementProvider deleteStatement = new DeleteDSL(person)
                     .where(occupation, isNull())
                     .build()
                     .render(RenderingStrategies.MYBATIS3);
@@ -451,7 +451,7 @@ class PersonMapperV2Test {
 
             row = row.withOccupation("Programmer");
 
-            var start = UpdateDSL.update(person)
+            var start = new UpdateDSL(person)
                     .set(firstName).equalToOrNull(row::firstName)
                     .set(lastName).equalToOrNull(row::lastName)
                     .set(birthDate).equalToOrNull(row::birthDate)

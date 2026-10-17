@@ -51,7 +51,7 @@ class InsertModel<T> @JvmOverloads constructor(
         val visitor = ValuePhraseVisitor(renderingStrategy)
         val collector = columnMappings.mapNotNull { m -> m.accept(visitor) }.toFieldAndValueCollector()
         assertFalse(collector.isEmpty(), "ERROR.10")
-        val insertStatement = InsertRenderingUtilities.calculateInsertStatement(table, collector)
+        val insertStatement = calculateInsertStatement(table, collector)
         return DefaultInsertStatementProvider(insertStatement,row)
     }
 

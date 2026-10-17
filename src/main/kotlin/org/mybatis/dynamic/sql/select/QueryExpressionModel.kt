@@ -26,7 +26,6 @@ import org.mybatis.dynamic.sql.select.group.GroupByModel
 import org.mybatis.dynamic.sql.select.having.HavingModel
 import org.mybatis.dynamic.sql.select.join.JoinModel
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import org.mybatis.dynamic.sql.util.StringUtilities
 import org.mybatis.dynamic.sql.util.assertNotEmpty
 import org.mybatis.dynamic.sql.util.spaceAfter
 import org.mybatis.dynamic.sql.util.toFragmentCollector

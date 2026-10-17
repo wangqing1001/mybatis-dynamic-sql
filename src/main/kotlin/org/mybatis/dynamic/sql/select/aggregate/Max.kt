@@ -24,7 +24,7 @@ import org.mybatis.dynamic.sql.util.FragmentAndParameters
 /**
  * max 聚合函数。
  */
-class Max<T> private constructor(column: BasicColumn) : AbstractUniTypeFunction<T, Max<T>>(column) {
+class Max<T>(column: BasicColumn) : AbstractUniTypeFunction<T, Max<T>>(column) {
 
     override fun render(renderingContext: RenderingContext): FragmentAndParameters {
         return column.render(renderingContext).mapFragment { s: String -> "max($s)" } //$NON-NLS-1$ //$NON-NLS-2$
@@ -34,10 +34,4 @@ class Max<T> private constructor(column: BasicColumn) : AbstractUniTypeFunction<
         return Max(column)
     }
 
-    companion object {
-        @JvmStatic
-        fun <T> of(column: BindableColumn<T>): Max<T> {
-            return Max(column)
-        }
-    }
 }

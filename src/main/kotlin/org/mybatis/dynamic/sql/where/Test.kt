@@ -25,7 +25,6 @@ import org.mybatis.dynamic.sql.SqlCriterion
 import org.mybatis.dynamic.sql.SqlCriterionVisitor
 import org.mybatis.dynamic.sql.render.RenderingContext
 import org.mybatis.dynamic.sql.util.FragmentAndParameters
-import org.mybatis.dynamic.sql.util.StringUtilities
 import org.mybatis.dynamic.sql.util.spaceBefore
 import java.util.function.Function
 
