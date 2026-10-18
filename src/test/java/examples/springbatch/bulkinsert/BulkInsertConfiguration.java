@@ -87,8 +87,7 @@ public class BulkInsertConfiguration {
         MyBatisBatchItemWriter<PersonRecord> writer = new MyBatisBatchItemWriter<>();
         writer.setSqlSessionFactory(sqlSessionFactory);
 
-        writer.setItemToParameterConverter(row -> InsertDSL.insert(row)
-                    .into(PersonDynamicSqlSupport.person)
+        writer.setItemToParameterConverter(row ->new InsertDSL<>(PersonDynamicSqlSupport.person,row)
                     .map(firstName).toProperty("firstName")
                     .map(lastName).toProperty("lastName")
                     .map(forPagingTest).toStringConstant("false")

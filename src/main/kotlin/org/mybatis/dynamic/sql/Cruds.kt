@@ -143,22 +143,22 @@ fun multiSelect(completer: MultiSelectCompleter): MultiSelectModel {
     return KotlinMultiSelectBuilder().apply(completer).build()
 }
 
-fun <T: Any> insert(row: T): InsertDSL.IntoGatherer<T> {
-    return InsertDSL.insert(row)
+fun <T: Any> insert(table: SqlTable,row: T): InsertDSL<T> {
+    return InsertDSL(table,row)
 }
 
 @JvmSynthetic
 fun <T: Any> insert(table: SqlTable,row: T,completer: KotlinInsertCompleter<T>): InsertModel<T>{
-    return KotlinInsertBuilder(table,row).apply(completer).build()
+    return KotlinInsertBuilder(InsertDSL(table,row)).apply(completer).build()
 }
 
 fun insertInto(table: SqlTable): GeneralInsertDSL {
-    return GeneralInsertDSL.insertInto(table)
+    return GeneralInsertDSL(table)
 }
 
 @JvmSynthetic
 fun insertInto(table: SqlTable, completer: GeneralInsertCompleter): GeneralInsertModel{
-    return KotlinGeneralInsertBuilder(table).apply(completer).build()
+    return KotlinGeneralInsertBuilder(GeneralInsertDSL(table)).apply(completer).build()
 }
 
 fun <T: Any> insertBatch(vararg records: T): BatchInsertDSL.IntoGatherer<T> {

@@ -1594,8 +1594,7 @@ class AnimalDataTest {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             AnimalData row = new AnimalData(100, "Old Shep", 22.5, 1.2);
 
-            InsertStatementProvider<AnimalData> insertStatement = insert(row)
-                    .into(animalData)
+            InsertStatementProvider<AnimalData> insertStatement = insert(animalData,row)
                     .map(id).toProperty("id")
                     .map(animalName).toProperty("animalName")
                     .map(bodyWeight).toProperty("bodyWeight")
@@ -1614,8 +1613,7 @@ class AnimalDataTest {
             AnimalDataMapper mapper = sqlSession.getMapper(AnimalDataMapper.class);
             AnimalData row = new AnimalData(100, "Old Shep", 22.5, 1.2);
 
-            InsertStatementProvider<AnimalData> insertStatement = insert(row)
-                    .into(animalData)
+            InsertStatementProvider<AnimalData> insertStatement = insert(animalData,row)
                     .map(id).toProperty("id")
                     .map(animalName).toNull()
                     .map(bodyWeight).toProperty("bodyWeight")

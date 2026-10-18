@@ -134,8 +134,7 @@ class SpringTest {
         row.setFirstName("Bob");
         row.setLastName("Jones");
 
-        InsertStatementProvider<GeneratedAlwaysRecord> insertStatement = insert(row)
-                .into(generatedAlways)
+        InsertStatementProvider<GeneratedAlwaysRecord> insertStatement = insert(generatedAlways,row)
                 .map(id).toProperty("id")
                 .map(firstName).toProperty("firstName")
                 .map(lastName).toProperty("lastName")
@@ -158,8 +157,7 @@ class SpringTest {
         row.setFirstName("Bob");
         row.setLastName("Jones");
 
-        Buildable<InsertModel<GeneratedAlwaysRecord>> insertStatement = insert(row)
-                .into(generatedAlways)
+        Buildable<InsertModel<GeneratedAlwaysRecord>> insertStatement = insert(generatedAlways,row)
                 .map(id).toProperty("id")
                 .map(firstName).toProperty("firstName")
                 .map(lastName).toProperty("lastName");

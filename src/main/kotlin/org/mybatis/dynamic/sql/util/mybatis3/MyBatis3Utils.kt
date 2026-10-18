@@ -142,7 +142,7 @@ object MyBatis3Utils {
 
     @JvmStatic
     fun generalInsert(table: SqlTable, completer: UnaryOperator<GeneralInsertDSL>): GeneralInsertStatementProvider {
-        return completer.apply(GeneralInsertDSL.insertInto(table))
+        return completer.apply(GeneralInsertDSL(table))
             .build()
             .render(RenderingStrategies.MYBATIS3)
     }

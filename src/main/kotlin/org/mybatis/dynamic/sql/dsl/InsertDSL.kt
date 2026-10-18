@@ -19,13 +19,19 @@ import java.util.function.Supplier
  * 单行 insert DSL。
  */
 class InsertDSL<T>(
-    private val row: T,
     private val table: SqlTable,
-    private val columnMappings: MutableList<AbstractColumnMapping>,
+    private val row: T
 ) : Buildable<InsertModel<T>> {
+
+    private val columnMappings: MutableList<AbstractColumnMapping> = mutableListOf()
 
     fun <F> map(column: SqlColumn<F>): ColumnMappingFinisher<F> {
         return ColumnMappingFinisher(column)
+    }
+
+    internal fun withColumnMapping(columnMapping: AbstractColumnMapping): InsertDSL<T> {
+        this.columnMappings.add(columnMapping)
+        return this
     }
 
     fun <F> withMappedColumn(column: SqlColumn<F>): InsertDSL<T> {
@@ -40,20 +46,6 @@ class InsertDSL<T>(
 
     override fun build(): InsertModel<T> {
         return InsertModel(table, row, columnMappings)
-    }
-
-    companion object {
-        @JvmStatic
-        fun <T> insert(row: T): IntoGatherer<T> {
-            return IntoGatherer(row)
-        }
-
-    }
-
-    class IntoGatherer<T>(private val row: T) {
-        fun into(table: SqlTable): InsertDSL<T> {
-            return Builder(row,table).build()
-        }
     }
 
     inner class ColumnMappingFinisher<F>(private val column: SqlColumn<F>) {
@@ -89,19 +81,6 @@ class InsertDSL<T>(
         }
     }
 
-    class Builder<T>(val row: T,val table: SqlTable) {
 
-        val columnMappings: MutableList<AbstractColumnMapping> = mutableListOf()
-
-        fun withColumnMappings(columnMappings: Collection<AbstractColumnMapping>): Builder<T> {
-            this.columnMappings.addAll(columnMappings)
-            return this
-        }
-
-        fun build(): InsertDSL<T> {
-            return InsertDSL(row, table, columnMappings)
-        }
-
-    }
 
 }

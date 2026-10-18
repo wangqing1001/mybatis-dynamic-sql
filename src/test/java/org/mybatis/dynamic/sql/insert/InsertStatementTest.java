@@ -39,8 +39,7 @@ class InsertStatementTest {
 
         TestRecord row = new TestRecord(null, null, "jones", "dino driver");
 
-        InsertStatementProvider<TestRecord> insertStatement = insert(row)
-                .into(foo)
+        InsertStatementProvider<TestRecord> insertStatement = insert(foo,row)
                 .map(id).toProperty("id")
                 .map(firstName).toProperty("firstName")
                 .map(lastName).toProperty("lastName")
@@ -60,8 +59,7 @@ class InsertStatementTest {
 
         TestRecord row = new TestRecord();
 
-        InsertStatementProvider<TestRecord> insertStatement = insert(row)
-                .into(foo)
+        InsertStatementProvider<TestRecord> insertStatement = insert(foo,row)
                 .map(id).toProperty("id")
                 .map(firstName).toProperty("firstName")
                 .map(lastName).toProperty("lastName")
@@ -79,8 +77,7 @@ class InsertStatementTest {
 
         TestRecord row = new TestRecord();
 
-        InsertStatementProvider<TestRecord> insertStatement = insert(row)
-                .into(foo)
+        InsertStatementProvider<TestRecord> insertStatement = insert(foo,row)
                 .map(id).toConstant("3")
                 .map(firstName).toProperty("firstName")
                 .map(lastName).toProperty("lastName")
@@ -97,8 +94,7 @@ class InsertStatementTest {
     void testSelectiveInsertStatementBuilder() {
         TestRecord row = new TestRecord(null, null, "jones", "dino driver");
 
-        InsertStatementProvider<TestRecord> insertStatement = insert(row)
-                .into(foo)
+        InsertStatementProvider<TestRecord> insertStatement = insert(foo,row)
                 .map(id).toPropertyWhenPresent("id", row::id)
                 .map(firstName).toPropertyWhenPresent("firstName", row::firstName)
                 .map(lastName).toPropertyWhenPresent("lastName", row::lastName)

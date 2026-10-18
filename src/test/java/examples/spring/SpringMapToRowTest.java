@@ -50,8 +50,7 @@ class SpringMapToRowTest {
     void testInsertOne() {
         Integer i = 1;
 
-        InsertStatementProvider<Integer> insertStatement = insert(i)
-                .into(compoundKey)
+        InsertStatementProvider<Integer> insertStatement = insert(compoundKey,i)
                 .map(id1).toConstant("22")
                 .map(id2).toRow()
                 .build()

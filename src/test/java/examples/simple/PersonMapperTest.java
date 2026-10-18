@@ -347,7 +347,7 @@ class PersonMapperTest {
             PersonMapper mapper = session.getMapper(PersonMapper.class);
             PersonRecord row = new PersonRecord(100, "Joe", new LastName("Jones"), new Date(), true, "Developer", 1);
 
-            InsertStatementProvider<PersonRecord> insertStatement = insert(row).into(person)
+            InsertStatementProvider<PersonRecord> insertStatement = insert(person,row)
                     .withMappedColumn(id)
                     .withMappedColumn(firstName)
                     .withMappedColumn(lastName)

@@ -27,23 +27,22 @@ import org.mybatis.dynamic.sql.util.MappedColumnWhenPresentMapping
 typealias KotlinInsertCompleter<T> = KotlinInsertBuilder<T>.() -> Unit
 
 @MyBatisDslMarker
-class KotlinInsertBuilder<T> (private val table: SqlTable,private val row: T): Buildable<InsertModel<T>> {
+class KotlinInsertBuilder<T> (private val dsl: InsertDSL<T>): Buildable<InsertModel<T>> {
 
-    private val columnMappings = mutableListOf<AbstractColumnMapping>()
 
     fun <C> map(column: SqlColumn<C>) = SingleRowInsertColumnMapCompleter(column) {
-        columnMappings.add(it)
+        dsl.withColumnMapping(it)
     }
 
     fun <C> withMappedColumn(column: SqlColumn<C>) {
-        columnMappings.add(MappedColumnMapping(column))
+        dsl.withMappedColumn(column)
     }
 
     fun <C> withMappedColumnWhenPresent(column: SqlColumn<C>, valueSupplier: () -> Any?) {
-        columnMappings.add(MappedColumnWhenPresentMapping(column, valueSupplier))
+        dsl.withMappedColumnWhenPresent(column,valueSupplier)
     }
 
     override fun build(): InsertModel<T> {
-        return InsertDSL.Builder(row,table).withColumnMappings(columnMappings).build().build()
+        return dsl.build()
     }
 }

@@ -20,12 +20,11 @@ import java.util.function.Supplier
 /**
  * 通用 insert DSL,支持 set 子句的各种映射方式。
  */
-class GeneralInsertDSL private constructor(
-    builder: Builder
+class GeneralInsertDSL(
+    private val table: SqlTable
 ) : Buildable<GeneralInsertModel>, ConfigurableStatement<GeneralInsertDSL> {
 
-    private val columnMappings: MutableList<AbstractColumnMapping> = builder.columnMappings
-    private val table: SqlTable = builder.table
+    private val columnMappings: MutableList<AbstractColumnMapping> = mutableListOf()
     private val statementConfiguration: StatementConfiguration = StatementConfiguration()
 
     fun <T> set(column: SqlColumn<T>): SetClauseFinisher<T> {
@@ -37,18 +36,17 @@ class GeneralInsertDSL private constructor(
         return this
     }
 
+    internal fun withColumnMapping(columnMapping: AbstractColumnMapping): GeneralInsertDSL {
+        this.columnMappings.add(columnMapping)
+        return this
+    }
+
     override fun build(): GeneralInsertModel {
         val enabledFilter = statementConfiguration.enabledFilter()
         val insertMappings = buildInsertColumnFilters(table,columnMappings,enabledFilter)
         return GeneralInsertModel(table, statementConfiguration, insertMappings)
     }
 
-    companion object {
-        @JvmStatic
-        fun insertInto(table: SqlTable): GeneralInsertDSL {
-            return Builder(table).build()
-        }
-    }
 
     inner class SetClauseFinisher<T>(private val column: SqlColumn<T>) {
 
@@ -95,17 +93,5 @@ class GeneralInsertDSL private constructor(
         }
     }
 
-    class Builder(val table: SqlTable) {
 
-        val columnMappings: MutableList<AbstractColumnMapping> = mutableListOf()
-
-        fun withColumnMappings(columnMappings: Collection<AbstractColumnMapping>): Builder {
-            this.columnMappings.addAll(columnMappings)
-            return this
-        }
-
-        fun build(): GeneralInsertDSL {
-            return GeneralInsertDSL(this)
-        }
-    }
 }

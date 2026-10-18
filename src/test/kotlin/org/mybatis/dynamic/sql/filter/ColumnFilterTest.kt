@@ -88,7 +88,7 @@ class ColumnFilterTest {
 
     @Test
     fun generalInsertContributesColumn() {
-        val statement = GeneralInsertDSL.insertInto(person)
+        val statement = GeneralInsertDSL(person)
             .set(person.name).toValue("Fred")
             .build()
             .render(RenderingStrategies.MYBATIS3)
@@ -101,7 +101,7 @@ class ColumnFilterTest {
 
     @Test
     fun generalInsertDoesNotContributeUpdateOnlyColumn() {
-        val statement = GeneralInsertDSL.insertInto(person)
+        val statement = GeneralInsertDSL(person)
             .set(person.name).toValue("Fred")
             .build()
             .render(RenderingStrategies.MYBATIS3)
@@ -127,7 +127,7 @@ class ColumnFilterTest {
             "update person set name = #{parameters.p1} where id = #{parameters.p2}"
         )
 
-        val insertStatement = GeneralInsertDSL.insertInto(person)
+        val insertStatement = GeneralInsertDSL(person)
             .set(person.name).toValue("Fred")
             .configureStatement { it.enabledFilter(false) }
             .build()

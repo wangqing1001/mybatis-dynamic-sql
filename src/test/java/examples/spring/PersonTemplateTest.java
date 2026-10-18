@@ -246,7 +246,7 @@ class PersonTemplateTest {
     void testInsert() {
         PersonRecord row = new PersonRecord(100, "Joe", new LastName("Jones"), new Date(), true, "Developer", 1);
 
-        Buildable<InsertModel<PersonRecord>> insertStatement = insert(row).into(person)
+        Buildable<InsertModel<PersonRecord>> insertStatement = insert(person,row)
                 .map(id).toProperty("id")
                 .map(firstName).toProperty("firstName")
                 .map(lastName).toProperty("lastNameAsString")
@@ -324,7 +324,7 @@ class PersonTemplateTest {
     void testInsertSelective() {
         PersonRecord row = new PersonRecord(100, "Joe", new LastName("Jones"), new Date(), false, null, 1);
 
-        Buildable<InsertModel<PersonRecord>> insertStatement = insert(row).into(person)
+        Buildable<InsertModel<PersonRecord>> insertStatement = insert(person,row)
                 .map(id).toPropertyWhenPresent("id", row::id)
                 .map(firstName).toPropertyWhenPresent("firstName", row::firstName)
                 .map(lastName).toPropertyWhenPresent("lastNameAsString", row::getLastNameAsString)
@@ -469,7 +469,7 @@ class PersonTemplateTest {
     void testUpdate() {
         PersonRecord row = new PersonRecord(100, "Joe", new LastName("Jones"), new Date(), true, "Developer", 1);
 
-        Buildable<InsertModel<PersonRecord>> insertStatement = insert(row).into(person)
+        Buildable<InsertModel<PersonRecord>> insertStatement = insert(person,row)
                 .map(id).toProperty("id")
                 .map(firstName).toProperty("firstName")
                 .map(lastName).toProperty("lastNameAsString")

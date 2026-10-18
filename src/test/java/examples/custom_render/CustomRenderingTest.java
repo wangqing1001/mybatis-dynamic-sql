@@ -83,7 +83,7 @@ class CustomRenderingTest {
             JsonTestRecord row = new JsonTestRecord(1, "Fred",
                     "{\"firstName\": \"Fred\", \"lastName\": \"Flintstone\", \"age\": 30}");
 
-            InsertStatementProvider<JsonTestRecord> insertStatement = insert(row).into(jsonTest)
+            InsertStatementProvider<JsonTestRecord> insertStatement = insert(jsonTest,row)
                     .map(id).toProperty("id")
                     .map(description).toProperty("description")
                     .map(info).toProperty("info")
@@ -102,7 +102,7 @@ class CustomRenderingTest {
             row = new JsonTestRecord(2, "Wilma",
                     "{\"firstName\": \"Wilma\", \"lastName\": \"Flintstone\", \"age\": 25}");
 
-            insertStatement = insert(row).into(jsonTest)
+            insertStatement = insert(jsonTest,row)
                     .map(id).toProperty("id")
                     .map(description).toProperty("description")
                     .map(info).toProperty("info")

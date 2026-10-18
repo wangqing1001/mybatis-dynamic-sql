@@ -78,8 +78,7 @@ class InvalidSQLTest {
     void testInvalidInsertStatementWhenAllOptionalsAreDropped() {
         TestRow testRow = new TestRow();
 
-        InsertModel<TestRow> model = insert(testRow)
-                .into(person)
+        InsertModel<TestRow> model = insert(person,testRow)
                 .map(id).toPropertyWhenPresent("id", testRow::getId)
                 .build();
 
